@@ -13,7 +13,7 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | # | Epic pack | Feature-list | Detail | Status |
 | --- | --- | --- | --- | --- |
 | 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | Planned |
-| 2 | Character creation (vertical slice) | §2 | *TBD* | — |
+| 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) | Planned |
 | 3 | Empty hub village + portal | §3 | *TBD* | — |
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
