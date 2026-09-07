@@ -16,7 +16,7 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 
 | # | Epic pack | Feature-list | Detail | Status |
 | --- | --- | --- | --- | --- |
-| 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | Planned |
+| 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | In progress |
 | 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | Planned |
 | 3 | Empty **Sanctum** + portal | §3 | *TBD* | — |
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
