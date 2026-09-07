@@ -23,7 +23,7 @@ Companions are NPCs plus roster/field-slot rules. They are full characters ([`ga
 
 **Appearance:** every NPC/companion face and body must be **makeable in the character creator** ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Generators pick catalog ids + morphs; they do not invent unique meshes.
 
-A frontier model does not run every tick.
+A frontier model does not run every tick. Jobs go through the **Orchestrator**; commits go through the **Statemachine** ([`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md)).
 
 ```text
 WORLD EVENTS

@@ -32,7 +32,7 @@ Player-facing rules for combat, parkour, gear, and companions live in [`game-des
 
 Interpreting events, updating beliefs, forming goals, memories, what an NPC treats as important, proposing relationship changes, rumors, long-term behavioral *suggestions*.
 
-Cognition emits structured mutations. Simulation applies or rejects them.
+Cognition emits structured mutations. Simulation applies or rejects them. Runtime path: [`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md) (Statemachine commits; Orchestrator routes; workers only infer).
 
 Jealousy still only applies if NPCs **meet** (same scene). Cognition must not invent off-screen omniscience.
 
