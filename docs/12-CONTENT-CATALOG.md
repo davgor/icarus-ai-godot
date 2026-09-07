@@ -20,6 +20,8 @@ The LLM and image generators produce **candidates**. They do **not** own live in
 
 ## Approval loop (dev / content pump)
 
+**Locked:** agent **pre-screens** first; **you** give **final approval**. Agents never promote straight to `approved`.
+
 ```text
 BRIEF / SEED TAGS
      │
@@ -30,12 +32,20 @@ GENERATE  (image → optional 3D; style lock required)
 CANDIDATE  (status: pending)  ──►  art under inbox + draft JSON
      │
      ▼
-REVIEW     (human and/or agent vs art bible + schema)
+AGENT REVIEW  (vs art bible + schema + readability)
      │
-     ├── reject / regenerate
+     ├── reject / regenerate  (status: rejected or back to generate)
      │
      ▼
-APPROVE    (status: approved)  ──►  move into catalog paths, commit
+READY FOR YOU  (status: ready_for_review)
+     │
+     ▼
+YOUR FINAL APPROVAL
+     │
+     ├── reject / request regen
+     │
+     ▼
+APPROVED  (status: approved)  ──►  move into catalog paths, commit / merge
      │
      ▼
 COMPILER may place it in worlds
@@ -46,11 +56,13 @@ PLAYER encounters → learns → collectible unlock (if flagged)
 
 Rules:
 
-1. **Pending is not playable.** Worlds never sample `pending` or `rejected` rows.
-2. **Git is the ship gate.** Approval means the def + art land on a branch and merge like any other content.
-3. **Style lock always.** Generate with [`art/prompt-lock.md`](art/prompt-lock.md); `style: "anime"`; `Read` previews before import ([`agent-operating-loop.md`](agent-operating-loop.md)).
-4. **Pump volume, gate quality.** Prefer many candidates and a strict approve rate over shipping every generation.
-5. **Provenance stays on the record** — lock version, prompt/ref ids, approve time — so a bad batch can be found and retired.
+1. **Pending is not playable.** Worlds never sample `pending`, `ready_for_review`, or `rejected` rows — only `approved`.
+2. **Agent first.** Agents generate, `Read` previews, check style lock / schema, and either reject/regenerate or mark `ready_for_review` with short notes (why it passes, known risks).
+3. **You approve last.** Final `approved` (and merge into the playable catalog) is a **human** gate. Do not auto-merge agent-passed content.
+4. **Git is the ship gate.** Approval means the def + art land on a branch and you merge (or explicitly ask an agent to merge after you say yes).
+5. **Style lock always.** Generate with [`art/prompt-lock.md`](art/prompt-lock.md); `style: "anime"`; `Read` previews before import ([`agent-operating-loop.md`](agent-operating-loop.md)).
+6. **Pump volume, gate quality.** Prefer many candidates and a strict approve rate over shipping every generation.
+7. **Provenance stays on the record** — lock version, prompt/ref ids, agent review notes, your approve time — so a bad batch can be found and retired.
 
 Kenney / `game/art/town/` remains scaffolding only. Catalog finals live under catalog paths below.
 
@@ -89,7 +101,7 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
   "id": "building.lantern_cottage_01",
   "kind": "building",
   "schema_version": 1,
-  "status": "approved",
+  "status": "ready_for_review",
   "display_name": "Lantern Cottage",
   "tags": ["cottage", "residential", "cozy"],
   "rarity": "common",
@@ -106,7 +118,9 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
   "provenance": {
     "lock_version": 2,
     "generated_at": "2026-09-07T00:00:00Z",
-    "approved_at": "2026-09-07T00:00:00Z",
+    "agent_reviewed_at": "2026-09-07T00:00:00Z",
+    "agent_notes": "Passes style lock; silhouette readable; footprint guess only.",
+    "approved_at": null,
     "source": "summer_generate"
   },
   "properties": {
@@ -125,7 +139,7 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
 | `id` | Stable catalog id (`kind.name_slug`). Never recycle. |
 | `kind` | `building` \| `item` \| `prop` (extend carefully) |
 | `schema_version` | Core shape version |
-| `status` | `pending` \| `approved` \| `rejected` \| `retired` |
+| `status` | `pending` \| `ready_for_review` \| `approved` \| `rejected` \| `retired` |
 | `display_name` | Player-facing name |
 | `tags` | Soft filters for compiler + UI |
 | `rarity` | Placement / drop / collectible weighting |
@@ -184,6 +198,7 @@ Players do **not** receive the entire approved library on New Game. The library 
 ## Explicit non-goals
 
 - Auto-shipping every generation into `approved` without review.
+- Letting agents set `status: approved` or merge catalog content without your final say-so.
 - Letting in-game directors invent new catalog ids with art at runtime (directors may request tags; content still comes from the catalog).
 - Rigid fixed columns for every future building stat (that is what `properties` avoids).
 - Using `game/art/town/` Kenney assets as catalog finals.

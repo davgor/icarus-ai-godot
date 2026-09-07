@@ -577,7 +577,6 @@ Recorded so we do not silently invent them during implementation:
 - How many active instances of one home design may be placed (default lean: one).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether farm plots use real-time, session-time, or world-return catch-up growth.
-- Who may approve catalog candidates in day-to-day flow (human-only vs agent pre-screen + human merge).
 - Minimum approved library size before dense world placement ships.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.

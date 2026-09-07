@@ -146,14 +146,14 @@ Do not invent a second art pipeline. Visual generate/import goes through Summer 
 
 ### Content catalog pump
 
-Volume buildings / items / props for worlds use the **generate → approve → catalog** loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md):
+Volume buildings / items / props for worlds use the **generate → agent review → your approval → catalog** loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md):
 
 1. Generate into `game/art/catalog/_inbox/<id>/` with a `pending` JSON draft under `content/catalog/_inbox/`.
-2. Review against the art bible (human and/or agent). Reject or regenerate freely.
-3. On approve: move art + def into approved catalog paths, set `status: approved`, commit.
+2. **Agent** reviews against the art bible + schema (`Read` previews). Reject/regenerate, or set `ready_for_review` with short notes.
+3. **You** give final approval. Only then: move art + def into approved catalog paths, set `status: approved`, commit/merge.
 4. Runtime and the world compiler **only** sample approved rows.
 
-Do not drop raw generations straight into playable world folders and call them catalog.
+Do not drop raw generations straight into playable world folders and call them catalog. Do not self-approve as an agent.
 
 ## Do not go back to
 

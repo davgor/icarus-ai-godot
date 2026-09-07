@@ -225,7 +225,7 @@ Deepen what happens beyond the portal.
 | 8.7 | World compiler v0.1 | Constitution → seed → map/factions/major NPCs; compiler UI; enter first settlement |
 | 8.8 | Holy shit test | Generate, meet NPC, change something, leave, return, they remember why |
 | 8.9 | Content catalog | Approved buildings/items/props library; compiler places by `catalog_id` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)) |
-| 8.10 | Generate → approve loop | Inbox candidates → review vs art lock → approve into catalog (git ship gate) |
+| 8.10 | Generate → approve loop | Agent pre-screen → you final-approve → catalog (git ship gate). Agents never set `approved` alone |
 | 8.11 | Dense placement | Settlements sample many approved buildings/props; not a three-prefab town |
 | 8.12 | Learn → collect | Encounter catalog instances in-world → unlock into player collection / Sanctum designs |
 | 8.13 | Flexible content defs | Stable core + open `properties` bag; unknown keys ignored; schema_version for core breaks |
@@ -261,4 +261,5 @@ Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** 
 - Permadeath on a single down
 - Dumping the full home-design / content catalog on New Game
 - Auto-approving every generated asset into the playable catalog
+- Letting agents mark catalog rows `approved` without your final say-so
 - Letting runtime directors invent new catalog art ids without the approval loop
