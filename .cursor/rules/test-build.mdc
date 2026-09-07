@@ -1,0 +1,30 @@
+---
+description: Canonical test/build/play commands and headless Godot pitfalls already proven here
+alwaysApply: true
+---
+
+# Test, build, play
+
+Do not add GUT, gdUnit, Makefile targets, or npm test scripts. Use the existing commands:
+
+```powershell
+.\scripts\test.ps1
+.\scripts\build.ps1
+.\scripts\play.ps1
+```
+
+Headless tests live in `tests/run_tests.gd`: `extends SceneTree`, work from `_init` / deferred `_start`, always `quit(code)`, print `TEST_RESULT: PASS`.
+
+```gdscript
+❌ extends Node
+❌ func _run():  # EditorScript only; -s hangs with no output
+✅ extends SceneTree
+✅ func _init() -> void:
+✅     call_deferred("_start")
+```
+
+`godot --check-only` and missing `-s` paths can still exit 0. Gate on `TEST_RESULT: PASS` and fail on `SCRIPT ERROR` / `Parse Error`. Ignore benign `ObjectDB` leak warnings.
+
+Export preset name is `WindowsDesktop` (no space). `builds/latest/IcarusAI.exe` may be locked if the game is running; the build must still succeed and keep the new exe under `builds/windows/`.
+
+Do not run `--import` while Summer is open. It hijacks the local API token/port.

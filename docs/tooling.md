@@ -26,6 +26,10 @@ If MCP tools are missing, restart Cursor so it reloads `.cursor/mcp.json`.
 
 MCP is for scene inspection, node edits, running the game, and diagnostics. Do not call Summer SDK APIs from game runtime code.
 
+Project MCP servers often stay **disabled until approved**. After a Cursor restart, open Settings → MCP and enable `summer-engine` if tools are still missing.
+
+The proven inspect → modify → play → inspect cycle, including value formats and traps, is in [`agent-operating-loop.md`](agent-operating-loop.md).
+
 ## Canonical commands
 
 | Command | Meaning |
@@ -57,3 +61,7 @@ Outputs go to `builds/` (gitignored). Each build writes `BUILD.txt` with:
 - test/export status
 
 `.\scripts\play.ps1` launches `builds/latest/`.
+
+If `builds/latest/IcarusAI.exe` is locked because the game is running, the build must still succeed; the new exe is under `builds/windows/` and `builds/<id>-<commit>/`.
+
+Export preset name is `WindowsDesktop` (no space).

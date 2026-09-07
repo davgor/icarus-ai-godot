@@ -74,7 +74,7 @@ func _test_player_moves() -> bool:
 	await physics_frame
 	var player := scene.get_node("Player") as CharacterBody3D
 	var start := player.global_position
-	player.set("test_move", Vector2(0, -1))
+	player.set("forced_move_input", Vector2(0, -1))
 	for i in 30:
 		await physics_frame
 	var distance := player.global_position.distance_to(start)

@@ -7,7 +7,7 @@ const CAMERA_MIN_PITCH := deg_to_rad(-50.0)
 const CAMERA_MAX_PITCH := deg_to_rad(30.0)
 
 ## Horizontal input used by headless tests. Gameplay uses WASD when this is Vector2.ZERO.
-var test_move := Vector2.ZERO
+var forced_move_input := Vector2.ZERO
 
 @onready var _camera_pivot: Node3D = $CameraPivot
 
@@ -50,8 +50,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _read_move_input() -> Vector2:
-	if test_move != Vector2.ZERO:
-		return test_move
+	if forced_move_input != Vector2.ZERO:
+		return forced_move_input
 	return Vector2(
 		float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A)),
 		float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))

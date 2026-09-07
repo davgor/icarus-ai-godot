@@ -37,12 +37,13 @@ Desired personal workflow:
 A feature is not done because it compiles. After implementation:
 
 1. Run `.\scripts\test.ps1`
-2. Run `.\scripts\build.ps1` when the change should be playable
-3. Launch with `.\scripts\play.ps1` when appropriate
-4. Inspect runtime errors
-5. Fix failures
-6. Report exactly what changed
+2. If Summer MCP is connected: `summer_play`, wait, `summer_get_diagnostics`, fix
+3. Run `.\scripts\build.ps1` when the change should be playable
+4. Launch with `.\scripts\play.ps1` when appropriate
+5. Report exactly what changed
 
-## Bootstrap vs game
+## Proven status
 
-Until the bootstrap loop is proven, do not implement Living Town systems (NPCs, saves, quests, combat, dungeons). Keep the playable scene minimal.
+The bootstrap loop is proven (Cursor edit → `.\scripts\test.ps1` → `.\scripts\build.ps1` → `.\scripts\play.ps1`, and Summer MCP inspect → modify → play → diagnostics → fix).
+
+The operating contract for agents is [`agent-operating-loop.md`](agent-operating-loop.md). Do not revert to GUT, guessed scene paths, or “it compiles so it is done.”

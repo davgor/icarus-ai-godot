@@ -10,13 +10,9 @@ The long-term charter lives in [`docs/vision.md`](docs/vision.md). This README i
 
 ## Current milestone
 
-**Bootstrap the development loop.** Do not start Living Town systems until this loop is boringly reliable:
+The **edit → test → build → play** loop is proven. The graybox walker exists to keep that pipeline cheap. Next game milestone, when asked, is The Living Town.
 
-```text
-idea → code/scene change → test → build → play
-```
-
-The bootstrap scene is a graybox third-person walker. It exists to prove the pipeline, not the RPG.
+Agents must follow [`docs/agent-operating-loop.md`](docs/agent-operating-loop.md). Do not invent a second test/build/play path.
 
 ## Requirements
 
@@ -78,4 +74,4 @@ Details: [`docs/git-workflow.md`](docs/git-workflow.md).
 
 ## What this is not yet
 
-Not the Living Town. Not combat, NPCs, saves, or dungeons. Those come after the edit → test → build → play loop is proven.
+Not the Living Town. Not combat, NPCs, saves, or dungeons. Those start when asked, using the proven loop above.

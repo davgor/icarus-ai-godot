@@ -1,0 +1,29 @@
+---
+description: Proven Summer MCP inspect-modify-play-inspect cycle; do not skip diagnostics
+alwaysApply: true
+---
+
+# Summer MCP
+
+Use Summer MCP for live scene inspection, node edits, play, and diagnostics. Edit GDScript in Cursor. Keep Summer open on this repo. If tools are missing, enable `summer-engine` in Cursor Settings → MCP.
+
+Main scene is `res://game/main.tscn`. Do not guess `res://main.tscn`.
+
+Required cycle after a scene or runtime-affecting change:
+
+1. `summer_get_project_context`
+2. `summer_get_diagnostics` first (not console/debugger first)
+3. `summer_open_main_scene` if `currentScene` is null
+4. `summer_get_scene_tree` with explicit `scenePath`
+5. Mutate with that same `scenePath`
+6. `summer_play` → wait → `summer_get_diagnostics` again → fix → repeat
+7. `summer_stop` when done
+
+```text
+❌ position: { "x": 2, "y": 1, "z": 0 }
+✅ position: "Vector3(2, 1, 0)"
+❌ parent: "Main/Player"
+✅ parent: "./" or path: "./Player"
+```
+
+Do not: run `--import` while the editor is open; use Summer SDK in game code; treat Summer Cloud as source of truth; declare playable without a diagnostics pass.
