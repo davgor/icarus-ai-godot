@@ -18,6 +18,8 @@ merge
 
 Prefer this over direct uncontrolled modification of `main`.
 
+Large generated art (`.glb`, textures, audio) uses Git LFS. See [`tooling.md`](tooling.md). Clone with `git lfs install` and `git lfs pull`. Do not rewrite history to migrate LFS unless the user asked.
+
 ## Branch names
 
 Use short, purpose-shaped names:

@@ -9,10 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          lfs: true
       - name: Check bootstrap files exist
         run: |
           set -e
           test -f project.godot
+          test -f .gitattributes
+          grep -q 'filter=lfs' .gitattributes
           test -f README.md
           test -f game/main.tscn
           test -f game/player.tscn

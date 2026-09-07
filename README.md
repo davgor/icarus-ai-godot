@@ -17,8 +17,10 @@ Agents must follow [`docs/agent-operating-loop.md`](docs/agent-operating-loop.md
 ## Requirements
 
 - [Godot 4.7](https://godotengine.org/) **or** [Summer Engine](https://summerengine.com/) (Godot-compatible editor)
-- Git
+- Git with [Git LFS](https://git-lfs.com/) (Git for Windows includes it)
 - Windows PowerShell (canonical commands below)
+
+After clone: `git lfs install` then `git lfs pull`. Art payloads live in LFS; see [`docs/tooling.md`](docs/tooling.md).
 
 Set `GODOT_BIN` if the editor is not on `PATH` and Summer Engine is not installed in the default location.
 
