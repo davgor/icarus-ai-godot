@@ -29,6 +29,12 @@ func _run_suite() -> int:
 	failed += _ok("return_doll_and_gift", _test_return_doll_and_gift())
 	failed += _ok("leave_without_help", _test_leave_without_help())
 	failed += _ok("save_and_load", _test_save_and_load())
+	failed += _ok("boot_skips_in_headless", _test_boot_skips_in_headless())
+	failed += _ok("boot_reaches_title", _test_boot_reaches_title())
+	failed += _ok("title_menu_actions", _test_title_menu_actions())
+	failed += _ok("title_stubs_return", _test_title_stubs_return())
+	failed += _ok("quit_path_callable", _test_quit_path_callable())
+	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
 	return failed
 
 
@@ -167,4 +173,82 @@ func _test_save_and_load() -> bool:
 	if not ok:
 		push_error("Loaded state did not match")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	return ok
+
+
+func _flow() -> Node:
+	return root.get_node_or_null("AppFlow")
+
+
+func _test_boot_skips_in_headless() -> bool:
+	var flow := _flow()
+	if flow == null:
+		push_error("AppFlow autoload missing")
+		return false
+	if flow.visible:
+		push_error("AppFlow should stay hidden in headless")
+		return false
+	return str(flow.screen_name()) == "none"
+
+
+func _test_boot_reaches_title() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_title()
+	var ok := str(flow.screen_name()) == "title"
+	flow.hide_flow()
+	return ok
+
+
+func _test_title_menu_actions() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_title()
+	var texts: PackedStringArray = flow.title_button_texts()
+	var ok := texts == PackedStringArray(["New", "Load", "Settings", "Quit"])
+	if not ok:
+		push_error("Title actions were %s" % str(texts))
+	flow.hide_flow()
+	return ok
+
+
+func _test_title_stubs_return() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	for action in ["New", "Load", "Settings"]:
+		flow.show_stub(action)
+		if str(flow.screen_name()) != "stub":
+			push_error("Stub did not open for %s" % action)
+			flow.hide_flow()
+			return false
+		flow.show_title()
+		if str(flow.screen_name()) != "title":
+			push_error("Stub did not return to title from %s" % action)
+			flow.hide_flow()
+			return false
+	flow.hide_flow()
+	return true
+
+
+func _test_quit_path_callable() -> bool:
+	var flow := _flow()
+	return flow != null and flow.has_method("request_quit")
+
+
+func _test_create_overlay_hidden_on_boot() -> bool:
+	var packed := load("res://game/main.tscn")
+	if packed == null:
+		return false
+	var scene: Node = packed.instantiate()
+	root.add_child(scene)
+	await process_frame
+	var create := scene.get_node_or_null("HUD/Create") as Control
+	var ok := create != null and not create.visible
+	if not ok:
+		push_error("Millbrook create overlay should stay hidden on boot")
+	scene.queue_free()
+	await process_frame
 	return ok

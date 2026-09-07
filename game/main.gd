@@ -21,7 +21,6 @@ var _prompt: Label
 var _debug: Label
 var _create: Control
 var _name_edit: LineEdit
-var _continue_btn: Button
 var _dialogue: Control
 var _speaker: Label
 var _body: Label
@@ -43,11 +42,15 @@ func _ready() -> void:
 		_brann.proximity_changed.connect(_on_proximity)
 	if _gate:
 		_gate.proximity_changed.connect(_on_proximity)
+	var flow := get_node_or_null("/root/AppFlow")
+	if flow and flow.has_signal("world_requested"):
+		if not flow.world_requested.is_connected(_on_flow_world_requested):
+			flow.world_requested.connect(_on_flow_world_requested)
 	if DisplayServer.get_name() == "headless":
 		state.create_character("Tester")
 		_enter_world()
 		return
-	_show_create()
+	_park_world()
 
 
 func _bind_nodes() -> void:
@@ -58,7 +61,6 @@ func _bind_nodes() -> void:
 	_debug = get_node_or_null("HUD/Debug") as Label
 	_create = get_node_or_null("HUD/Create") as Control
 	_name_edit = get_node_or_null("HUD/Create/Panel/VBox/NameEdit") as LineEdit
-	_continue_btn = get_node_or_null("HUD/Create/Panel/VBox/ContinueButton") as Button
 	_dialogue = get_node_or_null("HUD/Dialogue") as Control
 	_speaker = get_node_or_null("HUD/Dialogue/Panel/VBox/Speaker") as Label
 	_body = get_node_or_null("HUD/Dialogue/Panel/VBox/Body") as Label
@@ -112,11 +114,34 @@ func _on_continue_pressed() -> void:
 	_enter_world()
 
 
-func _enter_world() -> void:
+func _on_flow_world_requested() -> void:
+	if state.player_name.is_empty():
+		state.create_character("Ash")
+	_enter_world()
+
+
+func _park_world() -> void:
 	if _create:
 		_create.visible = false
 	if _dialogue:
 		_dialogue.visible = false
+	if _player:
+		_player.set_ui_open(true)
+	_set_world_hud_visible(false)
+	var tree := get_tree()
+	if tree:
+		tree.paused = true
+
+
+func _enter_world() -> void:
+	var tree := get_tree()
+	if tree:
+		tree.paused = false
+	if _create:
+		_create.visible = false
+	if _dialogue:
+		_dialogue.visible = false
+	_set_world_hud_visible(true)
 	if _player:
 		_player.set_ui_open(false)
 		_player.global_position = SPOTS[state.player_location] if SPOTS.has(state.player_location) else SPOTS["square"]
@@ -137,21 +162,15 @@ func _enter_world() -> void:
 	_refresh_hud()
 
 
-func _show_create() -> void:
-	if _create == null:
-		return
-	_create.visible = true
-	if _dialogue:
-		_dialogue.visible = false
-	if _player:
-		_player.set_ui_open(true)
-	if _continue_btn:
-		_continue_btn.visible = GameStateScript.save_exists()
-	if _name_edit:
-		_name_edit.text = "Ash"
-		_name_edit.grab_focus()
+func _set_world_hud_visible(show_hud: bool) -> void:
+	if _clock:
+		_clock.visible = show_hud
 	if _help:
-		_help.text = "Millbrook — create a character to enter town."
+		_help.visible = show_hud
+	if _prompt:
+		_prompt.visible = show_hud
+	if _debug and not show_hud:
+		_debug.visible = false
 
 
 func _on_proximity(interactable: Node, near: bool) -> void:

@@ -1,6 +1,6 @@
 # Epic pack 01 — Opening screen
 
-**Status:** Planned  
+**Status:** In progress  
 **Feature-list:** [`feature-list.md`](../feature-list.md) §1 Boot and title  
 **Design:** [`game-design.md`](../game-design.md) Session flow → Title menu  
 **Art:** [`art-style.md`](../art-style.md), [`art/prompt-lock.md`](../art/prompt-lock.md) — UI / title / loading suffix  
@@ -77,10 +77,10 @@ Generate **before** locking layout sizes so chrome fits the art, not the reverse
 
 ### Acceptance
 
-- [ ] Launch shows splash/load, then title root (not Millbrook create HUD)
-- [ ] Assets live under `game/art/ui/`, not `_style/` or `town/`
-- [ ] Headless tests still pass (`TEST_RESULT: PASS`)
-- [ ] After play (when MCP available): diagnostics clean for boot → title
+- [x] Launch shows splash/load, then title root (not Millbrook create HUD)
+- [x] Assets live under `game/art/ui/`, not `_style/` or `town/`
+- [x] Headless tests still pass (`TEST_RESULT: PASS`)
+- [x] After play (when MCP available): diagnostics clean for boot → title
 
 ---
 
@@ -137,11 +137,11 @@ Title presents **New**, **Load**, **Settings**, **Quit** only. Quit exits. New /
 
 ### Acceptance
 
-- [ ] Title shows exactly New / Load / Settings / Quit
-- [ ] Quit exits play / exported build
-- [ ] New / Load / Settings do not crash (stub or real shell)
-- [ ] Art imported under `game/art/ui/` (vfx under `game/art/vfx/` if used)
-- [ ] `TEST_RESULT: PASS`; play diagnostics clean when MCP available
+- [x] Title shows exactly New / Load / Settings / Quit
+- [ ] Quit exits play / exported build — wired (`get_tree().quit()`); confirm on exported play
+- [x] New / Load / Settings do not crash (stub or real shell)
+- [x] Art imported under `game/art/ui/` (vfx under `game/art/vfx/` if used)
+- [x] `TEST_RESULT: PASS`; play diagnostics clean when MCP available
 
 ---
 
