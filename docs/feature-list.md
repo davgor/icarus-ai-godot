@@ -21,6 +21,8 @@ Status key: **Now** = next when we start this design. **Next** = after the previ
 
 ## 1. Boot and title — Now
 
+Epics: [`epics/01-opening-screen.md`](epics/01-opening-screen.md) (OS-1…OS-6). Index: [`epics/README.md`](epics/README.md).
+
 The game must open as a game, not as a graybox drop-in.
 
 | ID | Feature | Notes |
