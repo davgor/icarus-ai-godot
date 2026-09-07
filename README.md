@@ -6,7 +6,7 @@ This is a personal game first. Optimize for fun, iteration speed, and experiment
 
 > **Build the game I want to come home and play.**
 
-The long-term charter lives in [`docs/vision.md`](docs/vision.md). Player-facing design and the feature backlog are [`docs/game-design.md`](docs/game-design.md) and [`docs/feature-list.md`](docs/feature-list.md). This README is the short path from clone to a playable loop.
+The long-term charter lives in [`docs/00-VISION.md`](docs/00-VISION.md). Design bundle index: [`docs/README.md`](docs/README.md). Player-facing design and the feature backlog are [`docs/game-design.md`](docs/game-design.md) and [`docs/feature-list.md`](docs/feature-list.md). Art stylization for generators is [`docs/art-style.md`](docs/art-style.md). This README is the short path from clone to a playable loop.
 
 ## Current milestone
 
@@ -45,7 +45,7 @@ The game is a normal Godot 4 project. Summer Engine is an optional development e
 ├── tests/           # headless validation
 ├── scripts/         # canonical test / build / play commands
 ├── tools/           # development helpers (not shipped)
-├── docs/            # charter, game design, workflow
+├── docs/            # design bundle, art lock, workflow
 ├── builds/          # local playable outputs (gitignored)
 └── .github/         # PR template and lightweight CI
 ```

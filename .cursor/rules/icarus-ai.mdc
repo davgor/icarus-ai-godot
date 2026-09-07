@@ -16,3 +16,8 @@ Read `docs/agent-operating-loop.md` before changing tooling, tests, builds, or s
 - Do not add Summer SDK or other editor-only APIs to shipped game code.
 - Git is source of truth. Feature branches. Do not treat the working tree as disposable.
 - Prefer simple implementations. Refactor when the pain is real.
+- Visual assets follow `docs/art-style.md`. Prepend `docs/art/prompt-lock.md` when generating.
+- Player movement follows the Movement section in `docs/game-design.md` (light parkour: climb + wall run).
+- Companions follow the Companions section in `docs/game-design.md` (2 field slots, 100% trust roster, action-driven growth, poly romance, meet-only jealousy).
+- Loadout vs outfit are separate (`docs/game-design.md` Gear and appearance). Accessories are gear slots.
+- Design bundle: `docs/README.md`. Repo player-facing locks beat outside architecture drafts.

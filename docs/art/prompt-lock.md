@@ -1,0 +1,123 @@
+# Prompt lock
+
+Paste-ready fragments for generators. Stylization rules live in [`../art-style.md`](../art-style.md). **Keep this file in lockstep** when the bible changes.
+
+**Lock version:** 1
+
+Summer image generation: `style` **must** be `"anime"`. Default `"realistic"` is wrong for this project.
+
+```text
+❌ style: "realistic"
+✅ style: "anime"
+```
+
+---
+
+## Lock prefix
+
+Put this **first** in every visual prompt (image, 3D, video, concept, texture). Then describe the specific asset.
+
+```text
+Icarus AI style lock v1: high-end 3D anime game cinematic in the presentation of Wuthering Waves. Stylized anime faces and eyes, physically detailed clothing and materials, not photoreal skin. Dark high-depth color: ink-navy and void-black shadows, jewel midtones (indigo, teal, wine), bright rim and emissive lights (moon-white, gold, cyan). Strong contrast, volumetric atmosphere, mystical not neon-cyberpunk. Cohesive game-ready asset, clean silhouette.
+```
+
+---
+
+## Negative prompt
+
+Pass as `options.negative_prompt` (and equivalent on other providers):
+
+```text
+photoreal, western realistic face, skin pores, unreal engine default human, chibi, cute pastel isekai, flat cel-shaded 2D, low-poly, kenney, voxel, graybox, overbright, washed out, muddy brown generic medieval, disney 3d, ghibli watercolor, comic ink, horror gore, watermark, text, logo, UI chrome, copied copyrighted character
+```
+
+---
+
+## Summer image call shape
+
+```text
+summer_generate_image
+  style: "anime"
+  model: "nano-banana-2"   (unless the user named another allowlisted model)
+  prompt: "<LOCK PREFIX> <subject, camera, usage>"
+  options:
+    negative_prompt: "<NEGATIVE PROMPT>"
+```
+
+If `game/art/_style/` has an approved still that matches the job, use img2img: `referenceImageUrl` = that still (or its hosted URL), and keep the lock prefix in the prompt.
+
+After generation, `Read` the returned `localPath` and compare against the bible before import.
+
+---
+
+## Summer 3D call shape
+
+Prefer **image-to-3d** from a style-locked concept image. Text-to-3d still gets the lock prefix.
+
+```text
+summer_generate_3d
+  kind: "image-to-3d"     (preferred) or "text-to-3d"
+  prompt: "<LOCK PREFIX> <object or character, game-ready, PBR, isolated>"
+  assetIntent: "character" or "object"
+```
+
+Add, as appropriate: `game-ready 3D model, clean topology, PBR materials, no studio base, no ground plane`.
+
+Do not ask 3D models for “low poly Kenney” unless the user explicitly wants a placeholder.
+
+---
+
+## Subject suffixes (append, do not replace the lock)
+
+**Character / creator / portrait**
+
+```text
+Full-body or bust as requested, anime facial proportions, detailed hair, costume with material breakup, cloth cape when worn, readable jewelry (necklace, earrings, rings) as accessories not fused into the skin, rim light, dark jewel backdrop, Icarus character creator quality.
+```
+
+**Hub village**
+
+```text
+Cozy empty village at dusk, lantern gold in deep shadow, mystical 3D anime environment, lived-in but sparse, portal as a bright mystical focal, high depth fog.
+```
+
+**Portal world / combat space**
+
+```text
+Adventure space, heavier atmosphere, colder or harsher accent lights, readable combat staging, same 3D anime material language as the hub.
+```
+
+**Gear / weapons**
+
+```text
+Hero prop, readable silhouette, PBR metal/wood/cloth, subtle emissive filigree, dark fantasy anime game weapon, not a toy.
+```
+
+**Heal node**
+
+```text
+Mystical crystalline shard in the world, originium-like heal beacon, dark jewel stone with bright inner light (gold/cyan), readable as a gameplay device, not a generic crate.
+```
+
+**UI / title / loading**
+
+```text
+Atmospheric 3D-anime UI illustration or panel, readable, dark depth, sparse bright highlights, not generic sci-fi HUD, not photoreal.
+```
+
+**VFX**
+
+```text
+Stylized 3D anime VFX, high contrast emissive on dark, readable at gameplay scale, mystical (gold/cyan/teal), not noisy particle soup.
+```
+
+---
+
+## Per-asset prompt template
+
+```text
+<LOCK PREFIX>
+<one sentence: what it is>
+<one sentence: camera / usage (orthographic turnaround, in-world prop, title key art, …)>
+<one subject suffix from above>
+```
