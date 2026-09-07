@@ -22,7 +22,14 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
 
-Later packs (after first playable): combat / Fable XP (§6), companions + **Sanctum cozy sim** — farm, simple build, design collectibles, Sanctum level (§7), worlds / compiler depth + **content catalog** generate→approve→collect (§8). Do not skip the hub for a compiler demo.
+Later packs (after first playable). Do not skip the hub for a compiler demo. Pack 06 is **infra**: ship the island before prompted worlds consume it; do not jump packs 01–05 to build it.
+
+| # | Epic pack | Feature-list | Detail | Status |
+| --- | --- | --- | --- | --- |
+| 6 | **Agent runtime** (Statemachine + Orchestrator) | Agent runtime (infra); dependency for §4.4 / §8.2 | [`06-agent-runtime.md`](06-agent-runtime.md) + [`../14-AGENT-RUNTIME.md`](../14-AGENT-RUNTIME.md) | Planned |
+| — | Combat / Fable XP | §6 | *TBD* | — |
+| — | Companions + Sanctum cozy sim | §7 | *TBD* | — |
+| — | Worlds / compiler depth + content catalog | §8 | *TBD* | — |
 
 ---
 

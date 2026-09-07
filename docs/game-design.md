@@ -640,6 +640,7 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | [`feature-list.md`](feature-list.md) | What to build, in order |
 | [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible defs |
 | [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech, character record, creator lighting, apply→capsule |
+| [`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md) | Statemachine + Orchestrator (cognition runtime, not a second sim) |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
 **Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
@@ -658,7 +659,7 @@ Recorded so we do not silently invent them during implementation:
 - Whether combat shares the traversal stamina meter or stays animation-recovery only.
 - Glider, grapple, and swim (not required for the first parkour slice).
 - Broader demi-human kits beyond ears / horns / tails (wings, full scales body, etc.).
-- Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
+- Settings extras beyond graphics / audio / controls (accessibility). AI / worker inventory is pack 06 ([`epics/06-agent-runtime.md`](epics/06-agent-runtime.md) AR-5).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
 - How prompted-world text is stored, versioned, and shown in the continue list.

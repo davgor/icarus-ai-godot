@@ -9,7 +9,7 @@ Hierarchical agents. Each gets the **smallest context** that can justify its dec
 | **Settlement Director** | Settlement, population, businesses, local factions, important NPCs, local history |
 | **NPC Agent** | That NPC’s memories, beliefs, relationships, goals, knowledge, personality |
 
-Outputs are structured proposals. [`04-SIMULATION.md`](04-SIMULATION.md) validates and applies.
+Outputs are structured proposals. They enqueue on the **Orchestrator**; the **Statemachine** validates and applies ([`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md), [`04-SIMULATION.md`](04-SIMULATION.md)). Directors do not HTTP a model.
 
 ---
 

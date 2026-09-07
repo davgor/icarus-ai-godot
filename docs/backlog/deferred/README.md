@@ -44,6 +44,8 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Starting outfit wardrobe / transmog deepen | Open | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
 | [DEF-014](DEF-014-body-proportion-deepen.md) | Body proportion region deepen beyond vertical slice | Open | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) |
 | [DEF-015](DEF-015-load-continue-after-creator.md) | Title Load / Continue of creator-written saves | Open | [CC-8](../../epics/02-character-creation.md#cc-8--confirm--write-character--hub-spawn-handoff) |
+| [DEF-016](DEF-016-multiplayer-worker-routing.md) | Multiplayer worker advertisement + remote `complete()` | Open | [AR-2](../../epics/06-agent-runtime.md#ar-2--orchestrator) |
+| [DEF-017](DEF-017-player2-voice.md) | Player2 TTS / STT voice adapter | Open | [AR-4](../../epics/06-agent-runtime.md#ar-4--player2-worker) |
 
 ---
 

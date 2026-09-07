@@ -129,7 +129,7 @@ Three choices when the player uses the portal.
 | 4.8 | Squad select | Two field slots from the 100% trust roster before enter; empty allowed; controller-usable |
 | 4.9 | Compiler screen | In-game genesis for new/prompt worlds (watch factions/NPCs form). Continue skips it |
 
-Prompted worlds still obey: AI suggests, engine commits.
+Prompted worlds still obey: AI suggests, engine commits. Runtime: [`epics/06-agent-runtime.md`](epics/06-agent-runtime.md) (planned infra; do not skip the hub to build it).
 
 ---
 
@@ -222,7 +222,7 @@ Deepen what happens beyond the portal.
 | ID | Feature | Notes |
 | --- | --- | --- |
 | 8.1 | Random world content | Places, encounters, loot that make 4.2 worth repeating |
-| 8.2 | Agentic story | Prompt + play feed structured story development |
+| 8.2 | Agentic story | Prompt + play feed structured story development. Consumes pack 06; does not invent a second LLM client |
 | 8.3 | Race tags in story | Worlds and NPCs can react to the stored race tag |
 | 8.4 | Continue fidelity | A previous world is recognizably the same place you left |
 | 8.5 | Multi-world | If we allow more than one continued world, a picker (open question) |
@@ -254,6 +254,25 @@ Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** 
 
 ---
 
+## Agent runtime — Later (infra)
+
+Epics: [`epics/06-agent-runtime.md`](epics/06-agent-runtime.md) (AR-1…AR-6). Contract: [`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md). Index: [`epics/README.md`](epics/README.md).
+
+Not first-playable. Needed **before** prompted worlds (4.4) and agentic story (8.2). Gameplay stays complete with AI off. Local-first (Ollama); Player2 optional. No developer-hosted LLM.
+
+| ID | Feature | Notes |
+| --- | --- | --- |
+| AR.1 | Statemachine | Owns world state: save, serve snapshots, commit/reject tools |
+| AR.2 | Orchestrator | Host worker inventory, queue, score by requirements × urgency (weak devices may still take heavy jobs) |
+| AR.3 | Local workers | Ollama + custom OpenAI-compat; three-layer tool decode |
+| AR.4 | Player2 worker | Optional loopback worker; never required to play |
+| AR.5 | AI settings | Enable workers, test connection, AI off; gamepad |
+| AR.6 | Tool jobs | Job-scoped catalogs + host complete/commit loop; portal UI is pack 05 |
+
+Do not let jobs HTTP a provider. Do not let workers mutate saves. Multiplayer peer routing: [`DEF-016`](backlog/deferred/DEF-016-multiplayer-worker-routing.md). Player2 voice: [`DEF-017`](backlog/deferred/DEF-017-player2-voice.md).
+
+---
+
 ## Explicitly not this list
 
 - Summer / Cursor / MCP features (tooling, not the game)
@@ -270,3 +289,7 @@ Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** 
 - Letting agents mark catalog rows `approved` without your final say-so
 - Letting runtime directors invent new catalog art ids without the approval loop
 - Unique NPC / companion faces that cannot be rebuilt in the character creator
+- Vendoring the Player2 Godot NPC plugin or Player2 cloud saves as world authority
+- Shipping a managed llama.cpp runtime inside Godot
+- A developer-hosted LLM / agent dispatcher
+- Hard-banning weak devices (e.g. Steam Deck) from heavy agent jobs — score them, do not veto
