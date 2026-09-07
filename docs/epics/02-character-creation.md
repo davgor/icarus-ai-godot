@@ -598,18 +598,20 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 
 ### Outcome
 
-Full creator is usable on a **gamepad**: race grid, sliders, part grids, camera orbit, confirm/back, without a mouse. Focus visible. Stick/D-pad navigate; Accept confirms; Cancel backs; a dedicated orbit modifier or left/right stick split is documented and taught with glyphs.
+Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/Dawn/Dusk lighting**, camera orbit, confirm/back, without a mouse. Focus visible. Stick/D-pad navigate; Accept confirms; Cancel backs; a dedicated orbit modifier or left/right stick split is documented and taught with glyphs.
 
 ### Maps to
 
 | ID | Feature |
 | --- | --- |
 | 2.13 | Creator on controller |
+| 2.14 | Preview lighting (pad-reachable) |
 
 ### In scope
 
-- Focus neighbors across category rail, lists, sliders, confirm/back
+- Focus neighbors across category rail, lists, sliders, lighting control, confirm/back
 - Slider adjust via stick or shoulder buttons (pick one scheme; document)
+- Lighting presets cycle or three focusable options on pad
 - Camera orbit on pad
 - Glyph prompts (reuse OS-6 set where possible)
 - Keyboard/mouse still work
@@ -621,15 +623,15 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, camera 
 
 ### Dependencies
 
-- CC-1 UI focusables; completes against CC-2–CC-8 as they land
+- CC-1 UI focusables (incl. lighting); completes against CC-2–CC-8 as they land
 - Pack 01 OS-6 glyph language preferred
 
 ### Work
 
 - InputMap joypad bindings for creator-specific orbit/slider actions
-- Focus ring on all adjustable controls
+- Focus ring on all adjustable controls including lighting
 - Tests: actions present; focus graph has no traps on the main path
-- Manual / **Summer play:** pad-only New → race → body sliders → face → outfit → confirm → hub stub → (Alt) back-out paths
+- Manual / **Summer play:** pad-only New → race → body sliders → lighting cycle → face → outfit → confirm → hub stub → (Alt) back-out paths
 - Diagnostics after pad smoke
 
 ### Asset generation
@@ -654,13 +656,13 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, camera 
 
 This pack is **Playable** (vertical slice) when:
 
-1. Title **New** opens the atelier creator (OS-5 stub body gone).
-2. Player can set race (preset + tag), body core, face/hair/eyes starter kit, starting outfit.
-3. Confirm writes an engine-owned character and spawns into hub (or hub stub).
+1. Title **New** opens the atelier creator (OS-5 stub body gone) with Full/Dawn/Dusk lighting.
+2. Player can set race (preset + tag), body core (hybrid morphs), face/hair/eyes starter kit, starting outfit.
+3. Confirm writes schema v1 engine-owned character; spawn uses shared applier + capsule scale into hub (or hub stub).
 4. Outfit is distinct from loadout in data and UI.
-5. Gamepad path works per CC-9.
-6. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock v1, `style: "anime"`.
-7. Implementation used the **Summer workflow** above for scene build, generate/import checks, play, and diagnostics (when MCP available).
+5. Gamepad path works per CC-9 (including lighting).
+6. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock + `style: "anime"`.
+7. Implementation followed [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) and the **Summer workflow** above.
 8. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 9. Millbrook name-only create is not the intended New path.
 
@@ -672,6 +674,7 @@ This pack is **Playable** (vertical slice) when:
 
 ## Implementation notes for agents
 
+- **One-shot against** [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md). Do not re-litigate blendshape-vs-bones: hybrid is locked. Do not invent a parallel character JSON.
 - **Summer is the scene and art cockpit for this pack.** Build the atelier and preview hierarchy with Summer mutations; generate concepts/meshes with Summer; prove the flow with Summer play + `summer_get_diagnostics`. Cursor owns GDScript and tests.
 - Prefer a data-driven morph/part catalog early so CC-5/CC-6/CC-7 deepen without rewrite.
 - Keep character schema versioned; Living Town `user://living_town_v1.json` is not the destination character save.
