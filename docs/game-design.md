@@ -218,9 +218,21 @@ Exact XP weights and level curve are tuning. The split (home level vs combat pat
 
 - Farm plots live on the Sanctum (unlocked / expanded by Sanctum level).
 - Plant → grow → harvest into **materials** (and later food / gifts if we add them).
-- Keep the loop light: readable seasons or timers, not a spreadsheet farm MMO.
+- Growth is **real-time** (wall clock). Crops advance while you are in a world or away from the game; keep timers readable, not a spreadsheet farm MMO.
 - 100% trust companions can **help** (plant, harvest, tend) once labor exists — see Companions.
 - Farming is a Sanctum activity. Worlds may drop rare seeds or crop unlocks; they do not replace the home farm.
+
+### Sanctum materials (v0)
+
+Simplified bank for building and farm loops. Three types only for now:
+
+| Material | Role |
+| --- | --- |
+| **Wood** | Framing, cabins, most early builds |
+| **Metal** | Hardware, fittings, sturdier structures |
+| **Fiber** | Cloth, rope, soft goods, farm-adjacent crafts |
+
+Do not invent a fourth Sanctum material without updating this lock. World loot can still be richer; when spent on Sanctum builds it converts or maps into these three.
 
 ### Building — keep it simple
 
@@ -233,31 +245,37 @@ Building is **place unlocked designs**, not a freeform voxel / wall-piece editor
 | Relocate / replace OK | Moving or swapping a placed home should stay easy |
 | Pads grow with Sanctum level | Empty rock first; more build sites as home level rises |
 | Parkour stays legal | Placed homes have climbable roofs / walls where it reads as architecture |
+| One instance | **One active placed instance per design** for now (lean). Unlock once; place once unless you relocate/replace |
 
 v1 decorate is optional furniture-light or none. **Structure placement first.** Deep interior decorating can layer later.
 
-## Home designs as collectibles
+### Home designs as collectibles
 
 Home designs are a **collection**, like gear catalogs — but for the Sanctum. Designs are **approved catalog buildings** flagged `sanctum_buildable` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)). Worlds place many catalog buildings; the player **learns** ones they encounter.
 
+**Same mesh:** the approved catalog building mesh is what appears in the world **and** what you place on the Sanctum when it is `sanctum_buildable`. No second polish mesh required for home builds.
+
 1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. backed by a catalog id.
-2. Discovering / studying / clearing / befriending (exact beat can vary by story) **unlocks** that catalog id in the Sanctum design catalog.
-3. Back home, if the player has the **materials** and a **build site**, they can place that design.
+2. Default learn beat: **Study** — an interaction with the building that unlocks that catalog id in the Sanctum design catalog. Stories may add extra gates later; Study is the baseline.
+3. Back home, if the player has the **materials** (wood / metal / fiber) and a **build site**, they can place that design (one active instance).
 
 | Lock | Meaning |
 | --- | --- |
 | Designs come from play | Story encounters unlock builds. Do not dump the full approved library on New Game. |
 | Empty first | New Sanctum has **no** pre-placed houses (portal only). |
 | Starter design | A humble **starter camp / shelter** unlocks early (first return from a world, or first materials banked) so the cozy loop can start before rare finds. |
-| Rarity | Ordinary cottages common; striking story architecture rarer / signature. |
-| Own once, place under rules | Unlocking adds to the catalog. How many instances per design (one vs many) is an open question; default lean **one active instance per design** until we need repeats. |
+| Rarity | Ordinary cabins/cottages common; striking story architecture rarer / signature. |
+| One instance | One active placed instance per unlocked design (lean). Relocate/replace OK. |
 | Flexible defs | Building data uses a stable core + open `properties` bag so we can add fields later without a hard rewrite. |
+| Shared art | World instance and Sanctum buildable share the catalog mesh. |
 
 The freestanding portal arch is **not** a home design (unless a later cosmetic pack says otherwise).
 
 ### Content volume in worlds
 
 Adventure spaces should feel **full of authored-looking stuff**: many generated-and-**approved** buildings, items, and props from the content catalog — not three graybox houses. Players learn about and collect what they find. See [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) for the generate → approve → place → collect loop.
+
+**First pump:** a **log cabin set** (variations of cozy timber dwellings and related cabin kit pieces). **Minimum library before dense placement:** **20 approved buildings**.
 
 ### Trust gate
 
@@ -572,13 +590,10 @@ Recorded so we do not silently invent them during implementation:
 - Glider, grapple, and swim (not required for the first parkour slice).
 - What “demi-human” covers in the first shippable creator (ears/tails only vs broader kitsune/horned/etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
-- Whether Sanctum time advances while the player is in a world (crops / labor).
-- Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
-- How many active instances of one home design may be placed (default lean: one).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
-- Whether farm plots use real-time, session-time, or world-return catch-up growth.
-- Minimum approved library size before dense world placement ships.
+- Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.
 - Family / kids as a cozy-sim layer on top of romance.
 - Whether heal nodes are placeable by the player or only found in the world.
+- Whether world loot maps 1:1 into wood/metal/fiber or uses a convert step.

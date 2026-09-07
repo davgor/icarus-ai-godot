@@ -198,11 +198,11 @@ Mass Effect field slots, Arknights roster. Companions are full characters. The p
 | 7.15 | Help / labor | Companions assist farming, harvest, and light upkeep |
 | 7.16 | Shops | Trusted companions can open services in the Sanctum |
 | 7.17 | Sanctum level | Home progression separate from combat paths; XP from materials, harvests, designs, builds, companions housed |
-| 7.18 | Farming | Plots on the rock; plant → grow → harvest materials; capacity gated by Sanctum level |
-| 7.19 | Simple building | Place unlocked designs with materials on pads; no voxel / stud construction |
-| 7.20 | Home design collectibles | Encounter architecture in stories → unlock design catalog entry → build at home |
+| 7.18 | Farming | Plots on the rock; plant → **real-time** grow → harvest materials; capacity gated by Sanctum level |
+| 7.19 | Simple building | Place unlocked designs with wood/metal/fiber on pads; **one instance per design**; no voxel editor |
+| 7.20 | Home design collectibles | Study building in world → unlock; Sanctum places **same catalog mesh** |
 | 7.21 | Starter camp design | Humble early unlock so building can start before rare story finds |
-| 7.22 | Materials bank | World finds + farm output → Sanctum storage → spend on builds |
+| 7.22 | Materials bank | **Wood / metal / fiber** only (v0); world finds + farm → Sanctum storage → builds |
 | 7.23 | Cozy dwell | Live with roster, romance, decorate (decorate layers after structures) |
 | 7.24 | Squad UI on controller | Pick/swap field slots without a mouse |
 
@@ -225,10 +225,11 @@ Deepen what happens beyond the portal.
 | 8.7 | World compiler v0.1 | Constitution → seed → map/factions/major NPCs; compiler UI; enter first settlement |
 | 8.8 | Holy shit test | Generate, meet NPC, change something, leave, return, they remember why |
 | 8.9 | Content catalog | Approved buildings/items/props library; compiler places by `catalog_id` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)) |
-| 8.10 | Generate → approve loop | Agent pre-screen → you final-approve → catalog (git ship gate). Agents never set `approved` alone |
-| 8.11 | Dense placement | Settlements sample many approved buildings/props; not a three-prefab town |
-| 8.12 | Learn → collect | Encounter catalog instances in-world → unlock into player collection / Sanctum designs |
+| 8.10 | Generate → approve loop | Agent pre-screen (**mesh required**) → you final-approve → catalog. Agents never set `approved` alone |
+| 8.11 | Dense placement | Settlements sample many approved buildings/props; gate: **≥20 approved buildings** |
+| 8.12 | Learn → collect | **Study** interact on building → unlock collection / Sanctum designs |
 | 8.13 | Flexible content defs | Stable core + open `properties` bag; unknown keys ignored; schema_version for core breaks |
+| 8.14 | First building pump | **Log cabin set** — cozy timber dwellings + cabin kit variations |
 
 Architecture notes: [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md), [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md), [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md). Do not skip the hub first-playable slice for this.
 

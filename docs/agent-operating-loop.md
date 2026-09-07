@@ -148,12 +148,12 @@ Do not invent a second art pipeline. Visual generate/import goes through Summer 
 
 Volume buildings / items / props for worlds use the **generate → agent review → your approval → catalog** loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md):
 
-1. Generate into `game/art/catalog/_inbox/<id>/` with a `pending` JSON draft under `content/catalog/_inbox/`.
-2. **Agent** reviews against the art bible + schema (`Read` previews). Reject/regenerate, or set `ready_for_review` with short notes.
+1. Generate into `game/art/catalog/_inbox/<id>/` with a `pending` JSON draft under `content/catalog/_inbox/` (concept → **mesh**).
+2. **Agent** reviews against the art bible + schema (`Read` concept and mesh). Reject/regenerate, or set `ready_for_review` only when a mesh exists, with short notes.
 3. **You** give final approval. Only then: move art + def into approved catalog paths, set `status: approved`, commit/merge.
-4. Runtime and the world compiler **only** sample approved rows.
+4. Runtime and the world compiler **only** sample approved rows. Sanctum buildables reuse that mesh.
 
-Do not drop raw generations straight into playable world folders and call them catalog. Do not self-approve as an agent.
+First pump target: **log cabin set**, aiming at **20 approved buildings** before dense world placement. Do not drop raw generations straight into playable world folders. Do not self-approve as an agent.
 
 ## Do not go back to
 

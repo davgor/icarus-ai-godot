@@ -57,12 +57,13 @@ PLAYER encounters → learns → collectible unlock (if flagged)
 Rules:
 
 1. **Pending is not playable.** Worlds never sample `pending`, `ready_for_review`, or `rejected` rows — only `approved`.
-2. **Agent first.** Agents generate, `Read` previews, check style lock / schema, and either reject/regenerate or mark `ready_for_review` with short notes (why it passes, known risks).
-3. **You approve last.** Final `approved` (and merge into the playable catalog) is a **human** gate. Do not auto-merge agent-passed content.
-4. **Git is the ship gate.** Approval means the def + art land on a branch and you merge (or explicitly ask an agent to merge after you say yes).
-5. **Style lock always.** Generate with [`art/prompt-lock.md`](art/prompt-lock.md); `style: "anime"`; `Read` previews before import ([`agent-operating-loop.md`](agent-operating-loop.md)).
-6. **Pump volume, gate quality.** Prefer many candidates and a strict approve rate over shipping every generation.
-7. **Provenance stays on the record** — lock version, prompt/ref ids, agent review notes, your approve time — so a bad batch can be found and retired.
+2. **Agent first.** Agents generate (concept → **mesh**), `Read` previews, check style lock / schema, and either reject/regenerate or mark `ready_for_review` with short notes (why it passes, known risks).
+3. **Mesh before your queue.** `ready_for_review` requires a game-ready **mesh** (not concept-only). Concept stills are fine as steps; they are not enough to hand off.
+4. **You approve last.** Final `approved` (and merge into the playable catalog) is a **human** gate. Do not auto-merge agent-passed content.
+5. **Git is the ship gate.** Approval means the def + art land on a branch and you merge (or explicitly ask an agent to merge after you say yes).
+6. **Style lock always.** Generate with [`art/prompt-lock.md`](art/prompt-lock.md); `style: "anime"`; `Read` previews before import ([`agent-operating-loop.md`](agent-operating-loop.md)).
+7. **Pump volume, gate quality.** Prefer many candidates and a strict approve rate over shipping every generation.
+8. **Provenance stays on the record** — lock version, prompt/ref ids, agent review notes, your approve time — so a bad batch can be found and retired.
 
 Kenney / `game/art/town/` remains scaffolding only. Catalog finals live under catalog paths below.
 
@@ -126,7 +127,7 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
   "properties": {
     "footprint_m": { "x": 8, "z": 6 },
     "climbable": true,
-    "material_cost": { "stone": 20, "wood": 40 },
+    "material_cost": { "wood": 40, "metal": 5, "fiber": 10 },
     "slots": {}
   }
 }
@@ -179,11 +180,24 @@ catalog id  →  instance { catalog_id, transform, world_entity_id, mutations…
 If `collectible.learnable` is true:
 
 1. Player encounters an instance in a world.
-2. A learn beat runs (study, clear, gift, story flag — per content / quest).
+2. Default learn beat: **Study** — interact with the building (or item, when applicable) to unlock it. Stories may add extra gates; Study is the baseline.
 3. Engine writes the catalog `id` into the player’s collection (hub save).
-4. If `sanctum_buildable`, the id appears in the Sanctum home-design catalog ([`game-design.md`](game-design.md)).
+4. If `sanctum_buildable`, the id appears in the Sanctum home-design catalog and uses **this same catalog mesh** when placed ([`game-design.md`](game-design.md)).
 
-Players do **not** receive the entire approved library on New Game. The library is large; **collection** is earned. Starter camp remains the early exception for building.
+Players do **not** receive the entire approved library on New Game. The library is large; **collection** is earned. Starter camp remains the early exception for building. **One active Sanctum instance per design** (lean).
+
+Sanctum build costs use **wood / metal / fiber** only (v0). Put amounts in `properties.material_cost`.
+
+---
+
+## First pump and volume gates
+
+| Lock | Value |
+| --- | --- |
+| First set | **Log cabin** kit — cozy timber dwellings and related cabin variations |
+| Dense placement gate | At least **20 approved buildings** before shipping dense settlement sampling |
+| Sanctum buildable art | Same approved mesh as the world instance |
+| Handoff fidelity | Mesh required for `ready_for_review` |
 
 ---
 
@@ -192,6 +206,7 @@ Players do **not** receive the entire approved library on New Game. The library 
 - Bias toward a **deep** approved library of buildings and items over unique one-off grayboxes.
 - Worlds should feel like they drew from a culture’s architecture kit, not three prefab houses.
 - Approval rate can be low; generation rate should stay high.
+- After the log-cabin twenty, expand sets (shops, halls, ruins, etc.) the same way.
 
 ---
 

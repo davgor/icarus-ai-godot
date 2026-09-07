@@ -84,13 +84,19 @@ Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple a
 **Sanctum home design / building**
 
 ```text
-Placeable cozy home or structure for a floating sanctum, game-ready exterior, readable silhouette, dark jewel materials with lantern gold accents, climbable roofs where natural, not a graybox blockhouse, mystical 3D anime dwelling.
+Placeable cozy home or structure for a floating sanctum, same mesh used in worlds when sanctum_buildable, game-ready exterior, readable silhouette, dark jewel materials with lantern gold accents, climbable roofs where natural, not a graybox blockhouse, mystical 3D anime dwelling.
 ```
 
 **World catalog building / item / prop**
 
 ```text
 Single game-ready collectible content piece for the Icarus catalog, isolated, clean silhouette, dark jewel materials, mystical 3D anime, suitable for world placement and later player collection, not a graybox placeholder, not Kenney style.
+```
+
+**Log cabin set (first building pump)**
+
+```text
+Cozy log cabin or timber dwelling variation, mystical 3D anime game-ready building, warm wood against dusk jewel light, readable silhouette, climbable roof where natural, isolated for catalog, not Kenney, not graybox, not photoreal rustic photography.
 ```
 
 **Portal world / combat space**
