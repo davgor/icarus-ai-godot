@@ -236,23 +236,28 @@ Building is **place unlocked designs**, not a freeform voxel / wall-piece editor
 
 v1 decorate is optional furniture-light or none. **Structure placement first.** Deep interior decorating can layer later.
 
-### Home designs as collectibles
+## Home designs as collectibles
 
-Home designs are a **collection**, like gear catalogs — but for the Sanctum.
+Home designs are a **collection**, like gear catalogs — but for the Sanctum. Designs are **approved catalog buildings** flagged `sanctum_buildable` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)). Worlds place many catalog buildings; the player **learns** ones they encounter.
 
-1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. that can become a design.
-2. Discovering / studying / clearing / befriending (exact beat can vary by story) **unlocks the design** in the Sanctum catalog.
+1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. backed by a catalog id.
+2. Discovering / studying / clearing / befriending (exact beat can vary by story) **unlocks** that catalog id in the Sanctum design catalog.
 3. Back home, if the player has the **materials** and a **build site**, they can place that design.
 
 | Lock | Meaning |
 | --- | --- |
-| Designs come from play | Story encounters unlock builds. Do not dump a full catalog on New Game. |
+| Designs come from play | Story encounters unlock builds. Do not dump the full approved library on New Game. |
 | Empty first | New Sanctum has **no** pre-placed houses (portal only). |
 | Starter design | A humble **starter camp / shelter** unlocks early (first return from a world, or first materials banked) so the cozy loop can start before rare finds. |
 | Rarity | Ordinary cottages common; striking story architecture rarer / signature. |
 | Own once, place under rules | Unlocking adds to the catalog. How many instances per design (one vs many) is an open question; default lean **one active instance per design** until we need repeats. |
+| Flexible defs | Building data uses a stable core + open `properties` bag so we can add fields later without a hard rewrite. |
 
 The freestanding portal arch is **not** a home design (unless a later cosmetic pack says otherwise).
+
+### Content volume in worlds
+
+Adventure spaces should feel **full of authored-looking stuff**: many generated-and-**approved** buildings, items, and props from the content catalog — not three graybox houses. Players learn about and collect what they find. See [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) for the generate → approve → place → collect loop.
 
 ### Trust gate
 
@@ -547,6 +552,7 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | This file | What the player experiences |
 | [`art-style.md`](art-style.md) | How it looks; generator lock |
 | [`feature-list.md`](feature-list.md) | What to build, in order |
+| [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible defs |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
 **Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
@@ -571,6 +577,8 @@ Recorded so we do not silently invent them during implementation:
 - How many active instances of one home design may be placed (default lean: one).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether farm plots use real-time, session-time, or world-return catch-up growth.
+- Who may approve catalog candidates in day-to-day flow (human-only vs agent pre-screen + human merge).
+- Minimum approved library size before dense world placement ships.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.
 - Family / kids as a cozy-sim layer on top of romance.

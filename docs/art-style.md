@@ -83,6 +83,8 @@ Hub (**Sanctum**) runs **warmer on the rock** (lantern gold in the dark) against
 | Hub — Sanctum | `game/art/hub/` |
 | Sanctum homes / designs | `game/art/hub/homes/` |
 | Sanctum farm / crops | `game/art/hub/farm/` |
+| Content catalog (approved) | `game/art/catalog/{buildings,items,props}/` |
+| Content catalog inbox (pending) | `game/art/catalog/_inbox/` |
 | Portal worlds | `game/art/worlds/` |
 | UI, title, loading | `game/art/ui/` |
 | VFX, decals | `game/art/vfx/` |

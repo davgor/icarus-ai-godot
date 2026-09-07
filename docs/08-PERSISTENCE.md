@@ -34,7 +34,8 @@ From [`game-design.md`](game-design.md):
 - Character body, race tag, path XP, **loadout**, **outfit** persist across quit/relaunch and hub ↔ world.
 - Worn loadout travels through the portal both ways. Sanctum storage is later (materials + unequipped finds).
 - Hub / Sanctum save is distinct from world saves.
-- Sanctum level, farm plots, placed buildings, and the **home-design catalog** persist on the hub save.
+- Sanctum level, farm plots, placed buildings, and the **home-design catalog** (player unlocks of `catalog_id`s) persist on the hub save.
+- The **shipped content catalog** (approved buildings/items/props) lives in the repo, not in the save ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)).
 - 100% trust companions persist on the hub roster (loadout, outfit, levels, affinities) and travel when selected into a field slot.
 - Story-only recruits stay in that world until the trust gate.
 - Prompt text is stored with a prompted world for Continue.

@@ -30,6 +30,7 @@ The numbered set is the **living architecture**. It does not replace the player-
 | [`09-GODOT-ARCHITECTURE.md`](09-GODOT-ARCHITECTURE.md) | Sim vs engine; target layout |
 | [`10-AI-DEVELOPMENT-WORKFLOW.md`](10-AI-DEVELOPMENT-WORKFLOW.md) | Pointer to the proven agent loop |
 | [`11-UE5-MIGRATION.md`](11-UE5-MIGRATION.md) | Portable sim; disposable engine layer |
+| [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible building/item defs |
 
 ## Also in `docs/`
 

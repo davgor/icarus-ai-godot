@@ -224,8 +224,13 @@ Deepen what happens beyond the portal.
 | 8.6 | Heal nodes | Place crystal shards in generated/authored worlds as revive/heal infrastructure |
 | 8.7 | World compiler v0.1 | Constitution → seed → map/factions/major NPCs; compiler UI; enter first settlement |
 | 8.8 | Holy shit test | Generate, meet NPC, change something, leave, return, they remember why |
+| 8.9 | Content catalog | Approved buildings/items/props library; compiler places by `catalog_id` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)) |
+| 8.10 | Generate → approve loop | Inbox candidates → review vs art lock → approve into catalog (git ship gate) |
+| 8.11 | Dense placement | Settlements sample many approved buildings/props; not a three-prefab town |
+| 8.12 | Learn → collect | Encounter catalog instances in-world → unlock into player collection / Sanctum designs |
+| 8.13 | Flexible content defs | Stable core + open `properties` bag; unknown keys ignored; schema_version for core breaks |
 
-Architecture notes: [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md), [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md). Do not skip the hub first-playable slice for this.
+Architecture notes: [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md), [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md), [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md). Do not skip the hub first-playable slice for this.
 
 ---
 
@@ -254,4 +259,6 @@ Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** 
 - Treating armor/loadout as the character’s visible outfit
 - Omniscient jealousy (if they have not met, it does not fire)
 - Permadeath on a single down
-- Dumping the full home-design catalog on New Game
+- Dumping the full home-design / content catalog on New Game
+- Auto-approving every generated asset into the playable catalog
+- Letting runtime directors invent new catalog art ids without the approval loop

@@ -87,10 +87,10 @@ Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple a
 Placeable cozy home or structure for a floating sanctum, game-ready exterior, readable silhouette, dark jewel materials with lantern gold accents, climbable roofs where natural, not a graybox blockhouse, mystical 3D anime dwelling.
 ```
 
-**Sanctum farm / crops**
+**World catalog building / item / prop**
 
 ```text
-Small mystical farm plot on stone sanctum soil, stylized anime crops, soft lantern light, readable growth stages, cozy not photoreal agriculture.
+Single game-ready collectible content piece for the Icarus catalog, isolated, clean silhouette, dark jewel materials, mystical 3D anime, suitable for world placement and later player collection, not a graybox placeholder, not Kenney style.
 ```
 
 **Portal world / combat space**

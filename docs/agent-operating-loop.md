@@ -141,8 +141,19 @@ Do not invent a second art pipeline. Visual generate/import goes through Summer 
 1. Read [`art-style.md`](art-style.md) and [`art/prompt-lock.md`](art/prompt-lock.md).
 2. Prepend the lock prefix. Set image `style` to `"anime"` (never default `"realistic"`).
 3. Attach `game/art/_style/` stills when they exist. Never use `game/art/town/` Kenney/graybox as style.
-4. Generate → `Read` the preview → import into `game/art/{characters,hub,worlds,ui,vfx,gear}/`.
+4. Generate → `Read` the preview → import into the correct path (`game/art/{characters,hub,worlds,ui,vfx,gear}/` or catalog inbox — see below).
 5. To change the look, bump the lock version in both art docs in the same change.
+
+### Content catalog pump
+
+Volume buildings / items / props for worlds use the **generate → approve → catalog** loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md):
+
+1. Generate into `game/art/catalog/_inbox/<id>/` with a `pending` JSON draft under `content/catalog/_inbox/`.
+2. Review against the art bible (human and/or agent). Reject or regenerate freely.
+3. On approve: move art + def into approved catalog paths, set `status: approved`, commit.
+4. Runtime and the world compiler **only** sample approved rows.
+
+Do not drop raw generations straight into playable world folders and call them catalog.
 
 ## Do not go back to
 

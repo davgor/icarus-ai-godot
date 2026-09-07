@@ -22,7 +22,7 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
 
-Later packs (after first playable): combat / Fable XP (§6), companions + **Sanctum cozy sim** — farm, simple build, design collectibles, Sanctum level (§7), worlds / compiler depth (§8). Do not skip the hub for a compiler demo.
+Later packs (after first playable): combat / Fable XP (§6), companions + **Sanctum cozy sim** — farm, simple build, design collectibles, Sanctum level (§7), worlds / compiler depth + **content catalog** generate→approve→collect (§8). Do not skip the hub for a compiler demo.
 
 ---
 
