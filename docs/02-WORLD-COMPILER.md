@@ -23,7 +23,7 @@ PLAYABLE WORLD  (engine state + lazy materialization)
 
 Agents translate creative intent into **structured decisions**. Deterministic systems turn those into state. Validation sits between the model and any mutation ([`04-SIMULATION.md`](04-SIMULATION.md)).
 
-Hub village is **not** compiled from the world prompt. The hub is the player’s persistent home ([`game-design.md`](game-design.md)). Worlds hang off the portal.
+The **Sanctum** (hub) is **not** compiled from the world prompt. The Sanctum is the player’s persistent home ([`game-design.md`](game-design.md)). Worlds hang off the portal.
 
 ---
 

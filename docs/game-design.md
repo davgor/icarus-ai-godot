@@ -8,16 +8,16 @@ This document is the source of truth for **what the game is**. It is not an impl
 
 ## Pitch
 
-A single-player, persistent anime-fantasy RPG. You make a character in extreme depth, wake in an empty village that becomes your home, and leave through a portal into worlds that may be random, continued, or prompted by you.
+A single-player, persistent anime-fantasy RPG. You make a character in extreme depth, wake on an empty floating sanctum that becomes your home, and leave through a portal into worlds that may be random, continued, or prompted by you.
 
-The village is the cozy hub. The portal is the adventure. You take a small squad into stories, earn 100% trust, and bring people home as full characters with their own gear and growth. Skills grow the way you fight.
+The **Sanctum** is the cozy hub. The portal is the adventure. You take a small squad into stories, earn 100% trust, and bring people home as full characters with their own gear and growth. Skills grow the way you fight.
 
 ---
 
 ## Pillars
 
 1. **Mystical anime look** — stylized characters and spaces, deep shadows, bright lights, a world that feels otherworldly rather than naturalistic.
-2. **Home you grow** — the village starts almost empty and becomes a cozy sim through play, not through a pre-authored town.
+2. **Home you grow** — the Sanctum starts almost empty and becomes a cozy sim through play, not through a pre-authored town.
 3. **Worlds on your terms** — resume a world, roll a new one, or prompt the story you want.
 4. **Identity is yours** — Code Vein-class character creation; race is a tag and a preset, not a lock.
 5. **You are what you wield** — two hands, gear-defined combat, Fable-style use-based progression.
@@ -36,7 +36,7 @@ Canonical lock (agents generate from this, not from memory): [`art-style.md`](ar
 | Style | Wuthering Waves–class 3D anime. Inspiration only, not IP copies. |
 | Lighting | Deep darks, bright lights, high contrast, volumetric depth |
 | Color | Dark high-depth jewel tones (ink navy, indigo, teal, wine) plus sparse moon-white / gold / cyan lights |
-| Mood | Mystical, slightly otherworldly; hub warmer, worlds harsher, same lock |
+| Mood | Mystical, slightly otherworldly; Sanctum warmer on stone + cooler in the dusk-void sky; worlds harsher; same lock |
 | Characters | Anime faces, material-rich bodies and clothes, full creator range including demi-humans |
 
 UI should match this lock. Graybox and Kenney town meshes are build scaffold, not destination art.
@@ -59,7 +59,7 @@ BOOT / LOADING SCREEN
  CHARACTER CREATION
         │
         ▼
- EMPTY HUB VILLAGE  ◄─────────────────────────────┐
+ EMPTY SANCTUM  ◄────────────────────────────────┐
         │                                         │
         │ enter portal                            │ return through portal
         ▼                                         │
@@ -74,21 +74,21 @@ BOOT / LOADING SCREEN
         ▼                                         │
    WORLD  (recruit in story, earn trust) ─────────┘
         │
-        └─ 100% trust → live in hub + eligible for future quests
+        └─ 100% trust → live in Sanctum + eligible for future quests
 ```
 
 ### Title menu
 
 Four options only at boot:
 
-- **New** — full character creation, then first spawn in the hub.
+- **New** — full character creation, then first spawn on the Sanctum.
 - **Load** — existing save / character.
 - **Settings** — game options, including graphics, audio, and controls (keyboard/mouse and gamepad).
 - **Quit**
 
 ### New game
 
-New always goes through **full** character customization before the village. No “skip with default hero” as the intended path (a debug skip for development is fine).
+New always goes through **full** character customization before the Sanctum. No “skip with default hero” as the intended path (a debug skip for development is fine).
 
 ---
 
@@ -135,19 +135,44 @@ Anime style. Combinations should include (expand during implementation, do not t
 
 ---
 
-## Hub village
+## Hub — the Sanctum
 
-The village is the **cozy home away from home**.
+The **Sanctum** is the cozy home away from home: a **floating space rock** hanging in an infinite dusk-void sky, not a ground village.
+
+### Place fantasy
+
+| Lock | Meaning |
+| --- | --- |
+| Form | One small climbable stone islet / sanctum rock in the void |
+| Sky | Always **dusk-void**: ethereal purples, blues, soft nebula depth, sparse stars — never daytime blue |
+| Atmosphere | Floaty **embers / stardust** drift around the rock; cool violet fill from the sky, lantern gold on the stone for coziness |
+| Mood | Intimate and safe underfoot; infinite and ethereal when you look out |
+| Scale | Small and fully materialized. One memorable home rock, not an open-world hub |
+
+Composition from first spawn: **spawn terrace** → sheltered **home bowl** (empty pads for later buildings) → **portal overlook** at the rim, silhouetted against the void.
 
 ### First spawn
 
-- The village is **empty**.
+- The Sanctum is **empty**.
 - **Exception:** the **portal** is present from the start.
 - No pre-placed shopkeepers, neighbors, or quest givers living there yet.
 
-The current Living Town prototype (named NPCs already in a square) is a bootstrap experiment. The destination hub is empty until the player earns people.
+The current Living Town prototype (named NPCs already in a square) is a bootstrap experiment. The destination hub is the empty Sanctum until the player earns people.
 
-### What the hub becomes
+### Portal form
+
+v1 portal is a **freestanding arch** on the overlook. It may change later, and the player may eventually be allowed to change or decorate the portal — do not treat the arch mesh as permanent lore.
+
+### Falling off
+
+There is no waist-high invisible rail at the cliff. If the player walks or falls off the rock:
+
+1. Free fall for a **few seconds** into the dusk-void.
+2. Softly return / warp back onto the **center of the Sanctum** (home bowl), not a hard death.
+
+This is a recovery beat, not a punishment run. Keep it readable and brief.
+
+### What the Sanctum becomes
 
 As the player adventures, **100% trust** companions can be brought home. Over time that enables:
 
@@ -159,7 +184,7 @@ As the player adventures, **100% trust** companions can be brought home. Over ti
 
 ### Trust gate
 
-Bringing someone home is **not** a recruit-at-first-meeting action. See **Companions** below. Until 100% trust they can fight in the story that recruited them; they do not live in the hub or join unrelated quests.
+Bringing someone home is **not** a recruit-at-first-meeting action. See **Companions** below. Until 100% trust they can fight in the story that recruited them; they do not live in the Sanctum or join unrelated quests.
 
 ---
 
@@ -184,7 +209,7 @@ The player writes (or pastes) the story they want to experience. That text:
 
 The engine still owns authoritative state. The prompt is untrusted input that shapes generation; it does not rewrite the save by prose alone.
 
-Worlds are places you visit. The hub is where you return.
+Worlds are places you visit. The Sanctum is where you return.
 
 **New random** and **Prompt** run the **world compiler** as an in-game sequence (watch geography, factions, NPCs, conflicts form). That screen is gameplay, not a mute load. **Continue** skips genesis and resumes persisted mutations. See [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md) and [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md).
 
@@ -248,7 +273,7 @@ Default: **the world is climbable**. Marked yellow ledges only are the wrong tar
 
 Exceptions are allowed (ice, grease, sacred / story-blocked faces, interiors we do not want cheesed). Those should read as exceptions in material or VFX, not as “you forgot to tag the mesh.”
 
-Hub architecture should still be parkour-legal (roofs, walls, the portal approach). Cozy is not an excuse for invisible walls at waist height.
+Hub architecture should still be parkour-legal (rim cliffs, stacks, the portal approach). Cozy is not an excuse for invisible walls at waist height. Falling off the Sanctum uses the soft return rule above.
 
 ### Feel
 
@@ -387,14 +412,14 @@ North stars: **Mass Effect** (two people in the field, you pick them) and **Arkn
 
 | Layer | What it is |
 | --- | --- |
-| Roster | Every companion at **100% trust**. They live in the hub. Arknights-like collection. |
+| Roster | Every companion at **100% trust**. They live in the Sanctum. Arknights-like collection. |
 | Field slots | **Two** active companions plus the player (Mass Effect-like). Chosen at the portal from the roster. Slots may be empty. |
 
 A story can recruit someone who is not on the roster yet. They may occupy a field slot **in that world** (swap if both slots are full). They cannot be taken home or onto other quests until trust hits 100%.
 
 Trust is a 0–100% relationship, earned in stories (and later in the hub). **100%** unlocks both:
 
-1. Follow the player back to the hub to live.
+1. Follow the player back to the Sanctum to live.
 2. Join the roster for further quests (portal squad select).
 
 ### Full characters
@@ -452,9 +477,9 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | [`feature-list.md`](feature-list.md) | What to build, in order |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
-**Living Town** in earlier writing maps to the **hub village**, with one design change: it starts empty and is populated by trusted companions, not by a pre-authored cast.
+**Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
 
-Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the village, the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
+Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the Sanctum, the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
 
 ---
 
@@ -469,7 +494,8 @@ Recorded so we do not silently invent them during implementation:
 - Glider, grapple, and swim (not required for the first parkour slice).
 - What “demi-human” covers in the first shippable creator (ears/tails only vs broader kitsune/horned/etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
-- Whether hub time advances while the player is in a world.
+- Whether Sanctum time advances while the player is in a world.
+- Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.
 - Family / kids as a cozy-sim layer on top of romance.

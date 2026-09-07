@@ -26,7 +26,7 @@ Cost drops. The illusion of a complete world holds.
 
 ## Hub vs worlds
 
-The **hub village** is small and should be fully materialized (empty except the portal at first, then residents you brought). Do not lazy-delete someone who lives there.
+The **Sanctum** (hub) is small and should be fully materialized (empty except the portal at first, then residents you brought). Do not lazy-delete someone who lives there.
 
 **Worlds** are lazy. Heal nodes, climbable geo, and the first settlement on the critical path materialize before Enter is offered for v0.1. Everything else can wait until approach.
 

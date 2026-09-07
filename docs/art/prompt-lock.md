@@ -2,7 +2,7 @@
 
 Paste-ready fragments for generators. Stylization rules live in [`../art-style.md`](../art-style.md). **Keep this file in lockstep** when the bible changes.
 
-**Lock version:** 1
+**Lock version:** 2
 
 Summer image generation: `style` **must** be `"anime"`. Default `"realistic"` is wrong for this project.
 
@@ -18,7 +18,7 @@ Summer image generation: `style` **must** be `"anime"`. Default `"realistic"` is
 Put this **first** in every visual prompt (image, 3D, video, concept, texture). Then describe the specific asset.
 
 ```text
-Icarus AI style lock v1: high-end 3D anime game cinematic in the presentation of Wuthering Waves. Stylized anime faces and eyes, physically detailed clothing and materials, not photoreal skin. Dark high-depth color: ink-navy and void-black shadows, jewel midtones (indigo, teal, wine), bright rim and emissive lights (moon-white, gold, cyan). Strong contrast, volumetric atmosphere, mystical not neon-cyberpunk. Cohesive game-ready asset, clean silhouette.
+Icarus AI style lock v2: high-end 3D anime game cinematic in the presentation of Wuthering Waves. Stylized anime faces and eyes, physically detailed clothing and materials, not photoreal skin. Dark high-depth color: ink-navy and void-black shadows, jewel midtones (indigo, teal, wine), bright rim and emissive lights (moon-white, gold, cyan). Strong contrast, volumetric atmosphere, mystical not neon-cyberpunk. Cohesive game-ready asset, clean silhouette.
 ```
 
 ---
@@ -75,10 +75,10 @@ Do not ask 3D models for “low poly Kenney” unless the user explicitly wants 
 Full-body or bust as requested, anime facial proportions, detailed hair, costume with material breakup, cloth cape when worn, readable jewelry (necklace, earrings, rings) as accessories not fused into the skin, rim light, dark jewel backdrop, Icarus character creator quality.
 ```
 
-**Hub village**
+**Hub — Sanctum**
 
 ```text
-Cozy empty village at dusk, lantern gold in deep shadow, mystical 3D anime environment, lived-in but sparse, portal as a bright mystical focal, high depth fog.
+Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple and blue nebula depth, sparse stars, floaty embers and stardust around the islet, lantern gold warm on stone against cool void, empty except a bright mystical freestanding portal arch at the cliff overlook, lived-in but sparse, high depth fog, mystical 3D anime environment.
 ```
 
 **Portal world / combat space**

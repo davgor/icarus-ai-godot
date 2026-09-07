@@ -65,20 +65,22 @@ All cosmetics stay unlocked. Do not gate creator parts behind play.
 
 ---
 
-## 3. Hub village — Next
+## 3. Hub — Sanctum — Next
 
-Cozy home. Empty except the portal.
+Cozy floating home rock in a dusk-void sky. Empty except the portal.
 
 | ID | Feature | Notes |
 | --- | --- | --- |
-| 3.1 | Hub scene | Village space with a mystical anime read (can start gray, must not stay gray) |
+| 3.1 | Sanctum scene | Floating space rock + ethereal purple/blue dusk-void skybox; mystical anime read (can start gray, must not stay gray) |
 | 3.2 | Empty-on-new | No residents, shops, or pre-authored neighbors on a new save |
-| 3.3 | Portal present | The one exception; interactable |
-| 3.4 | Player spawn | After creator, stand in the hub, not in a dungeon |
+| 3.3 | Portal present | Freestanding arch on the overlook; interactable. Form may change later / become player-swappable |
+| 3.4 | Player spawn | After creator, stand on the Sanctum, not in a dungeon |
 | 3.5 | Return point | Leaving a world always comes back here |
-| 3.6 | Cozy-sim foundation | Place to stand, look, and later place buildings / storage (hooks only at first) |
+| 3.6 | Cozy-sim foundation | Home bowl pads for later buildings / storage (hooks only at first) |
 | 3.7 | Hub on controller | Walk, look, interact with the portal without a mouse |
-| 3.8 | Parkour-legal hub | Roofs, walls, and the portal approach are climbable; no waist-high invisible walls |
+| 3.8 | Parkour-legal hub | Rim cliffs, stacks, and the portal approach are climbable; no waist-high invisible walls |
+| 3.9 | Dusk-void + stardust | Always dusk-void sky; floaty embers / stardust around the rock |
+| 3.10 | Soft fall return | Fall off → free fall a few seconds → return to Sanctum center |
 
 The existing Living Town sim with a pre-seeded cast is **not** this hub. Replace or isolate it when this slice starts; do not grow the prototype town as if it were home.
 
@@ -227,7 +229,7 @@ Smallest thing that feels like *this* game rather than a walker:
 
 1. Loading screen → title (New / Load / Settings / Quit), **on a controller**
 2. New → race + a few body sliders → confirm, **on a controller**
-3. Empty village with a portal, same camera language
+3. Empty Sanctum (floating rock, dusk-void, freestanding portal arch), same camera language
 4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
 5. Portal → one graybox “random world” (still climbable) → return still wearing a test item
 

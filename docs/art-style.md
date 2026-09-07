@@ -1,6 +1,6 @@
 # Icarus AI — Art style lock
 
-**Lock version:** 1  
+**Lock version:** 2  
 **Date:** 2026-09-07  
 **North star:** Wuthering Waves–class 3D anime presentation. Dark, high-depth color. Mystical, not pastel, not photoreal.
 
@@ -49,7 +49,7 @@ This is an **inspiration lock** (lighting, materials, face language, color depth
 | Atmosphere | Volumetric, high depth. Distance goes darker and cooler, not milky white. |
 | Contrast | High. Deep darks, bright lights. If it looks washed or evenly lit, it failed. |
 
-Hub can run **warmer** (lantern gold in the dark). Worlds can run **colder or harsher**. Both stay inside this palette. Do not invent a second art style for “cozy.”
+Hub (**Sanctum**) runs **warmer on the rock** (lantern gold in the dark) against a **cooler dusk-void sky** (ethereal purple / blue / nebula, floaty embers and stardust). Worlds can run **colder or harsher**. Both stay inside this palette. Do not invent a second art style for “cozy.”
 
 ---
 
@@ -80,7 +80,7 @@ Hub can run **warmer** (lantern gold in the dark). Worlds can run **colder or ha
 | --- | --- |
 | Style lock + approved refs | `game/art/_style/` |
 | Characters / creator / portraits | `game/art/characters/` |
-| Hub village | `game/art/hub/` |
+| Hub — Sanctum | `game/art/hub/` |
 | Portal worlds | `game/art/worlds/` |
 | UI, title, loading | `game/art/ui/` |
 | VFX, decals | `game/art/vfx/` |
@@ -107,4 +107,5 @@ Old generated assets do not have to be mass-replaced the day the lock bumps. New
 
 | Ver | Date | Change |
 | --- | --- | --- |
+| 2 | 2026-09-07 | Sanctum hub lock: floating dusk-void rock, purple/blue sky, lantern gold on stone, embers/stardust. |
 | 1 | 2026-09-07 | Initial lock: WuWa-class 3D anime, dark high-depth color, prompt + path contract. |

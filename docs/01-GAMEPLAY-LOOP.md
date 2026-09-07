@@ -65,7 +65,7 @@ Play is a normal third-person action-RPG: parkour, soulslike-weight combat (fair
 
 Do not skip this for a compiler demo:
 
-Title → thin creator → empty hub + portal → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
+Title → thin creator → empty Sanctum + portal → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
 
 ---
 

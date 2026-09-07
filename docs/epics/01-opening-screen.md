@@ -127,7 +127,7 @@ Title presents **New**, **Load**, **Settings**, **Quit** only. Quit exits. New /
 
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
-| Title background key art | `game/art/ui/title_bg.png` | Before final layout | Edge-to-edge mystical 3D-anime atmosphere; portal / empty village night; deep jewel darks; **no** overlaid buttons, badges, or fake UI in the image |
+| Title background key art | `game/art/ui/title_bg.png` | Before final layout | Edge-to-edge mystical 3D-anime atmosphere; portal / empty Sanctum dusk-void; deep jewel darks; **no** overlaid buttons, badges, or fake UI in the image |
 | Title logo (reuse OS-1 or refined) | `game/art/ui/logo_icarus.png` | If OS-1 logo needs title-scale pass | Same mark; larger safe margins for menu |
 | Primary button / focus chrome | `game/art/ui/btn_primary.png` (+ `_focus` / `_hover` if nine-patch) | With background | Readable dark panel with sparse bright rim; anime game menu language; not Material flat, not sci-fi glass |
 | Optional ambient particle / mote sheet | `game/art/vfx/title_motes.png` | Polish pass | Soft gold/cyan motes; sparse; gameplay-scale readable |
@@ -372,7 +372,7 @@ This pack is **Playable** when:
 6. Play + `summer_get_diagnostics` (when MCP available) shows no new errors for the boot flow.
 7. Millbrook town is no longer the first thing you see on launch.
 
-**Not required for this pack:** real character morphs, hub village destination art, portal worlds, combat.
+**Not required for this pack:** real character morphs, Sanctum destination art, portal worlds, combat.
 
 ---
 

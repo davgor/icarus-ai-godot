@@ -533,7 +533,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 
 ### Out of scope
 
-- Full hub village art and portal modes (packs 03 / 05 — not deferred tickets)
+- Full Sanctum hub art and portal modes (packs 03 / 05 — not deferred tickets)
 - Loadout persistence across worlds (pack 05) — only ensure outfit/body survive this handoff
 - Continue / Load of that save from title (may smoke if trivial; OS-4 empty state can remain until persistence) — Deferred: [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md)
 
@@ -556,7 +556,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 | Confirm flourish / wipe | `game/art/vfx/creator_confirm_wipe.png` | Polish | Short mystical bloom/wipe; sparse; no text |
 | Hub stub skybox / ground (if needed) | `game/art/hub/hub_stub_*.png` | Only if pack 03 absent | Empty cozy dusk plaza; portal hint OK; not Millbrook graybox style |
 
-**Call-forward:** pack 03 replaces hub stub with the real empty village + portal (epic pack — not a `DEF` ticket).
+**Call-forward:** pack 03 replaces hub stub with the real empty Sanctum + portal (epic pack — not a `DEF` ticket).
 
 ### Acceptance
 
@@ -640,7 +640,7 @@ This pack is **Playable** (vertical slice) when:
 
 **Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
 
-**Not required for this pack:** real hub village content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
+**Not required for this pack:** real Sanctum content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
 
 ---
 
