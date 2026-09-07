@@ -175,6 +175,7 @@ When working on appearance, NPCs, or companions:
 - Running `--import` against a project whose editor is open
 - Treating ObjectDB leak lines as test failures
 - Treating engine exit code 0 as test success without `TEST_RESULT: PASS`
+- Committing generated `.glb` / textures / audio outside Git LFS (see [`tooling.md`](tooling.md))
 - Generating art with Summer’s default `style: "realistic"` or without the art-style lock
 - Deferring work only inside an epic footnote without a [`backlog/deferred/`](backlog/deferred/) ticket + source link
 - Starting a slice without checking Open deferred tickets for rope-ins

@@ -10,6 +10,22 @@ $engine = Get-EnginePath
 Write-Host "Engine: $engine"
 Write-Host "Repo:   $repoRoot"
 
+$lfsPointerPrefix = "version https://git-lfs.github.com/spec/v1"
+$artRoot = Join-Path $repoRoot "game\art"
+if (Test-Path $artRoot) {
+    $lfsPointers = Get-ChildItem -Path $artRoot -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -match '^\.(glb|png|jpe?g|webp)$' -and $_.Length -le 300 } |
+        Where-Object {
+            $head = Get-Content -LiteralPath $_.FullName -TotalCount 1 -ErrorAction SilentlyContinue
+            $head -eq $lfsPointerPrefix
+        }
+    if ($lfsPointers) {
+        $names = $lfsPointers | ForEach-Object { $_.FullName.Substring($repoRoot.Length).TrimStart('\', '/') }
+        Write-Error ("Git LFS payloads are missing (pointer files on disk). Run: git lfs install; git lfs pull`n  " + ($names -join "`n  "))
+        exit 1
+    }
+}
+
 $scriptErrors = @()
 $gdFiles = Get-ChildItem -Path $repoRoot -Recurse -Filter *.gd |
     Where-Object { $_.FullName -notmatch '\\.godot\\|\\builds\\' }

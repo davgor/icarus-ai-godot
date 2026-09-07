@@ -44,7 +44,7 @@ The numbered set is the **living architecture**. It does not replace the player-
 | [`art-style.md`](art-style.md) | Visual lock |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | Test / Summer / play contract |
 | [`development-loop.md`](development-loop.md) | Personal edit → play loop |
-| [`tooling.md`](tooling.md) | Engine binary, MCP |
+| [`tooling.md`](tooling.md) | Engine binary, MCP, Git LFS |
 | [`git-workflow.md`](git-workflow.md) | Git is source of truth |
 
 `vision.md` is a stub that points at [`00-VISION.md`](00-VISION.md).

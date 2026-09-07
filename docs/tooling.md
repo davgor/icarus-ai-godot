@@ -43,6 +43,23 @@ The creator is **dev-tooling exposed**, not only a New Game UI:
 
 **Rule:** any character generated in the game must be makeable in the creator ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Do not ship unique NPC meshes that the creator cannot rebuild.
 
+## Git LFS
+
+Generated art and audio (`.glb`, textures, audio, HDR) are stored with [Git LFS](https://git-lfs.com/). `.import`, GDScript, scenes, and docs stay in normal Git.
+
+After clone (Git for Windows already ships `git-lfs`):
+
+```powershell
+git lfs install
+git lfs pull
+```
+
+`.\scripts\test.ps1` fails if `game/art` still contains LFS pointer files instead of real payloads.
+
+This repo did **not** rewrite history when LFS was added. Old commits still embed the original blobs; new commits store pointers. Shrinking clone size would take a later `git lfs migrate` plus a coordinated history rewrite — do not force-push `main` for that unless asked.
+
+Do not add large binaries outside these LFS patterns. If GitHub’s compare UI times out on an asset PR, merge from Git locally (`git checkout main; git merge feat/…; git push origin main`) instead of opening a second copy of the files.
+
 ## Canonical commands
 
 | Command | Meaning |
