@@ -573,6 +573,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 - Validate required fields (name non-empty after strip; race present; morph defaults filled)
 - Write engine-owned character record using **schema v1** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
 - Spawn uses the **same `AppearanceApplier`** + capsule builder as the preview (no second appearance path)
+- **Tooling hook:** apply any valid schema v1 record to creator preview (debug/autoload OK; used by Summer/agents to verify generated faces)
 - Transition: creator → hub scene/state
 - Hub stub if pack 03 not landed: empty level, player spawns as created appearance
 - Journal/event hook optional (`character_created` already exists in Living Town — prefer a clean character/hub save, do not grow Millbrook as home)
@@ -699,6 +700,7 @@ This pack is **Playable** (vertical slice) when:
 ## Implementation notes for agents
 
 - **One-shot against** [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md). Do not re-litigate blendshape-vs-bones: hybrid is locked. Do not invent a parallel character JSON.
+- **Appearance authority:** any character generated for worlds/NPCs/companions must use creator catalog ids. Expose apply-record-to-preview for Summer/debug. Do not ship one-off NPC meshes.
 - **Summer is the scene and art cockpit for this pack.** Build the atelier and preview hierarchy with Summer mutations; generate concepts/meshes with Summer; prove the flow with Summer play + `summer_get_diagnostics`. Cursor owns GDScript and tests.
 - Prefer a data-driven morph/part catalog early so CC-5/CC-6/CC-7 deepen without rewrite.
 - Keep character schema versioned; Living Town `user://living_town_v1.json` is not the destination character save.
