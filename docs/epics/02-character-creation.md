@@ -91,7 +91,7 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 1. Title → **New** → creator atelier (not Millbrook name overlay, not hub).
 2. Pick each race once; confirm preset snap + free override.
 3. Move height / weight / muscle–fat; preview updates live.
-4. Change face/hair/eyes (and optionally ears and/or tails when CC-6 is in).
+4. Change face/hair/eyes (and optionally ears, horns, and/or tails when CC-6 is in).
 5. Change starting outfit; confirm loadout slots are **not** required.
 6. Orbit / frame the preview on pad (CC-9) or mouse.
 7. Confirm → character written → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
@@ -196,7 +196,7 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 - Story dialogue reactions (later systems consume the tag) — Deferred: [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md)
 - Locking options per race
-- Demi-human ear/tail catalog deepen (and horns if design expands) — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns ears+tails optional minimum; demi-human race may enable the Features tab early
+- Demi-human ear/horn/tail catalog deepen (wings/scales only if design expands) — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns ears+horns+tails (incl. lizard) optional minimum; demi-human race may enable the Features tab early
 
 ### Dependencies
 
@@ -406,7 +406,7 @@ Vertical-slice minimum: **≥3 hair styles, ≥3 eye styles, ≥3 face morph ext
 
 ### Outcome
 
-**Ears** and **tails** are available and **unlocked**. They are **optional on creation** (none, ears, tails, or both). Demi-human race may offer presets; the player can clear them. No horns in this pack’s first ship.
+**Ears**, **horns**, and **tails** (including **lizard / dragon** tails) are available and **unlocked**. They are **optional on creation** (any combination or none). Demi-human race may offer presets; the player can clear them. Dragon-leaning demis are supported via horns + lizard tail (+ ears as desired) — no separate dragon race.
 
 ### Maps to
 
@@ -416,17 +416,18 @@ Vertical-slice minimum: **≥3 hair styles, ≥3 eye styles, ≥3 face morph ext
 
 ### In scope
 
-- Features category: **ears**, **tails** only (first ship)
-- Optional: default off unless demi-human preset applies; player can unequip either/both
+- Features category: **ears**, **horns**, **tails** (include at least one lizard/dragon tail)
+- Optional: default off unless demi-human preset applies; player can unequip any/all
 - Attach points on the preview rig
-- All listed ear/tail options unlocked from the start
-- Race preset may enable demi-human ear/tail defaults without forcing them
+- All listed options unlocked from the start
+- Race preset may enable demi-human defaults without forcing them
 
 ### Out of scope
 
-- Horns / broader demi kits — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) (deepen ears/tails first; horns later)
+- Wings, full-body scales, or other kits beyond ears/horns/tails — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md)
 - Gameplay bonuses tied to features
 - Gating behind story flags
+- A separate “dragon” race row (demi-human + parts is enough)
 
 ### Dependencies
 
@@ -434,27 +435,28 @@ Vertical-slice minimum: **≥3 hair styles, ≥3 eye styles, ≥3 face morph ext
 
 ### Work
 
-- Feature ids → meshes on sockets (ears, tails)
-- UI list/grid; ears + tails combinable; document any conflicts
-- Tests: equip/unequip updates record; demi preset may apply defaults; player can clear to none
-- **Summer:** generate feature concepts → 3D → socket on Preview; play none/ears/tails/both; diagnostics
+- Feature ids → meshes on sockets (ears, horns, tails incl. lizard)
+- UI list/grid; parts combinable; document any conflicts
+- Tests: equip/unequip updates record; demi preset may apply defaults; player can clear to none; lizard tail + horns combo works
+- **Summer:** generate feature concepts → 3D → socket on Preview; play none and mixed combos; diagnostics
 
 ### Asset generation
 
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
-| Ears / tails concepts | `game/art/characters/feature_{ears,tails}_*.png` | Start of CC-6 | Isolated or on neutral head/hips; anime; readable silhouette; dark jewel void |
+| Ears / horns / tails concepts | `game/art/characters/feature_{ears,horns,tails}_*.png` | Start of CC-6 | Isolated or on neutral head/hips; anime; readable silhouette; dark jewel void; include a **lizard/dragon tail** variant |
 | Feature meshes | `game/art/characters/feature_*.glb` | After concepts | image-to-3d; clean pivots for sockets |
 
-Vertical-slice minimum: **one ears option, one tail option** (more ear/tail variants encouraged). No horns required.
+Vertical-slice minimum: **one ears, one horns, one mammal-style tail, one lizard/dragon tail**.
 
 ### Acceptance
 
-- [ ] Ears and tails equippable; can create with neither
+- [ ] Ears, horns, and tails equippable; can create with none
+- [ ] At least one lizard/dragon tail option exists
+- [ ] Horns + lizard tail (+ optional ears) readable as dragon demi
 - [ ] Demi-human preset may auto-apply defaults; player can clear
-- [ ] No horns in the first-ship feature set
 - [ ] Meshes socket correctly on preview
-- [ ] Summer combination smoke (none / ears / tails / both) + diagnostics clean
+- [ ] Summer combination smoke + diagnostics clean
 - [ ] `TEST_RESULT: PASS`
 
 ---

@@ -127,21 +127,28 @@ The player has full control of:
 
 ### Demi-human features (first ship)
 
-Demi-human cosmetics are **ears** and **tails** only for the first shippable creator. No horns (or broader kitsune/etc. kits) until a later deepen.
+Demi-human cosmetics for the first shippable creator:
+
+| Feature | Notes |
+| --- | --- |
+| **Ears** | Animal / fantasy ear variants |
+| **Horns** | Optional horn sets (dragon demi friendly) |
+| **Tails** | Includes mammal-style and **lizard / dragon** tails |
 
 | Lock | Meaning |
 | --- | --- |
-| Scope | **Ears** and **tails** |
-| Optional | On creation the player may take **none, ears, tails, or both** — nothing forced |
-| Race | Demi-human race may offer ear/tail **presets**; the player can clear them. Race still does not hard-lock other cosmetics |
-| Unlocked | Ear and tail options are available from the start (no story gate) |
+| Scope | **Ears**, **horns**, and **tails** (including lizard tails) |
+| Optional | On creation the player may take **any combination or none** — nothing forced |
+| Dragon demi | Ears/horns/lizard-tail combos are enough to read as a dragon demi; no separate “dragon race” required |
+| Race | Demi-human race may offer presets; the player can clear them. Race still does not hard-lock other cosmetics |
+| Unlocked | All listed options are available from the start (no story gate) |
 
 ### Visual identity
 
 Anime style. Combinations should include (expand during implementation, do not treat as a closed list):
 
 - face morphs, eyes, hair, scars, markings
-- demi-human **ears** and **tails** (optional; see above)
+- demi-human **ears**, **horns**, and **tails** (including lizard tails; optional; see above)
 - clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
 
 ---
@@ -599,7 +606,7 @@ Recorded so we do not silently invent them during implementation:
 - Dual-wield rules and two-handed weapons as a distinct slot vs two occupied hands.
 - Whether combat shares the traversal stamina meter or stays animation-recovery only.
 - Glider, grapple, and swim (not required for the first parkour slice).
-- What “demi-human” covers beyond first-ship ears/tails (horns, broader kits, etc.).
+- Broader demi-human kits beyond ears / horns / tails (wings, full scales body, etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
