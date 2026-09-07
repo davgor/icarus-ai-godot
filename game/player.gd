@@ -8,16 +8,33 @@ const CAMERA_MAX_PITCH := deg_to_rad(30.0)
 
 ## Horizontal input used by headless tests. Gameplay uses WASD when this is Vector2.ZERO.
 var forced_move_input := Vector2.ZERO
+var ui_open := false
 
 @onready var _camera_pivot: Node3D = $CameraPivot
 
 
 func _ready() -> void:
-	if DisplayServer.window_can_draw():
+	add_to_group("player")
+	_refresh_mouse()
+
+
+func set_ui_open(open: bool) -> void:
+	ui_open = open
+	_refresh_mouse()
+
+
+func _refresh_mouse() -> void:
+	if not DisplayServer.window_can_draw():
+		return
+	if ui_open:
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	else:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if ui_open:
+		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
 		_camera_pivot.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
@@ -33,6 +50,12 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
+
+	if ui_open:
+		velocity.x = 0.0
+		velocity.z = 0.0
+		move_and_slide()
+		return
 
 	if Input.is_physical_key_pressed(KEY_SPACE) and is_on_floor():
 		velocity.y = JUMP_VELOCITY
