@@ -159,6 +159,8 @@ func show_settings() -> void:
 	_title.visible = true
 	_stub.visible = false
 	_settings.visible = true
+	if _settings.has_method("fill_parent"):
+		_settings.fill_parent()
 	_set_menu_enabled(false)
 	if _settings.has_method("show_section"):
 		_settings.show_section("audio")
@@ -421,6 +423,8 @@ func _build_settings() -> void:
 	_settings.btn_hover = _btn_hover
 	_settings.btn_focus = _btn_focus
 	_title.add_child(_settings)
+	if _settings.has_method("fill_parent"):
+		_settings.fill_parent()
 	_settings.back_pressed.connect(show_title)
 
 

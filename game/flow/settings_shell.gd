@@ -21,6 +21,12 @@ const WIDGET_SLIDER := "res://game/art/ui/widget_slider.png"
 const WIDGET_TOGGLE := "res://game/art/ui/widget_toggle.png"
 const PLACEHOLDER_NOTICE := "Placeholders — changes are not saved yet."
 const CONTROLS_BLURB := "Keyboard, mouse, and gamepad are supported.\nFull rebind is coming later.\n\nMove — WASD / Left stick\nConfirm — Enter / South face button\nCancel — Esc / East face button"
+const SHEET_SIZE := Vector2(920, 580)
+const FRAME_INSET_LEFT := 112
+const FRAME_INSET_RIGHT := 196
+const FRAME_INSET_TOP := 118
+const FRAME_INSET_BOTTOM := 108
+const SLIDER_END_PAD := 18
 
 var btn_normal: StyleBox
 var btn_hover: StyleBox
@@ -38,10 +44,22 @@ var _built := false
 
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	visible = false
+	fill_parent()
 	_build()
+
+
+func fill_parent() -> void:
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var dim := get_node_or_null("Dim") as Control
+	if dim:
+		dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var host := get_node_or_null("Center") as Control
+	if host:
+		host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 
 
 func section_ids() -> PackedStringArray:
@@ -91,33 +109,49 @@ func _build() -> void:
 	var dim := ColorRect.new()
 	dim.name = "Dim"
 	dim.color = Color(0.01, 0.02, 0.05, 0.72)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(dim)
 
-	var panel := PanelContainer.new()
+	var host := CenterContainer.new()
+	host.name = "Center"
+	host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(host)
+
+	var panel := Control.new()
 	panel.name = "Panel"
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -430
-	panel.offset_top = -270
-	panel.offset_right = 430
-	panel.offset_bottom = 270
-	panel.custom_minimum_size = Vector2(860, 540)
-	panel.add_theme_stylebox_override("panel", _make_panel_style())
-	add_child(panel)
+	panel.custom_minimum_size = SHEET_SIZE
+	panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	host.add_child(panel)
+
+	var bg := TextureRect.new()
+	bg.name = "Backdrop"
+	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_SCALE
+	var frame_tex := _load_frame_backdrop(PANEL)
+	if frame_tex:
+		bg.texture = frame_tex
+		var aspect := float(frame_tex.get_width()) / float(maxi(frame_tex.get_height(), 1))
+		panel.custom_minimum_size = Vector2(SHEET_SIZE.x, SHEET_SIZE.x / aspect)
+	panel.clip_contents = false
+	panel.add_child(bg)
 
 	var margin := MarginContainer.new()
 	margin.name = "Margin"
-	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-	margin.add_theme_constant_override("margin_left", 36)
-	margin.add_theme_constant_override("margin_top", 28)
-	margin.add_theme_constant_override("margin_right", 36)
-	margin.add_theme_constant_override("margin_bottom", 28)
+	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", FRAME_INSET_LEFT)
+	margin.add_theme_constant_override("margin_top", FRAME_INSET_TOP)
+	margin.add_theme_constant_override("margin_right", FRAME_INSET_RIGHT)
+	margin.add_theme_constant_override("margin_bottom", FRAME_INSET_BOTTOM)
+	margin.clip_contents = true
 	panel.add_child(margin)
 
 	var root := VBoxContainer.new()
 	root.name = "Root"
-	root.add_theme_constant_override("separation", 14)
+	root.add_theme_constant_override("separation", 18)
 	margin.add_child(root)
 
 	root.add_child(_make_header())
@@ -142,7 +176,7 @@ func _build() -> void:
 	_pages["controls"] = _make_controls_page()
 	for key in _pages.keys():
 		var page: Control = _pages[key]
-		page.set_anchors_preset(Control.PRESET_FULL_RECT)
+		page.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		body.add_child(page)
 
 	_wire_chrome_focus()
@@ -167,7 +201,7 @@ func _make_header() -> HBoxContainer:
 	_back_button.text = "Back"
 	_back_button.focus_mode = Control.FOCUS_ALL
 	_back_button.custom_minimum_size = Vector2(140, 44)
-	var back_icon := _load_knockout(ICON_BACK)
+	var back_icon := _load_knockout_scaled(ICON_BACK, 22, 22)
 	if back_icon:
 		_back_button.icon = back_icon
 		_back_button.expand_icon = false
@@ -189,12 +223,15 @@ func _make_tabs() -> HBoxContainer:
 		tab.toggle_mode = true
 		tab.focus_mode = Control.FOCUS_ALL
 		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tab.custom_minimum_size = Vector2(0, 48)
-		var icon := _load_knockout(str(SECTION_ICONS[id]))
+		tab.custom_minimum_size = Vector2(0, 44)
+		tab.alignment = HORIZONTAL_ALIGNMENT_CENTER
+		var icon := _load_knockout_scaled(str(SECTION_ICONS[id]), 24, 24)
 		if icon:
 			tab.icon = icon
 			tab.expand_icon = false
-			tab.add_theme_constant_override("icon_max_width", 32)
+			tab.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+			tab.add_theme_constant_override("icon_max_width", 24)
+			tab.add_theme_constant_override("h_separation", 8)
 		_apply_button_theme(tab)
 		tab.pressed.connect(_on_tab_pressed.bind(id))
 		row.add_child(tab)
@@ -205,7 +242,8 @@ func _make_tabs() -> HBoxContainer:
 func _make_audio_page() -> VBoxContainer:
 	var page := VBoxContainer.new()
 	page.name = "AudioPage"
-	page.add_theme_constant_override("separation", 16)
+	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page.add_theme_constant_override("separation", 32)
 	page.add_child(_make_slider_row("Master", 0.8))
 	page.add_child(_make_slider_row("Music", 0.8))
 	page.add_child(_make_slider_row("SFX", 0.8))
@@ -215,7 +253,8 @@ func _make_audio_page() -> VBoxContainer:
 func _make_graphics_page() -> VBoxContainer:
 	var page := VBoxContainer.new()
 	page.name = "GraphicsPage"
-	page.add_theme_constant_override("separation", 14)
+	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page.add_theme_constant_override("separation", 18)
 	var hint := Label.new()
 	hint.text = "Graphics presets are placeholders and do not change the editor or export."
 	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -230,6 +269,7 @@ func _make_graphics_page() -> VBoxContainer:
 func _make_controls_page() -> VBoxContainer:
 	var page := VBoxContainer.new()
 	page.name = "ControlsPage"
+	page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.add_theme_constant_override("separation", 12)
 	var body := Label.new()
 	body.name = "ControlsBlurb"
@@ -243,13 +283,19 @@ func _make_controls_page() -> VBoxContainer:
 
 func _make_slider_row(label_text: String, value: float) -> HBoxContainer:
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 16)
+	row.add_theme_constant_override("separation", 20)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	var label := Label.new()
 	label.text = label_text
-	label.custom_minimum_size = Vector2(120, 0)
+	label.custom_minimum_size = Vector2(96, 0)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", 16)
 	label.add_theme_color_override("font_color", Color(0.9, 0.93, 0.98))
 	row.add_child(label)
+	var slider_host := MarginContainer.new()
+	slider_host.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider_host.add_theme_constant_override("margin_left", SLIDER_END_PAD)
+	slider_host.add_theme_constant_override("margin_right", SLIDER_END_PAD)
 	var slider := HSlider.new()
 	slider.name = "%sSlider" % label_text
 	slider.min_value = 0.0
@@ -257,14 +303,16 @@ func _make_slider_row(label_text: String, value: float) -> HBoxContainer:
 	slider.step = 0.01
 	slider.value = value
 	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	slider.custom_minimum_size = Vector2(0, 28)
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size = Vector2(0, 22)
 	slider.focus_mode = Control.FOCUS_ALL
 	if _slider_style:
 		slider.add_theme_stylebox_override("slider", _slider_style)
 	if _grabber:
 		slider.add_theme_icon_override("grabber", _grabber)
 		slider.add_theme_icon_override("grabber_highlight", _grabber)
-	row.add_child(slider)
+	slider_host.add_child(slider)
+	row.add_child(slider_host)
 	return row
 
 
@@ -354,40 +402,17 @@ func _collect_focusables(node: Node, found: Array[Control]) -> void:
 		_collect_focusables(child, found)
 
 
-func _make_panel_style() -> StyleBox:
-	if ResourceLoader.exists(PANEL):
-		var box := StyleBoxTexture.new()
-		box.texture = load(PANEL)
-		box.set_texture_margin_all(72)
-		box.set_content_margin_all(8)
-		return box
-	var fallback := StyleBoxFlat.new()
-	fallback.bg_color = Color(0.05, 0.07, 0.12, 0.97)
-	fallback.border_color = Color(0.72, 0.86, 1.0, 0.85)
-	fallback.set_border_width_all(2)
-	fallback.set_corner_radius_all(6)
-	fallback.set_content_margin_all(22)
-	return fallback
-
-
 func _make_slider_style() -> StyleBox:
-	var tex := _load_knockout(WIDGET_SLIDER)
-	if tex:
-		var box := StyleBoxTexture.new()
-		box.texture = tex
-		box.set_texture_margin_all(24)
-		box.set_content_margin_all(4)
-		return box
-	var fallback := StyleBoxFlat.new()
-	fallback.bg_color = Color(0.06, 0.08, 0.14, 0.95)
-	fallback.border_color = Color(0.72, 0.86, 1.0, 0.7)
-	fallback.set_border_width_all(1)
-	fallback.set_corner_radius_all(8)
-	fallback.content_margin_left = 8
-	fallback.content_margin_right = 8
-	fallback.content_margin_top = 6
-	fallback.content_margin_bottom = 6
-	return fallback
+	var track := StyleBoxFlat.new()
+	track.bg_color = Color(0.07, 0.1, 0.16, 0.95)
+	track.border_color = Color(0.55, 0.78, 0.92, 0.75)
+	track.set_border_width_all(1)
+	track.set_corner_radius_all(8)
+	track.content_margin_left = 14
+	track.content_margin_right = 14
+	track.content_margin_top = 7
+	track.content_margin_bottom = 7
+	return track
 
 
 func _make_grabber() -> ImageTexture:
@@ -433,6 +458,149 @@ func _dim_texture(tex: Texture2D) -> Texture2D:
 			color.b *= 0.45
 			img.set_pixel(x, y, color)
 	return ImageTexture.create_from_image(img)
+
+
+func _load_frame_backdrop(path: String) -> Texture2D:
+	var img: Image = null
+	if ResourceLoader.exists(path):
+		var tex := load(path) as Texture2D
+		if tex:
+			img = tex.get_image()
+	if img == null:
+		var abs_path := ProjectSettings.globalize_path(path)
+		if FileAccess.file_exists(abs_path):
+			img = Image.load_from_file(abs_path)
+	if img == null:
+		return null
+	img.convert(Image.FORMAT_RGBA8)
+	var corner: Color = img.get_pixel(0, 0)
+	if corner.a > 0.04:
+		_knockout_exterior_void(img)
+		_erode_dark_fringe(img)
+	img = _crop_opaque(img, 0)
+	return ImageTexture.create_from_image(img)
+
+
+func _knockout_exterior_void(img: Image) -> void:
+	var width := img.get_width()
+	var height := img.get_height()
+	if width <= 0 or height <= 0:
+		return
+	var metal := PackedByteArray()
+	metal.resize(width * height)
+	for y in height:
+		for x in width:
+			var sample: Color = img.get_pixel(x, y)
+			if sample.a < 0.5:
+				continue
+			var luma: float = sample.r * 0.3 + sample.g * 0.4 + sample.b * 0.3
+			if luma > 0.16:
+				metal[y * width + x] = 1
+	metal = _dilate_mask(metal, width, height, 3)
+	var seen := PackedByteArray()
+	seen.resize(width * height)
+	var stack: Array[Vector2i] = []
+	for x in width:
+		stack.append(Vector2i(x, 0))
+		stack.append(Vector2i(x, height - 1))
+	for y in height:
+		stack.append(Vector2i(0, y))
+		stack.append(Vector2i(width - 1, y))
+	while not stack.is_empty():
+		var point: Vector2i = stack.pop_back()
+		if point.x < 0 or point.y < 0 or point.x >= width or point.y >= height:
+			continue
+		var index := point.y * width + point.x
+		if seen[index] == 1:
+			continue
+		seen[index] = 1
+		if metal[index] == 1:
+			continue
+		img.set_pixel(point.x, point.y, Color(0, 0, 0, 0))
+		stack.append(Vector2i(point.x + 1, point.y))
+		stack.append(Vector2i(point.x - 1, point.y))
+		stack.append(Vector2i(point.x, point.y + 1))
+		stack.append(Vector2i(point.x, point.y - 1))
+
+
+func _dilate_mask(src: PackedByteArray, width: int, height: int, steps: int) -> PackedByteArray:
+	var cur := src
+	for _step in steps:
+		var nxt := PackedByteArray()
+		nxt.resize(width * height)
+		for y in height:
+			for x in width:
+				var index := y * width + x
+				var hit := cur[index] == 1
+				if not hit:
+					for oy in range(-1, 2):
+						for ox in range(-1, 2):
+							var nx := x + ox
+							var ny := y + oy
+							if nx < 0 or ny < 0 or nx >= width or ny >= height:
+								continue
+							if cur[ny * width + nx] == 1:
+								hit = true
+								break
+						if hit:
+							break
+				if hit:
+					nxt[index] = 1
+		cur = nxt
+	return cur
+
+
+func _erode_dark_fringe(img: Image) -> void:
+	var width := img.get_width()
+	var height := img.get_height()
+	var copy := Image.new()
+	copy.copy_from(img)
+	for y in height:
+		for x in width:
+			var color: Color = copy.get_pixel(x, y)
+			if color.a < 0.02:
+				continue
+			var luma: float = color.r * 0.3 + color.g * 0.4 + color.b * 0.3
+			if luma > 0.12:
+				continue
+			if (
+				_is_clear(copy, x - 1, y, width, height)
+				or _is_clear(copy, x + 1, y, width, height)
+				or _is_clear(copy, x, y - 1, width, height)
+				or _is_clear(copy, x, y + 1, width, height)
+			):
+				color.a = 0.0
+				img.set_pixel(x, y, color)
+
+
+func _is_clear(img: Image, x: int, y: int, width: int, height: int) -> bool:
+	if x < 0 or y < 0 or x >= width or y >= height:
+		return true
+	return img.get_pixel(x, y).a < 0.02
+
+
+func _crop_opaque(img: Image, pad: int) -> Image:
+	var width := img.get_width()
+	var height := img.get_height()
+	var min_x := width
+	var min_y := height
+	var max_x := -1
+	var max_y := -1
+	for y in height:
+		for x in width:
+			if img.get_pixel(x, y).a < 0.04:
+				continue
+			min_x = mini(min_x, x)
+			min_y = mini(min_y, y)
+			max_x = maxi(max_x, x)
+			max_y = maxi(max_y, y)
+	if max_x < min_x:
+		return img
+	min_x = maxi(min_x - pad, 0)
+	min_y = maxi(min_y - pad, 0)
+	max_x = mini(max_x + pad, width - 1)
+	max_y = mini(max_y + pad, height - 1)
+	return img.get_region(Rect2i(min_x, min_y, max_x - min_x + 1, max_y - min_y + 1))
 
 
 func _load_knockout_scaled(path: String, max_w: int, max_h: int) -> Texture2D:

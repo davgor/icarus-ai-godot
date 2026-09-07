@@ -1,6 +1,7 @@
 extends SceneTree
 
 const GameStateScript := preload("res://game/sim/game_state.gd")
+const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 
 ## Headless validation suite.
 ## Entry: engine --headless --path . -s res://tests/run_tests.gd
@@ -36,6 +37,7 @@ func _run_suite() -> int:
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
 	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
 	failed += _ok("settings_sections", _test_settings_sections())
+	failed += _ok("settings_panel_centered", await _test_settings_panel_centered())
 	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
 	return failed
 
@@ -288,6 +290,59 @@ func _test_settings_sections() -> bool:
 	flow.show_title()
 	flow.hide_flow()
 	return true
+
+
+func _test_settings_panel_centered() -> bool:
+	var host := Control.new()
+	host.name = "SettingsLayoutHost"
+	host.size = Vector2(1280, 720)
+	root.add_child(host)
+	await process_frame
+	var shell: Control = SettingsShellScript.new()
+	host.add_child(shell)
+	if shell.has_method("fill_parent"):
+		shell.fill_parent()
+	shell.visible = true
+	await process_frame
+	await process_frame
+	var panel := shell.get_node_or_null("Center/Panel") as Control
+	if panel == null:
+		push_error("Settings panel missing at Center/Panel")
+		host.queue_free()
+		await process_frame
+		return false
+	var host_center := host.global_position + host.size * 0.5
+	var panel_center := panel.global_position + panel.size * 0.5
+	var distance := panel_center.distance_to(host_center)
+	var margin := shell.get_node_or_null("Center/Panel/Margin") as Control
+	var content := shell.get_node_or_null("Center/Panel/Margin/Root") as Control
+	var inset_left := 0.0
+	var inset_top := 0.0
+	var inset_right := 0.0
+	if margin:
+		inset_left = float(margin.get_theme_constant("margin_left"))
+		inset_top = float(margin.get_theme_constant("margin_top"))
+		inset_right = float(margin.get_theme_constant("margin_right"))
+	if content:
+		inset_left = maxf(inset_left, content.global_position.x - panel.global_position.x)
+		inset_top = maxf(inset_top, content.global_position.y - panel.global_position.y)
+	var landscape := panel.size.x > panel.size.y * 1.2
+	var ok := (
+		distance < 48.0
+		and panel.size.x >= 800.0
+		and landscape
+		and inset_left >= 80.0
+		and inset_top >= 72.0
+		and inset_right >= 180.0
+	)
+	if not ok:
+		push_error(
+			"Settings panel layout off; host=%s panel=%s size=%s dist=%s inset=(%s,%s,%s) landscape=%s"
+			% [host_center, panel_center, panel.size, distance, inset_left, inset_top, inset_right, landscape]
+		)
+	host.queue_free()
+	await process_frame
+	return ok
 
 
 func _test_create_overlay_hidden_on_boot() -> bool:
