@@ -51,16 +51,19 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | 2.2 | Race select | Human, elf, dwarf, gnome, halfling, demi-human |
 | 2.3 | Race as preset | Selecting a race applies defaults; player can override everything |
 | 2.4 | Race as tag | Stored on the character for later story / world reactions |
-| 2.5 | Height and weight | First-class sliders |
+| 2.5 | Height and weight | Height = tall/short; **weight = frame mass** (not fatness) |
 | 2.6 | Proportions | Body region morphs; expand over time |
-| 2.7 | Muscle ↔ fat bar | Drives silhouette and jiggle |
-| 2.8 | Jiggle / soft-body | Driven by the muscle–fat bar, not a pile of unrelated toggles |
-| 2.9 | Face / hair / eyes | Anime kit; grow the catalog |
-| 2.10 | Demi-human features | **Ears**, **horns**, **tails** (incl. lizard/dragon); **optional** any combo or none; all unlocked |
+| 2.7 | Muscle ↔ fat bar | **Composition** + jiggle driver; not overall size |
+| 2.8 | Jiggle / soft-body | Driven by the muscle–fat bar only |
+| 2.9 | Face / hair / eyes | Named starter morphs + anime kit; grow the catalog |
+| 2.10 | Demi-human features | **Ears**, **horns**, **tails** (incl. lizard/dragon); **optional**; **in vertical slice** |
 | 2.11 | Starting cosmetics | Outfit distinct from later combat gear |
 | 2.12 | Confirm → spawn | Writes the character, then loads the empty hub |
-| 2.13 | Creator on controller | Sliders, race, camera orbit, lighting, and confirm without a mouse |
-| 2.14 | Preview lighting | **Full / Dawn / Dusk** toggles to judge shadows and shading (preview-only) |
+| 2.13 | Creator on controller | Sliders, race, camera, lighting, reset/random, confirm without a mouse |
+| 2.14 | Preview lighting | **Full / Dawn / Dusk** (preview-only) |
+| 2.15 | Skin color | First-class; ≥6 swatches in slice |
+| 2.16 | Scars / markings | Thin starter (≥1 each + none); deepen later |
+| 2.17 | Reset / randomize | Reset all/category; randomize all/category (crude OK) |
 
 All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
 

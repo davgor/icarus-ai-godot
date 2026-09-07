@@ -4,16 +4,16 @@
 **Feature-list:** [`feature-list.md`](../feature-list.md) §2 Character creation  
 **Design:** [`game-design.md`](../game-design.md) Character creation + Gear and appearance (outfit ≠ loadout)  
 **Art:** [`art-style.md`](../art-style.md), [`art/prompt-lock.md`](../art/prompt-lock.md) — Character / creator / portrait suffix  
-**Tech contract (one-shot):** [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) — hybrid morphs, record schema v1, jiggle driver, apply→capsule, Full/Dawn/Dusk lighting  
+**Tech contract (one-shot):** [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) — hybrid morphs, schema v1, named face morphs, skin/scars, reset/randomize, lighting, apply→capsule  
 **Import roots:** `game/art/characters/` (bodies, race kits, outfit cosmetics), `game/art/ui/` (creator chrome), `game/art/vfx/` (atelier light / transition only)  
 **Operating loop:** [`agent-operating-loop.md`](../agent-operating-loop.md) + [`.summer/AGENTS.md`](../../.summer/AGENTS.md)
 
 Code Vein-class depth is the **target**. This pack ships a **vertical slice** first (playable New → customize → confirm → hub handoff), then deepens morphs and catalogs inside the same epic IDs. Replace the OS-5 creator **stub body**; keep the Title → New route from pack 01.
 
 Suggested ship order: **CC-1 → CC-2 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-7 → CC-4 → CC-8 → CC-9**.  
-**Vertical-slice cut** (minimum playable): CC-1 (incl. lighting), CC-2, thin CC-3, thin CC-5, thin CC-7, CC-8, CC-9. CC-4 and full demi-human catalog can land immediately after the cut without waiting for pack 03.
+**Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, thin CC-7, CC-8, CC-9. CC-4 can land immediately after the cut without waiting for pack 03.
 
-**Do not invent morph tech mid-pack.** Follow [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): bone scales for body proportions/height, blend shapes for face + muscle↔fat surface, bone-spring jiggle from muscle↔fat, socketed demi parts, one `AppearanceApplier` for preview and gameplay.
+**Do not invent morph tech mid-pack.** Follow [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): bone scales for height/weight/proportions, blend shapes for face + muscle↔fat, bone-spring jiggle from muscle↔fat only, socketed demi parts, one `AppearanceApplier` for preview and gameplay.
 
 ---
 
@@ -28,6 +28,8 @@ Suggested ship order: **CC-1 → CC-2 → CC-3 → CC-5 / CC-6 (parallel after r
 - Character concepts and meshes live under `game/art/characters/`. Creator chrome under `game/art/ui/`. Do not park finals in `_style/`.
 - Authoritative appearance state lives in the **engine** (character record schema v1 in [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)). LLM / generators only produce assets or untrusted suggestions — never own the live morph dict.
 - Creator preview lighting: **Full / Dawn / Dusk** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)). Preview-only; default Full.
+- **Reset** (all + category) and **Randomize** (all + category) are in the vertical slice.
+- **CC-6 demi features are in the vertical-slice cut** — demi-human must not ship as tag-only.
 - Headless tests: `tests/run_tests.gd` (`extends SceneTree`), gate on `TEST_RESULT: PASS`.
 - Canonical commands: `.\scripts\test.ps1` → Summer play/diagnostics when scene work lands → `.\scripts\build.ps1` / `.\scripts\play.ps1` when the slice should be playable.
 - Do **not** add Summer SDK or editor-only APIs to shipped game code. Do **not** run `godot --import` while Summer is open on this repo.
@@ -94,13 +96,14 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 
 1. Title → **New** → creator atelier (not Millbrook name overlay, not hub).
 2. Pick each race once; confirm preset snap + free override.
-3. Move height / weight / muscle–fat; preview updates live.
+3. Move height / weight / muscle–fat / skin; preview updates live (weight ≠ fatness).
 4. Cycle preview lighting **Full / Dawn / Dusk**; shading visibly changes.
-5. Change face/hair/eyes (and optionally ears, horns, and/or tails when CC-6 is in).
-6. Change starting outfit; confirm loadout slots are **not** required.
-7. Orbit / frame the preview on pad (CC-9) or mouse.
-8. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
-9. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
+5. Change named face morphs, hair/eyes, scars/markings; optionally ears, horns, tails (**CC-6 in slice**).
+6. Use **Reset** and **Randomize** at least once (all or category).
+7. Change starting outfit; confirm loadout slots are **not** required.
+8. Orbit / frame the preview on pad (CC-9) or mouse.
+9. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
+10. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
 
 After each smoke: `summer_get_diagnostics`. Fix before declaring the epic playable.
 
@@ -118,12 +121,14 @@ New opens a dedicated **character atelier**: lit preview stage, **Full / Dawn / 
 | --- | --- |
 | 2.1 | Creator screen |
 | 2.14 | Preview lighting |
+| 2.17 | Reset / randomize |
 
 ### In scope
 
 - Dedicated creator scene (or owned flow state) replacing the OS-5 stub body
 - Preview stage: ground/plinth, atelier lighting, dark jewel backdrop
 - **Lighting presets:** Full / Dawn / Dusk (cycle or three options); preview-only; default **Full** — [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
+- **Reset all / Reset category** and **Randomize all / Randomize category** chrome (wire to real behavior as categories land; must work by vertical-slice DOD)
 - Orbit / zoom framing around the preview character
 - Category rail or tabs (Race, Body, Face, Features, Outfit) — empty panels OK until later CC epics fill them
 - Name field (reuse / replace Millbrook name entry; name is not the whole creator)
@@ -136,6 +141,7 @@ New opens a dedicated **character atelier**: lit preview stage, **Full / Dawn / 
 - Confirm → hub write (CC-8)
 - Final combat loadout UI
 - Changing Sanctum / world time of day
+- Undo stack
 
 ### Dependencies
 
@@ -147,9 +153,10 @@ New opens a dedicated **character atelier**: lit preview stage, **Full / Dawn / 
 - Scene: e.g. `res://game/ui/character_creator.tscn` (name may vary; keep under `game/`, not Millbrook HUD)
 - Flow owner: Title New → Creator; Back → Title
 - Three named light/env presets; UI control to switch; screenshots prove shading change
+- Reset / Randomize buttons (or menu) with focusables; hook to race preset + random helpers as CC-2+ land
 - Preview rig placeholder (capsule → real mesh as CC-2/CC-3 art lands)
 - Input actions for camera orbit (mouse + placeholders for pad)
-- Tests: New reaches creator scene; Back returns to title; lighting preset changes; no SCRIPT ERROR
+- Tests: New reaches creator scene; Back returns to title; lighting preset changes; reset/randomize actions exist; no SCRIPT ERROR
 - **Summer:** open creator `scenePath`, build Preview / Lights / UI with MCP mutations, `summer_play`, screenshot **each** lighting preset, diagnostics
 
 ### Asset generation
@@ -161,6 +168,7 @@ Generate **atelier + chrome before** locking final panel sizes.
 | Atelier environment concept | `game/art/characters/creator_atelier_concept.png` | Start of CC-1 | Character atelier / mirror room; dark jewel; soft shafts; empty stage for a hero; **no** baked-in UI panels or readable sliders in the image |
 | Atelier backdrop / HDRI-style still | `game/art/characters/creator_atelier_bg.png` | With concept | Full-bleed backdrop for the 3D stage; mystical anime; no logo text |
 | Lighting preset icons (×3) | `game/art/ui/creator_light_{full,dawn,dusk}.png` | With shell | Small mystical anime glyphs for Full / Dawn / Dusk; readable at HUD scale |
+| Reset / Randomize icons | `game/art/ui/creator_{reset,random}.png` | With shell | Compact mystical anime UI glyphs; no text baked in |
 | Category tab chrome | `game/art/ui/creator_tab.png` (+ `_active`) | With shell | Dark panel, sparse bright rim; readable at HUD scale |
 | Slider track / fill / thumb | `game/art/ui/creator_slider_*.png` | With shell | Compact mystical anime slider kit; not Material flat |
 | Confirm / Back buttons | Reuse pack 01 primary chrome or `game/art/ui/creator_btn.png` | With shell | Match title language; creator-scale padding |
@@ -174,6 +182,7 @@ Generate **atelier + chrome before** locking final panel sizes.
 - [ ] Back → title without character write
 - [ ] Preview stage lit; camera orbits
 - [ ] Full / Dawn / Dusk presets change visible shading; default Full
+- [ ] Reset / Randomize controls present (behavior complete by pack DOD)
 - [ ] Category chrome visible (panels may be stubs)
 - [ ] Art under `game/art/characters/` and `game/art/ui/`
 - [ ] Summer: scene mutated via explicit `scenePath`; play + diagnostics clean
@@ -256,50 +265,55 @@ Body category exposes **height**, **weight**, a **muscle ↔ fat** bar, and a fi
 | 2.5 | Height and weight |
 | 2.6 | Proportions (vertical slice; deepen over time) |
 | 2.7 | Muscle ↔ fat bar |
+| 2.15 | Skin color |
 
 ### In scope
 
-- First-class height and weight sliders
-- Muscle ↔ fat as one bar (not separate unrelated toggles)
+- First-class height and weight sliders — **weight = frame mass**, not fatness ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
+- Muscle ↔ fat as one bar (**composition** + jiggle driver only)
+- **Skin color** swatches (≥6) applied live to body/head materials
 - Proportion regions for the slice: at least head, torso, arms, legs (deepen later — Deferred: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md))
-- Live preview via **hybrid morphs** locked in [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): **bone scales** for height/proportions; **blend shapes** for muscle↔fat surface (and face in CC-5)
+- Live preview via **hybrid morphs** locked in the appearance contract: **bone scales** for height/weight/proportions; **blend shapes** for muscle↔fat surface (and face in CC-5)
 - Capsule / collision scale hooks from body (same applier path gameplay will use; full move kit is pack 04)
-- Character-in-progress uses **schema v1** body fields from the appearance contract
+- Character-in-progress uses **schema v1** body fields (incl. `skin_color`)
 
 ### Out of scope
 
 - Soft-body motion (CC-4)
 - Face part catalog (CC-5)
+- Wiring weight into jiggle (forbidden)
 - Inventing a second morph system (forbidden — use the contract)
 - Final animation retarget for every extreme morph (best-effort clip; document known limits) — Deferred: [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md)
 
 ### Dependencies
 
-- CC-1; CC-2 presets should feed default body values
+- CC-1; CC-2 presets should feed default body values + default skin
 - [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
 
 ### Work
 
 - Implement shared `AppearanceApplier` (or equivalent) reading schema v1 `body`
-- Slider UI wired to morph bus → preview
+- Slider UI wired to morph bus → preview; skin swatch row
 - Clamp ranges; race preset sets defaults inside clamps
-- Tests: slider extremes change serialized morphs; muscle–fat midpoint vs ends differ; bone scales change measurable transform
-- **Summer:** build slider rows in the Body panel via scene mutations; play and drag extremes; `summer_screenshot` game view for silhouette checks
+- Tests: slider extremes change serialized morphs; muscle–fat midpoint vs ends differ; weight change does not change jiggle metric; skin_color applies
+- **Summer:** build slider rows + skin swatches in the Body panel; play and drag extremes; `summer_screenshot` silhouette + skin checks
 
 ### Asset generation
 
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
 | Body silhouette reference sheet | `game/art/characters/body_silhouette_sheet.png` | Start of CC-3 | Same character at short/tall and muscle/fat extremes; creator-quality; grid sheet; no UI |
+| Skin tone swatch reference | `game/art/characters/skin_swatches.png` | With body | ≥6 anime-friendly skin tones; flat swatches or bust strip; consistent lighting |
 | Region gizmo icons (optional) | `game/art/ui/creator_region_*.png` | If UI needs icons | Minimal anime UI glyphs for head/torso/limbs |
 
 Most “art” here is the live mesh responding to morphs — prefer improving the CC-2 body kit over spawning unrelated bodies.
 
 ### Acceptance
 
-- [ ] Height, weight, muscle↔fat, and ≥4 proportion regions work
+- [ ] Height, weight, muscle↔fat, skin (≥6 swatches), and ≥4 proportion regions work
+- [ ] Weight thickens frame; muscle↔fat changes composition/jiggle path — not confused in UI copy
 - [ ] Preview updates without restarting the scene
-- [ ] Values serialize on the in-progress character
+- [ ] Values serialize on the in-progress character (`skin_color` present)
 - [ ] Summer diagnostics clean after slider smoke
 - [ ] `TEST_RESULT: PASS`
 
@@ -363,56 +377,61 @@ Preview (and later in-world) soft motion is driven by the **muscle ↔ fat** bar
 
 ---
 
-## CC-5 — Face / hair / eyes kit
+## CC-5 — Face / hair / eyes / scars kit
 
 ### Outcome
 
-Face category offers an anime **starter kit**: face morphs, eyes, hair (styles + color). Catalog grows over time under this epic ID; vertical slice ships a small but real set.
+Face category offers an anime **starter kit**: **named** face morphs (contract list), eyes, hair (styles + color), plus a **thin scars/markings** starter. Catalog grows under this epic ID / `DEF-011`.
 
 ### Maps to
 
 | ID | Feature |
 | --- | --- |
 | 2.9 | Face / hair / eyes |
+| 2.16 | Scars / markings |
 
 ### In scope
 
-- Face shape morphs (slice: enough to differ from race preset)
+- **Named face morphs** from [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): `brow`, `eye_shape`, `nose`, `cheek`, `jaw`, `mouth`, `chin` — all wired
 - Eye style + iris color
 - Hair style set + color
+- Scar + marking pickers: **none** + ≥1 option each
 - All starter options unlocked
 - Preview updates live (including head-only camera framing helper)
 
 ### Out of scope
 
-- Closed “final” catalog — expand in follow-up PRs — Deferred: [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
-- Makeup / scar / marking fullness — same ticket [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
+- Closed “final” catalog / makeup farms — Deferred: [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
+- Extra scar/marking variants beyond the thin starter — same ticket
 
 ### Dependencies
 
 - CC-1; race presets from CC-2 should set defaults
+- Appearance contract named morph list
 
 ### Work
 
-- Data-driven part lists (ids → meshes/materials)
-- UI grid with focusables; color pickers or swatches
-- Tests: selecting parts mutates character record; defaults from race apply
-- **Summer:** generate part sheets → import → attach to preview via scene tree; play through each style; diagnostics
+- Data-driven part lists (ids → meshes/materials); morph bus writes all seven keys
+- UI grid with focusables; color pickers or swatches; scar/marking slots
+- Tests: selecting parts mutates character record; all named morph keys serialize; scar/marking null clears overlay
+- **Summer:** generate part sheets → import → attach to preview; play through styles + scar/marking; diagnostics
 
 ### Asset generation
 
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
-| Face morph reference sheet | `game/art/characters/face_sheet.png` | Start of CC-5 | Same head, multiple face shapes; anime; creator quality |
+| Face morph reference sheet | `game/art/characters/face_sheet.png` | Start of CC-5 | Same head showing brow/nose/jaw/etc. extremes; anime; creator quality |
 | Eye style sheet | `game/art/characters/eyes_sheet.png` | With face | Readable iris styles; consistent lighting |
 | Hair style concepts (per style) | `game/art/characters/hair_{id}.png` | With face | Isolated hair on dark jewel void or on neutral head; clear silhouette |
-| Hair / eye meshes & materials | `game/art/characters/...` | After concepts pass `Read` | image-to-3d or textured planes as appropriate; keep anime materials |
+| Scar / marking concepts | `game/art/characters/scar_*.png`, `marking_*.png` | With face | Face/body overlays; anime; readable; not horror gore |
+| Hair / eye / overlay meshes & materials | `game/art/characters/...` | After concepts pass `Read` | image-to-3d or textured planes; keep anime materials |
 
-Vertical-slice minimum: **≥3 hair styles, ≥3 eye styles, ≥3 face morph extremes** (plus colors).
+Vertical-slice minimum: **7 named morphs wired**, **≥3 hair**, **≥3 eyes**, **≥1 scar**, **≥1 marking** (plus colors / none).
 
 ### Acceptance
 
-- [ ] Player can change face, eyes, hair in creator
+- [ ] All seven named face morphs adjustable
+- [ ] Player can change eyes, hair, scar, marking
 - [ ] Options unlocked; live preview
 - [ ] Assets under `game/art/characters/`
 - [ ] Summer play through the starter grid + diagnostics clean

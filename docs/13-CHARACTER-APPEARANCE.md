@@ -11,10 +11,23 @@ Technical contract so pack 02 can one-shot creator → spawn without inventing m
 | Concern | Tech | Why |
 | --- | --- | --- |
 | Height, limb/torso proportions, overall scale | **Skeleton bone scales** (+ root height) | Plays nicer with AnimationPlayer / retarget; maps cleanly to capsule |
-| Face shape / expression-ready face kit | **Blend shapes** (morph targets) | Facial detail without wrecking the body skeleton |
-| Muscle ↔ fat silhouette | **Blend shapes** on body (primary) + light bone scale assist if needed | Surface volume reads; one slider drives the set |
+| Weight (frame mass) | **Bone scales** (uniform/lateral bulk on torso/limbs) | Thickens the frame without meaning “fat” |
+| Face shape | **Blend shapes** (morph targets) | Facial detail without wrecking the body skeleton |
+| Muscle ↔ fat composition | **Blend shapes** on body (primary) + light bone assist if needed | Soft vs lean surface; drives jiggle amplitude |
 | Soft jiggle | **Bone-spring / secondary bones** amplitude from muscle↔fat | Stable with outfits; prefer over full `SoftBody3D` for v1 |
 | Ears / horns / tails | **Socketed skinned meshes** (attach points) | Optional parts; lizard tail is just another tail mesh id |
+| Skin color | **Material / shader tint** on body (and matching head) | First-class; not a mesh swap |
+| Scars / markings | **Decal or overlay mesh / texture set** | Thin starter ids; deepen later |
+
+### Height vs weight vs muscle↔fat
+
+| Field | Player meaning | Apply |
+| --- | --- | --- |
+| `body.height` | Tall ↔ short | Root / spine scale → capsule height |
+| `body.weight` | Light frame ↔ heavy frame | Lateral/bulk bone scales — **not** soft jiggle |
+| `body.muscle_fat` | Muscular/lean ↔ soft | Body blendshapes + **jiggle amplitude** |
+
+Do not wire `weight` into jiggle. Do not treat `muscle_fat` as overall size.
 
 Rules:
 
@@ -25,7 +38,7 @@ Rules:
 
 ### Capsule / gameplay adapt
 
-From `body.height` + proportion scales, derive:
+From `body.height` + `body.weight` + proportion scales, derive:
 
 - `CharacterBody3D` capsule height / radius (clamped to min/max playable)
 - Camera pivot height
@@ -43,6 +56,24 @@ Apply on spawn (CC-8) and whenever the live player appearance is rebuilt (hub / 
 
 ---
 
+## Named face morphs (starter set — locked)
+
+Vertical slice ships these blendshape channels (0–1 each). Names are stable ids in `face.morphs`:
+
+| Id | Intent |
+| --- | --- |
+| `brow` | Brow height / angle |
+| `eye_shape` | Eye openness / shape bias (separate from eye **style** mesh) |
+| `nose` | Nose size / bridge |
+| `cheek` | Cheek fullness |
+| `jaw` | Jaw width / strength |
+| `mouth` | Mouth width / lip bias |
+| `chin` | Chin length / point |
+
+Race presets may set defaults. Deepen adds more keys later ([`DEF-011`](backlog/deferred/DEF-011-face-catalog-deepen.md)); unknown keys ignored by older appliers if you extend carefully.
+
+---
+
 ## Character record schema (v1)
 
 Engine-owned. Versioned. Living Town JSON is not this schema.
@@ -57,6 +88,7 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
     "height": 0.5,
     "weight": 0.5,
     "muscle_fat": 0.5,
+    "skin_color": "#c8a07a",
     "proportions": {
       "head": 0.5,
       "torso": 0.5,
@@ -66,11 +98,21 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
   },
   "face": {
     "shape_id": "face_default",
-    "morphs": {},
+    "morphs": {
+      "brow": 0.5,
+      "eye_shape": 0.5,
+      "nose": 0.5,
+      "cheek": 0.5,
+      "jaw": 0.5,
+      "mouth": 0.5,
+      "chin": 0.5
+    },
     "eyes_id": "eyes_default",
     "eye_color": "#4a6fa5",
     "hair_id": "hair_default",
-    "hair_color": "#2a1a12"
+    "hair_color": "#2a1a12",
+    "scar_id": null,
+    "marking_id": null
   },
   "features": {
     "ears_id": null,
@@ -93,12 +135,14 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
 | Field | Rules |
 | --- | --- |
 | `race` | One of `human`, `elf`, `dwarf`, `gnome`, `halfling`, `demi_human`. Preset + story tag; never locks other fields. |
-| `body.*` | Floats 0–1. `muscle_fat`: 0 = full muscle, 1 = full fat. |
-| `proportions` | Slice minimum: head, torso, arms, legs. More keys later ([`DEF-014`](backlog/deferred/DEF-014-body-proportion-deepen.md)); unknown keys ignored on old builds if you add them carefully. |
-| `face.morphs` | Sparse blendshape name → 0–1. Empty object OK for slice. |
-| `features.*_id` | Catalog part id or `null`. Optional; demi dragon = horns + lizard tail ids, etc. |
+| `body.height` / `weight` / `muscle_fat` | Floats 0–1. See table above. `muscle_fat`: 0 = full muscle, 1 = full fat. |
+| `body.skin_color` | Hex or engine Color string. Required. Starter ships a **swatch row** (≥6 tones); free picker optional later. |
+| `proportions` | Slice minimum: head, torso, arms, legs. More keys later ([`DEF-014`](backlog/deferred/DEF-014-body-proportion-deepen.md)). |
+| `face.morphs` | Must include the **named starter set** keys. |
+| `face.scar_id` / `marking_id` | Catalog id or `null`. Thin starter: ≥1 scar, ≥1 marking, plus none. |
+| `features.*_id` | Catalog part id or `null`. Optional. |
 | `outfit` | Cosmetic only. Never write combat gear into outfit. |
-| `loadout` | Creator leaves empty/null equipment. Persistence pack fills later. Do not require loadout to Confirm. |
+| `loadout` | Creator leaves empty. Do not require loadout to Confirm. |
 
 ### Apply pipeline
 
@@ -107,10 +151,11 @@ CharacterRecord
      │
      ▼
 AppearanceApplier.apply(record, skeleton_mesh_root)
-     │  bone scales ← body.height / weight / proportions
-     │  body blendshapes ← muscle_fat (+ any body morphs)
-     │  face blendshapes ← face.morphs / shape
-     │  swap meshes ← hair, eyes, outfit, features sockets
+     │  bone scales ← height / weight / proportions
+     │  body blendshapes ← muscle_fat
+     │  skin tint ← skin_color
+     │  face blendshapes ← named face.morphs
+     │  swap meshes ← hair, eyes, outfit, features, scar/marking overlays
      │  jiggle springs ← muscle_fat amplitude
      ▼
 Preview (creator)  ==  Player body (hub / world)
@@ -120,6 +165,19 @@ CapsuleBuilder.from_body(record.body) → CharacterBody3D shape + camera pivot
 ```
 
 Confirm (CC-8) writes the record, then spawns using the same applier.
+
+---
+
+## Creator UX tools (locked for slice)
+
+| Tool | Behavior |
+| --- | --- |
+| **Reset all** | Re-apply current race preset (confirm if dirty). |
+| **Reset category** | Re-apply preset values for the active category only (Body / Face / Features / Outfit). |
+| **Randomize all** | Random legal values across unlocked options and 0–1 sliders. Crude is fine. |
+| **Randomize category** | Same, scoped to active category. |
+
+Gamepad-reachable. No undo stack required in v1.
 
 ---
 
@@ -142,9 +200,26 @@ Rules:
 
 ---
 
+## Vertical-slice catalog minimums
+
+| Kind | Minimum |
+| --- | --- |
+| Skin swatches | ≥6 |
+| Named face morphs | 7 listed above (all wired) |
+| Hair styles | ≥3 + colors |
+| Eye styles | ≥3 + colors |
+| Scars | ≥1 + none |
+| Markings | ≥1 + none |
+| Ears / horns / tails | ≥1 each; tails include ≥1 lizard/dragon |
+| Starter outfits | ≥3 |
+
+---
+
 ## Non-goals
 
 - SoftBody3D as the default jiggle solution
 - Separate creator-only appearance that gameplay cannot load
 - Per-breast / per-hip jiggle toggles
 - Requiring blendshape-only body proportion (breaks anim/capsule story)
+- Wiring `weight` into jiggle
+- Full makeup suite (lipstick/eyeshadow farms) in the slice — scars/markings starter only; deepen in [`DEF-011`](backlog/deferred/DEF-011-face-catalog-deepen.md)

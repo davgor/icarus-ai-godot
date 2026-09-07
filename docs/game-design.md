@@ -123,9 +123,30 @@ The player has full control of:
 - weight
 - a **muscle ↔ fat** bar
 
-**Soft-body / jiggle** is driven by that muscle–fat bar: higher fat increases motion, higher muscle reduces it. This is a customization/readability system, not a separate toggle maze.
+**Height vs weight vs muscle↔fat** (do not collapse these):
 
-Technical contract (hybrid bone scale + blend shapes, record schema, apply→capsule): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+| Control | Means |
+| --- | --- |
+| **Height** | How tall the character is |
+| **Weight** | Overall **frame mass** — how heavy/thick the silhouette reads (not “fatness”) |
+| **Muscle ↔ fat** | **Composition** on that frame — lean/muscular ↔ soft; also drives **jiggle** |
+
+**Soft-body / jiggle** is driven by the muscle–fat bar only: higher fat increases motion, higher muscle reduces it. Not a separate toggle maze.
+
+**Skin color** is a first-class creator control (swatches / color), stored on the character, applied to the body material.
+
+Technical contract (hybrid morphs, record schema, apply→capsule, UX tools): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+
+### Creator UX tools
+
+At minimum the atelier supports:
+
+| Tool | Intent |
+| --- | --- |
+| **Reset** | Restore race preset defaults (confirm if dirty). Category reset OK; full reset required. |
+| **Randomize** | Crude random within unlocked options/ranges (full and/or per category). |
+
+Undo stack is not required for v1.
 
 ### Creator preview lighting
 
@@ -159,9 +180,11 @@ Demi-human cosmetics for the first shippable creator:
 
 ### Visual identity
 
-Anime style. Combinations should include (expand during implementation, do not treat as a closed list):
+Anime style. Combinations should include:
 
-- face morphs, eyes, hair, scars, markings
+- **Named** face morphs (starter set locked in the appearance contract; deepen later)
+- eyes, hair, **skin color**
+- **scars** and **markings** (thin starter in the creator slice; deepen later)
 - demi-human **ears**, **horns**, and **tails** (including lizard tails; optional; see above)
 - clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
 

@@ -39,7 +39,7 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-008](DEF-008-race-tag-story-reactions.md) | Story / dialogue reactions consume race tag | Open | [CC-2](../../epics/02-character-creation.md#cc-2--race-select-preset-and-tag) |
 | [DEF-009](DEF-009-extreme-morph-anim-retarget.md) | Animation retarget for extreme body morphs | Open | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) |
 | [DEF-010](DEF-010-cape-cloth-physics.md) | Cape / outfit cloth physics final | Open | [CC-4](../../epics/02-character-creation.md#cc-4--soft-body--jiggle-from-muscle--fat) / [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
-| [DEF-011](DEF-011-face-catalog-deepen.md) | Face / hair / eyes catalog + makeup/scars deepen | Open | [CC-5](../../epics/02-character-creation.md#cc-5--face--hair--eyes-kit) |
+| [DEF-011](DEF-011-face-catalog-deepen.md) | Face / hair / eyes catalog + makeup deepen | Open | [CC-5](../../epics/02-character-creation.md#cc-5--face--hair--eyes--scars-kit) |
 | [DEF-012](DEF-012-demi-feature-catalog-deepen.md) | Demi-human feature catalog deepen | Open | [CC-6](../../epics/02-character-creation.md#cc-6--demi-human-features) |
 | [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Starting outfit wardrobe / transmog deepen | Open | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
 | [DEF-014](DEF-014-body-proportion-deepen.md) | Body proportion region deepen beyond vertical slice | Open | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) |
