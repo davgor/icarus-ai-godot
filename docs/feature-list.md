@@ -41,6 +41,8 @@ The game must open as a game, not as a graybox drop-in.
 
 ## 2. Character creation — Now / Next
 
+Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-9). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
+
 Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 
 | ID | Feature | Notes |

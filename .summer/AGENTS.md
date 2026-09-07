@@ -9,8 +9,9 @@ This is a Godot 4 / GDScript project. Summer Engine is an optional editor, not a
 1. Inspect the existing system.
 2. Understand relevant interfaces.
 3. Identify existing tests (`tests/run_tests.gd`, `.\scripts\test.ps1`).
-4. Avoid duplicate systems.
-5. Put the change in an existing abstraction when one already fits.
+4. Review Open tickets in [`docs/backlog/deferred/`](../docs/backlog/deferred/) and rope in anything that fits this change.
+5. Avoid duplicate systems.
+6. Put the change in an existing abstraction when one already fits.
 
 ## During implementation
 
@@ -23,6 +24,7 @@ This is a Godot 4 / GDScript project. Summer Engine is an optional editor, not a
 - Do not rewrite unrelated systems.
 - Do not add Summer SDK to game runtime code.
 - Do not name fields `test_move` on physics bodies.
+- If you defer work, file `docs/backlog/deferred/DEF-NNN-*.md` with a Source link; do not leave it only in an epic note.
 
 ## After implementation
 

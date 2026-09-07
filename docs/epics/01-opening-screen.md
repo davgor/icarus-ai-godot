@@ -46,8 +46,8 @@ Cold start shows a branded loading / splash sequence, then hands off to the titl
 ### Out of scope
 
 - Full save I/O (OS-4 shell only needs “no saves” later)
-- Creator or hub content
-- Final audio mix (stubs OK)
+- Creator or hub content (packs 02 / 03 — not deferred tickets)
+- Final audio mix (stubs OK) — Deferred: [`DEF-001`](../backlog/deferred/DEF-001-boot-title-audio.md)
 
 ### Dependencies
 
@@ -73,7 +73,7 @@ Generate **before** locking layout sizes so chrome fits the art, not the reverse
 
 **Pipeline:** read art docs → prepend lock → `style: "anime"` → generate → `Read` preview → import under `game/art/ui/` → wire in scene.  
 **Negative:** lock negative (especially `text, logo, UI chrome` when generating pure atmosphere; for logo asset, relax only as needed and say so in the prompt).  
-**Audio stubs (callout, not blockers):** boot sting / soft whoosh — placeholder paths OK; final SFX later.
+**Audio stubs (callout, not blockers):** boot sting / soft whoosh — placeholder paths OK; final SFX later — [`DEF-001`](../backlog/deferred/DEF-001-boot-title-audio.md).
 
 ### Acceptance
 
@@ -108,8 +108,8 @@ Title presents **New**, **Load**, **Settings**, **Quit** only. Quit exits. New /
 ### Out of scope
 
 - Real creator (pack 02)
-- Real save list (OS-4 empty state is enough)
-- Settings persistence (OS-3 placeholders)
+- Real save list (OS-4 empty state is enough) — deepen: [`DEF-004`](../backlog/deferred/DEF-004-load-browser-polish.md)
+- Settings persistence (OS-3 placeholders) — Deferred: [`DEF-002`](../backlog/deferred/DEF-002-settings-persistence.md)
 
 ### Dependencies
 
@@ -166,7 +166,7 @@ Settings opens from the title and is a real screen with **Audio**, **Graphics**,
 
 ### Out of scope
 
-- Full rebind UI
+- Full rebind UI — Deferred: [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md)
 - Graphics preset application that fights Summer/editor
 - Cloud sync
 
@@ -222,9 +222,8 @@ Load opens from the title. With no saves, the player sees a clear empty state (�
 
 ### Out of scope
 
-- Multi-slot browser polish
-- Character preview renders
-- Migrating Millbrook town saves into hub saves
+- Multi-slot browser polish / character preview renders — Deferred: [`DEF-004`](../backlog/deferred/DEF-004-load-browser-polish.md)
+- Migrating Millbrook town saves into hub saves — Deferred: [`DEF-005`](../backlog/deferred/DEF-005-millbrook-save-migration.md)
 
 ### Dependencies
 
@@ -295,7 +294,7 @@ Copy/UI string is code, not baked into the illustration.
 | Creator stub backdrop | `game/art/ui/creator_stub_bg.png` | With handoff | Soft character-atelier atmosphere (mirror / light shafts / dark jewel room); implies customization; no full character sheet UI in the image |
 | Transition veil / wipe (optional) | `game/art/vfx/title_to_creator_wipe.png` | Polish | Short mystical wipe or light bloom; sparse |
 
-**Call-forward:** pack 02 must list creator kit assets (`game/art/characters/`) — race presets, UI chrome, turnaround lighting. OS-5 only ships stub/transition art so New does not reuse title key art as a fake creator.
+**Call-forward:** pack 02 must list creator kit assets (`game/art/characters/`) — race presets, UI chrome, turnaround lighting. OS-5 only ships stub/transition art so New does not reuse title key art as a fake creator. Retire stub art when atelier ships — Deferred: [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md).
 
 ### Acceptance
 
@@ -328,7 +327,7 @@ Title, Settings, Load, Quit, and the creator stub are fully usable on a gamepad 
 
 ### Out of scope
 
-- Full in-game action rebind (Controls section may say “coming later”)
+- Full in-game action rebind (Controls section may say “coming later”) — Deferred: [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md)
 - Mouse-cursor emulation mode as the gamepad solution
 
 ### Dependencies
@@ -382,4 +381,5 @@ This pack is **Playable** when:
 - Prefer a small flow owner (autoload or root flow scene) over burying title logic in `game/main.gd` Millbrook hooks.
 - Keep engine state authoritative; title does not need an LLM.
 - Generate art in the same change series as the screens that show it; do not merge title “forever gray” without the asset table above tracked as follow-up in-branch.
-- When pack 02 starts, replace OS-5 stub body; keep the New route.
+- When pack 02 starts, replace OS-5 stub body; keep the New route. Rope in [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md) in that same series.
+- Before implementing: review [`../backlog/deferred/`](../backlog/deferred/) Open tickets; link any deferment you newly create.

@@ -21,3 +21,4 @@ Read `docs/agent-operating-loop.md` before changing tooling, tests, builds, or s
 - Companions follow the Companions section in `docs/game-design.md` (2 field slots, 100% trust roster, action-driven growth, poly romance, meet-only jealousy).
 - Loadout vs outfit are separate (`docs/game-design.md` Gear and appearance). Accessories are gear slots.
 - Design bundle: `docs/README.md`. Repo player-facing locks beat outside architecture drafts.
+- Deferments: file `docs/backlog/deferred/DEF-NNN-*.md` with a Source link back to the epic/PR. Before starting work, review that folder and rope in matching Open tickets ([`docs/backlog/deferred/README.md`](docs/backlog/deferred/README.md)).
