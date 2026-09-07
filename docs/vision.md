@@ -60,9 +60,15 @@ Favor:
 - agent-readable interfaces
 - rapid iteration
 
+## Player-facing design
+
+What the game *is* (hub village, portal worlds, creator, combat) lives in [`game-design.md`](game-design.md). The ordered backlog is [`feature-list.md`](feature-list.md).
+
 ## First playable milestone
 
-Do not attempt the full RPG first. The first meaningful game milestone is **The Living Town**: create a character, enter a small town, meet named NPCs, act, leave, advance time, return, observe consequences, save, quit, relaunch, and verify persistence.
+Do not attempt the full RPG first. The first meaningful game milestone is the **hub village**: create a character, spawn in an empty home village with a portal, leave through it, return, save, quit, relaunch, and verify the character and worn gear persist.
+
+That hub is the evolved Living Town: it starts empty and is populated later by highly trusted companions, not by a pre-authored cast.
 
 The bootstrap phase before that is proving:
 

@@ -3,6 +3,21 @@
 [ext_resource type="Script" uid="uid://c3pldako1b6ub" path="res://game/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://game/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://game/npc/town_npc.tscn" id="3_npc"]
+[ext_resource type="PackedScene" path="res://game/art/town/inn_half_timber.glb" id="4_inn"]
+[ext_resource type="PackedScene" path="res://game/art/town/shop_townhouse.glb" id="5_shop"]
+[ext_resource type="PackedScene" path="res://game/art/town/cottage.glb" id="6_cottage"]
+[ext_resource type="PackedScene" path="res://game/art/town/cottage_stone.glb" id="7_stone"]
+[ext_resource type="PackedScene" path="res://game/art/town/well.glb" id="8_well"]
+[ext_resource type="PackedScene" path="res://game/art/town/crates.glb" id="9_crates"]
+[ext_resource type="PackedScene" path="res://game/art/town/signpost.glb" id="10_sign"]
+[ext_resource type="PackedScene" path="res://game/art/town/oak_tree.glb" id="11_oak"]
+[ext_resource type="PackedScene" path="res://game/art/town/tree_crooked.glb" id="12_crooked"]
+[ext_resource type="PackedScene" path="res://game/art/town/kenney_tree_high.glb" id="13_high"]
+[ext_resource type="PackedScene" path="res://game/art/town/cobble_tile.glb" id="14_cobble"]
+[ext_resource type="PackedScene" path="res://game/art/town/stone_arch.glb" id="15_arch"]
+[ext_resource type="PackedScene" path="res://game/art/town/lantern.glb" id="16_lantern"]
+[ext_resource type="PackedScene" path="res://game/art/town/cart.glb" id="17_cart"]
+[ext_resource type="PackedScene" path="res://game/art/town/stall.glb" id="18_stall"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
@@ -23,7 +38,7 @@ tonemap_mode = 2
 size = Vector3(48, 1, 48)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
-albedo_color = Color(0.38, 0.4, 0.34, 1)
+albedo_color = Color(0.45, 0.42, 0.34, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(48, 1, 48)
@@ -64,6 +79,7 @@ shape = SubResource("BoxShape3D_floor")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2, -4)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Inn" unique_id=2040279242]
+visible = false
 mesh = SubResource("BoxMesh_building")
 surface_material_override/0 = SubResource("StandardMaterial3D_inn")
 
@@ -74,6 +90,7 @@ shape = SubResource("BoxShape3D_building")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2, -4)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Shop" unique_id=1996246028]
+visible = false
 mesh = SubResource("BoxMesh_building")
 surface_material_override/0 = SubResource("StandardMaterial3D_shop")
 
@@ -98,6 +115,75 @@ npc_id = "brann"
 [node name="Gate" parent="." unique_id=953898486 instance=ExtResource("3_npc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16)
 interact_id = "gate"
+
+[node name="TownDecor" type="Node3D" parent="."]
+
+[node name="InnVisual" parent="TownDecor" instance=ExtResource("4_inn")]
+transform = Transform3D(16, 0, 0, 0, 16, 0, 0, 0, 16, -12, 0, -4)
+
+[node name="ShopVisual" parent="TownDecor" instance=ExtResource("5_shop")]
+transform = Transform3D(16, 0, 0, 0, 16, 0, 0, 0, 16, 12, 0, -4)
+
+[node name="CottageWest" parent="TownDecor" instance=ExtResource("6_cottage")]
+transform = Transform3D(12, 0, 0, 0, 12, 0, 0, 0, 12, -16, 0, 10)
+
+[node name="CottageEast" parent="TownDecor" instance=ExtResource("7_stone")]
+transform = Transform3D(12, 0, 0, 0, 12, 0, 0, 0, 12, 16, 0, 10)
+
+[node name="Well" parent="TownDecor" instance=ExtResource("8_well")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 1)
+
+[node name="Signpost" parent="TownDecor" instance=ExtResource("10_sign")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -5, 0, 3)
+
+[node name="Crates" parent="TownDecor" instance=ExtResource("9_crates")]
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 7.5, 0, 0)
+
+[node name="GateArch" parent="TownDecor" instance=ExtResource("15_arch")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, -16)
+
+[node name="OakSW" parent="TownDecor" instance=ExtResource("11_oak")]
+transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, -20, 0, 12)
+
+[node name="OakSE" parent="TownDecor" instance=ExtResource("11_oak")]
+transform = Transform3D(7, 0, 0, 0, 7, 0, 0, 0, 7, 20, 0, 12)
+
+[node name="OakNW" parent="TownDecor" instance=ExtResource("11_oak")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -20, 0, -12)
+
+[node name="OakNE" parent="TownDecor" instance=ExtResource("11_oak")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 20, 0, -12)
+
+[node name="TreeHighW" parent="TownDecor" instance=ExtResource("13_high")]
+visible = false
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, -18, 0, -2)
+
+[node name="TreeHighE" parent="TownDecor" instance=ExtResource("13_high")]
+visible = false
+transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 3.5, 18, 0, -2)
+
+[node name="TreeCrookedW" parent="TownDecor" instance=ExtResource("12_crooked")]
+visible = false
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -6, 0, -12)
+
+[node name="TreeCrookedE" parent="TownDecor" instance=ExtResource("12_crooked")]
+visible = false
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 6, 0, -12)
+
+[node name="LanternInn" parent="TownDecor" instance=ExtResource("16_lantern")]
+transform = Transform3D(3.2, 0, 0, 0, 3.2, 0, 0, 0, 3.2, -9, 0, -1)
+
+[node name="LanternShop" parent="TownDecor" instance=ExtResource("16_lantern")]
+transform = Transform3D(3.2, 0, 0, 0, 3.2, 0, 0, 0, 3.2, 9, 0, -1)
+
+[node name="Cart" parent="TownDecor" instance=ExtResource("17_cart")]
+transform = Transform3D(0, 0, 4.5, 0, 4.5, 0, -4.5, 0, 0, 6, 0, 4)
+
+[node name="Stall" parent="TownDecor" instance=ExtResource("18_stall")]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0, 0, -8)
+
+[node name="Cobble" parent="TownDecor" instance=ExtResource("14_cobble")]
+transform = Transform3D(18, 0, 0, 0, 1, 0, 0, 0, 18, 0, 0.02, 4)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=2116063534]
 

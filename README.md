@@ -6,11 +6,11 @@ This is a personal game first. Optimize for fun, iteration speed, and experiment
 
 > **Build the game I want to come home and play.**
 
-The long-term charter lives in [`docs/vision.md`](docs/vision.md). This README is the short path from clone to a playable loop.
+The long-term charter lives in [`docs/vision.md`](docs/vision.md). Player-facing design and the feature backlog are [`docs/game-design.md`](docs/game-design.md) and [`docs/feature-list.md`](docs/feature-list.md). This README is the short path from clone to a playable loop.
 
 ## Current milestone
 
-The **edit → test → build → play** loop is proven. The graybox walker exists to keep that pipeline cheap. Next game milestone, when asked, is The Living Town.
+The **edit → test → build → play** loop is proven. The graybox walker exists to keep that pipeline cheap. Next game milestone, when asked, is the empty hub village and portal loop in the design docs — not a pre-filled town.
 
 Agents must follow [`docs/agent-operating-loop.md`](docs/agent-operating-loop.md). Do not invent a second test/build/play path.
 
@@ -45,7 +45,7 @@ The game is a normal Godot 4 project. Summer Engine is an optional development e
 ├── tests/           # headless validation
 ├── scripts/         # canonical test / build / play commands
 ├── tools/           # development helpers (not shipped)
-├── docs/            # charter and workflow
+├── docs/            # charter, game design, workflow
 ├── builds/          # local playable outputs (gitignored)
 └── .github/         # PR template and lightweight CI
 ```
@@ -74,4 +74,4 @@ Details: [`docs/git-workflow.md`](docs/git-workflow.md).
 
 ## What this is not yet
 
-Not the Living Town. Not combat, NPCs, saves, or dungeons. Those start when asked, using the proven loop above.
+Not the hub village yet. Not combat, companions, saves, or portal worlds. Those start when asked, using the proven loop above.
