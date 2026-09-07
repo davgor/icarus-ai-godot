@@ -91,7 +91,7 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 1. Title → **New** → creator atelier (not Millbrook name overlay, not hub).
 2. Pick each race once; confirm preset snap + free override.
 3. Move height / weight / muscle–fat; preview updates live.
-4. Change face/hair/eyes (and at least one demi-human feature when CC-6 is in).
+4. Change face/hair/eyes (and optionally ears and/or tails when CC-6 is in).
 5. Change starting outfit; confirm loadout slots are **not** required.
 6. Orbit / frame the preview on pad (CC-9) or mouse.
 7. Confirm → character written → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
@@ -196,7 +196,7 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 - Story dialogue reactions (later systems consume the tag) — Deferred: [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md)
 - Locking options per race
-- Full demi-human part catalog deepen — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns the vertical-slice minimum; demi-human race may enable the Features tab early
+- Demi-human ear/tail catalog deepen (and horns if design expands) — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns ears+tails optional minimum; demi-human race may enable the Features tab early
 
 ### Dependencies
 
