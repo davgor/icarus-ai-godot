@@ -6,7 +6,7 @@ North star for Cursor and humans. These notes evolve independently. **Repo locks
 
 If two docs disagree, this order wins:
 
-1. [`game-design.md`](game-design.md) — what the player experiences (hub, creator, combat, parkour, companions, gear)
+1. [`game-design.md`](game-design.md) — what the player experiences (Sanctum hub, creator, combat, parkour, companions, gear)
 2. [`art-style.md`](art-style.md) + [`art/prompt-lock.md`](art/prompt-lock.md) — how it looks
 3. [`feature-list.md`](feature-list.md) — what to build, in order
 4. [`agent-operating-loop.md`](agent-operating-loop.md) — how agents implement
@@ -30,6 +30,8 @@ The numbered set is the **living architecture**. It does not replace the player-
 | [`09-GODOT-ARCHITECTURE.md`](09-GODOT-ARCHITECTURE.md) | Sim vs engine; target layout |
 | [`10-AI-DEVELOPMENT-WORKFLOW.md`](10-AI-DEVELOPMENT-WORKFLOW.md) | Pointer to the proven agent loop |
 | [`11-UE5-MIGRATION.md`](11-UE5-MIGRATION.md) | Portable sim; disposable engine layer |
+| [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible building/item defs |
+| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech (hybrid), character record schema, creator lighting, apply→capsule |
 
 ## Also in `docs/`
 

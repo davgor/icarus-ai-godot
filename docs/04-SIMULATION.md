@@ -20,9 +20,11 @@ The LLM does not drive Godot nodes, combat math, inventories, or physics.
 
 ## Deterministic simulation owns
 
-Time, movement, parkour, schedules, combat, downed/heal nodes, economy, inventory, loadout vs outfit, relationships, romance/jealousy flags, faction mechanics, quests, world events, production, population, navigation, physics.
+Time, movement, parkour, schedules, combat, downed/heal nodes, economy, inventory, loadout vs outfit, **appearance application** (creator-legal records only), relationships, romance/jealousy flags, faction mechanics, quests, world events, production, population, navigation, physics.
 
 Player-facing rules for combat, parkour, gear, and companions live in [`game-design.md`](game-design.md). This layer **implements** those rules; it does not invent a second combat model.
+
+**Appearance validation:** reject NPC/companion/player mutations that reference unknown creator catalog ids or out-of-range morphs ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
 
 ---
 
@@ -40,4 +42,4 @@ Companion **action-driven growth** (healer vs mage from what they did in fights)
 
 ## Existing bootstrap
 
-`game/sim/game_state.gd` is a Living Town prototype with a pre-seeded cast. Destination hub is empty. Do not grow that prototype as if it were home. New sim should match this split and the hub lock.
+`game/sim/game_state.gd` is a Living Town prototype with a pre-seeded cast. Destination hub is the empty Sanctum. Do not grow that prototype as if it were home. New sim should match this split and the Sanctum lock (farm, buildings, design catalog, Sanctum level are engine state).

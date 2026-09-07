@@ -8,16 +8,16 @@ This document is the source of truth for **what the game is**. It is not an impl
 
 ## Pitch
 
-A single-player, persistent anime-fantasy RPG. You make a character in extreme depth, wake in an empty village that becomes your home, and leave through a portal into worlds that may be random, continued, or prompted by you.
+A single-player, persistent anime-fantasy RPG. You make a character in extreme depth, wake on an empty floating sanctum that becomes your home, and leave through a portal into worlds that may be random, continued, or prompted by you.
 
-The village is the cozy hub. The portal is the adventure. You take a small squad into stories, earn 100% trust, and bring people home as full characters with their own gear and growth. Skills grow the way you fight.
+The **Sanctum** is the cozy hub. The portal is the adventure. You farm and build at home, level the Sanctum itself, collect home designs from stories, and bring people back when they trust you. Out in the worlds you take a small squad, earn 100% trust, and grow skills the way you fight.
 
 ---
 
 ## Pillars
 
 1. **Mystical anime look** — stylized characters and spaces, deep shadows, bright lights, a world that feels otherworldly rather than naturalistic.
-2. **Home you grow** — the village starts almost empty and becomes a cozy sim through play, not through a pre-authored town.
+2. **Home you grow** — the Sanctum starts almost empty and becomes a **cozy sim** through play: farming, simple building, collectible home designs from stories, and people you earned. Not a pre-authored town.
 3. **Worlds on your terms** — resume a world, roll a new one, or prompt the story you want.
 4. **Identity is yours** — Code Vein-class character creation; race is a tag and a preset, not a lock.
 5. **You are what you wield** — two hands, gear-defined combat, Fable-style use-based progression.
@@ -36,7 +36,7 @@ Canonical lock (agents generate from this, not from memory): [`art-style.md`](ar
 | Style | Wuthering Waves–class 3D anime. Inspiration only, not IP copies. |
 | Lighting | Deep darks, bright lights, high contrast, volumetric depth |
 | Color | Dark high-depth jewel tones (ink navy, indigo, teal, wine) plus sparse moon-white / gold / cyan lights |
-| Mood | Mystical, slightly otherworldly; hub warmer, worlds harsher, same lock |
+| Mood | Mystical, slightly otherworldly; Sanctum warmer on stone + cooler in the dusk-void sky; worlds harsher; same lock |
 | Characters | Anime faces, material-rich bodies and clothes, full creator range including demi-humans |
 
 UI should match this lock. Graybox and Kenney town meshes are build scaffold, not destination art.
@@ -59,7 +59,7 @@ BOOT / LOADING SCREEN
  CHARACTER CREATION
         │
         ▼
- EMPTY HUB VILLAGE  ◄─────────────────────────────┐
+ EMPTY SANCTUM  ◄────────────────────────────────┐
         │                                         │
         │ enter portal                            │ return through portal
         ▼                                         │
@@ -74,21 +74,21 @@ BOOT / LOADING SCREEN
         ▼                                         │
    WORLD  (recruit in story, earn trust) ─────────┘
         │
-        └─ 100% trust → live in hub + eligible for future quests
+        └─ 100% trust → live in Sanctum + eligible for future quests
 ```
 
 ### Title menu
 
 Four options only at boot:
 
-- **New** — full character creation, then first spawn in the hub.
+- **New** — full character creation, then first spawn on the Sanctum.
 - **Load** — existing save / character.
 - **Settings** — game options, including graphics, audio, and controls (keyboard/mouse and gamepad).
 - **Quit**
 
 ### New game
 
-New always goes through **full** character customization before the village. No “skip with default hero” as the intended path (a debug skip for development is fine).
+New always goes through **full** character customization before the Sanctum. No “skip with default hero” as the intended path (a debug skip for development is fine).
 
 ---
 
@@ -114,6 +114,19 @@ Race does **not** lock customization. Race does:
 
 The player can then override the preset freely.
 
+### Creator is the appearance authority
+
+**Every character the game can show** — player, companion, NPC, story recruit, compiler-spawned face — must be expressible as a **creator-legal** appearance record ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
+
+| Lock | Meaning |
+| --- | --- |
+| One vocabulary | Same schema, morphs, part ids, and outfits as the character creator |
+| No unique snowflakes | Generators may not invent meshes, morphs, or colors outside the creator catalog |
+| Tooling exposed | Dev tooling (Summer / Cursor / debug) can open the creator, load any valid record, and preview/edit it |
+| Expand via creator | Need a new look in the world → add it to the creator catalog first (then generate characters with that id) |
+
+World directors and NPC agents propose **catalog ids + morph values**, not freehand art. Validation rejects illegal appearances.
+
 ### Body
 
 The player has full control of:
@@ -123,43 +136,218 @@ The player has full control of:
 - weight
 - a **muscle ↔ fat** bar
 
-**Soft-body / jiggle** is driven by that muscle–fat bar: higher fat increases motion, higher muscle reduces it. This is a customization/readability system, not a separate toggle maze.
+**Height vs weight vs muscle↔fat** (do not collapse these):
+
+| Control | Means |
+| --- | --- |
+| **Height** | How tall the character is |
+| **Weight** | Overall **frame mass** — how heavy/thick the silhouette reads (not “fatness”) |
+| **Muscle ↔ fat** | **Composition** on that frame — lean/muscular ↔ soft; also drives **jiggle** |
+
+**Soft-body / jiggle** is driven by the muscle–fat bar only: higher fat increases motion, higher muscle reduces it. Not a separate toggle maze.
+
+**Skin color** is a first-class creator control (swatches / color), stored on the character, applied to the body material.
+
+Technical contract (hybrid morphs, record schema, apply→capsule, UX tools): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+
+### Creator UX tools
+
+At minimum the atelier supports:
+
+| Tool | Intent |
+| --- | --- |
+| **Reset** | Restore race preset defaults (confirm if dirty). Category reset OK; full reset required. |
+| **Randomize** | Crude random within unlocked options/ranges (full and/or per category). |
+
+Undo stack is not required for v1.
+
+### Creator preview lighting
+
+The atelier includes a **lighting preset** toggle so players can judge shadows and shading before Confirm:
+
+| Preset | Intent |
+| --- | --- |
+| **Full** | Bright, even light — clear materials and colors |
+| **Dawn** | Warm low sun, longer soft shadows |
+| **Dusk** | Cool jewel dusk, deeper shadows (Sanctum-adjacent mood) |
+
+Preview-only. Does not change Sanctum or world time. Default **Full**. Gamepad-usable.
+
+### Demi-human features (first ship)
+
+Demi-human cosmetics for the first shippable creator:
+
+| Feature | Notes |
+| --- | --- |
+| **Ears** | Animal / fantasy ear variants |
+| **Horns** | Optional horn sets (dragon demi friendly) |
+| **Tails** | Includes mammal-style and **lizard / dragon** tails |
+
+| Lock | Meaning |
+| --- | --- |
+| Scope | **Ears**, **horns**, and **tails** (including lizard tails) |
+| Optional | On creation the player may take **any combination or none** — nothing forced |
+| Dragon demi | Ears/horns/lizard-tail combos are enough to read as a dragon demi; no separate “dragon race” required |
+| Race | Demi-human race may offer presets; the player can clear them. Race still does not hard-lock other cosmetics |
+| Unlocked | All listed options are available from the start (no story gate) |
 
 ### Visual identity
 
-Anime style. Combinations should include (expand during implementation, do not treat as a closed list):
+Anime style. Combinations should include:
 
-- face morphs, eyes, hair, scars, markings
-- ears, horns, tails, and other demi-human features
+- **Named** face morphs (starter set locked in the appearance contract; deepen later)
+- eyes, hair, **skin color**
+- **scars** and **markings** (thin starter in the creator slice; deepen later)
+- demi-human **ears**, **horns**, and **tails** (including lizard tails; optional; see above)
 - clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
 
 ---
 
-## Hub village
+## Hub — the Sanctum
 
-The village is the **cozy home away from home**.
+The **Sanctum** is the cozy home away from home: a **floating space rock** hanging in an infinite dusk-void sky, not a ground village.
+
+### Place fantasy
+
+| Lock | Meaning |
+| --- | --- |
+| Form | One small climbable stone islet / sanctum rock in the void |
+| Sky | Always **dusk-void**: ethereal purples, blues, soft nebula depth, sparse stars — never daytime blue |
+| Atmosphere | Floaty **embers / stardust** drift around the rock; cool violet fill from the sky, lantern gold on the stone for coziness |
+| Mood | Intimate and safe underfoot; infinite and ethereal when you look out |
+| Scale | Small and fully materialized. One memorable home rock, not an open-world hub |
+
+Composition from first spawn: **spawn terrace** → sheltered **home bowl** (empty pads for later buildings) → **portal overlook** at the rim, silhouetted against the void.
 
 ### First spawn
 
-- The village is **empty**.
+- The Sanctum is **empty**.
 - **Exception:** the **portal** is present from the start.
 - No pre-placed shopkeepers, neighbors, or quest givers living there yet.
 
-The current Living Town prototype (named NPCs already in a square) is a bootstrap experiment. The destination hub is empty until the player earns people.
+The current Living Town prototype (named NPCs already in a square) is a bootstrap experiment. The destination hub is the empty Sanctum until the player earns people.
 
-### What the hub becomes
+### Portal form
 
-As the player adventures, **100% trust** companions can be brought home. Over time that enables:
+v1 portal is a **freestanding arch** on the overlook. It may change later, and the player may eventually be allowed to change or decorate the portal — do not treat the arch mesh as permanent lore.
 
-- residents (the roster lives here)
-- helpers
+### Falling off
+
+There is no waist-high invisible rail at the cliff. If the player walks or falls off the rock:
+
+1. Free fall for a **few seconds** into the dusk-void.
+2. Softly return / warp back onto the **center of the Sanctum** (home bowl), not a hard death.
+
+This is a recovery beat, not a punishment run. Keep it readable and brief.
+
+### What the Sanctum becomes
+
+The Sanctum is not a lobby between adventures. It is a **cozy-sim home loop** that grows beside the portal loop.
+
+As the player adventures and returns, the Sanctum enables:
+
+- **farming** — plots, crops, materials grown at home
+- **simple building** — place unlocked home designs with materials (no complex construction UI)
+- **home design collectibles** — encounter architecture in stories → unlock the design → build it on the Sanctum
+- **Sanctum level** — a home progression track (separate from combat path XP), fed by materials, builds, harvests, designs unlocked, and companions brought home
+- residents (100% trust roster lives here)
+- helpers / labor (companions can assist farming and upkeep)
 - shops and services
-- a cozy sim layer (decorate, build, live with the people you chose, including romance)
+- decorate / dwell / romance on top of the built home
 - squad select at the portal (who walks out with you next)
+
+### Dual loop
+
+```text
+SANCTUM (cozy sim)  ◄── materials, designs, people ──►  WORLDS (adventure)
+   farm / build / level home                              fight / recruit / explore
+   bank storage                                           bring designs + materials home
+```
+
+Neither loop is optional flavor. Adventure feeds the Sanctum; the Sanctum makes coming home matter.
+
+### Sanctum level
+
+**Sanctum level** is home progression. It is **not** the player’s Strength / Agility / Magic path level and not companion combat level.
+
+| Feeds Sanctum XP (examples) | Intent |
+| --- | --- |
+| Materials collected / banked at home | Bring the world back |
+| Crops planted and harvested | Cozy loop pays into growth |
+| Home designs unlocked | Collectible discovery |
+| Homes / structures placed | Building is progress |
+| Companions brought to 100% and housed | People are the biggest unlock |
+
+Sanctum level gates **capacity**, not combat power: more farm plots, more build pads, storage size, maybe rock terraces / expansions later. It does not raise attack damage.
+
+Exact XP weights and level curve are tuning. The split (home level vs combat paths) is locked.
+
+### Farming
+
+- Farm plots live on the Sanctum (unlocked / expanded by Sanctum level).
+- Plant → grow → harvest into **materials** (and later food / gifts if we add them).
+- Growth is **real-time** (wall clock). Crops advance while you are in a world or away from the game; keep timers readable, not a spreadsheet farm MMO.
+- 100% trust companions can **help** (plant, harvest, tend) once labor exists — see Companions.
+- Farming is a Sanctum activity. Worlds may drop rare seeds or crop unlocks; they do not replace the home farm.
+
+### Sanctum materials (v0)
+
+Simplified bank for building and farm loops. Three types only for now:
+
+| Material | Role |
+| --- | --- |
+| **Wood** | Framing, cabins, most early builds |
+| **Metal** | Hardware, fittings, sturdier structures |
+| **Fiber** | Cloth, rope, soft goods, farm-adjacent crafts |
+
+Do not invent a fourth Sanctum material without updating this lock. World loot can still be richer; when spent on Sanctum builds it converts or maps into these three.
+
+### Building — keep it simple
+
+Building is **place unlocked designs**, not a freeform voxel / wall-piece editor.
+
+| Rule | Meaning |
+| --- | --- |
+| Simple | Pick a design you own → spend materials → snap/place on a pad or clear site |
+| No construction minigame | No stud-by-stud framing, no blueprint puzzle |
+| Relocate / replace OK | Moving or swapping a placed home should stay easy |
+| Pads grow with Sanctum level | Empty rock first; more build sites as home level rises |
+| Parkour stays legal | Placed homes have climbable roofs / walls where it reads as architecture |
+| One instance | **One active placed instance per design** for now (lean). Unlock once; place once unless you relocate/replace |
+
+v1 decorate is optional furniture-light or none. **Structure placement first.** Deep interior decorating can layer later.
+
+### Home designs as collectibles
+
+Home designs are a **collection**, like gear catalogs — but for the Sanctum. Designs are **approved catalog buildings** flagged `sanctum_buildable` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)). Worlds place many catalog buildings; the player **learns** ones they encounter.
+
+**Same mesh:** the approved catalog building mesh is what appears in the world **and** what you place on the Sanctum when it is `sanctum_buildable`. No second polish mesh required for home builds.
+
+1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. backed by a catalog id.
+2. Default learn beat: **Study** — an interaction with the building that unlocks that catalog id in the Sanctum design catalog. Stories may add extra gates later; Study is the baseline.
+3. Back home, if the player has the **materials** (wood / metal / fiber) and a **build site**, they can place that design (one active instance).
+
+| Lock | Meaning |
+| --- | --- |
+| Designs come from play | Story encounters unlock builds. Do not dump the full approved library on New Game. |
+| Empty first | New Sanctum has **no** pre-placed houses (portal only). |
+| Starter design | A humble **starter camp / shelter** unlocks early (first return from a world, or first materials banked) so the cozy loop can start before rare finds. |
+| Rarity | Ordinary cabins/cottages common; striking story architecture rarer / signature. |
+| One instance | One active placed instance per unlocked design (lean). Relocate/replace OK. |
+| Flexible defs | Building data uses a stable core + open `properties` bag so we can add fields later without a hard rewrite. |
+| Shared art | World instance and Sanctum buildable share the catalog mesh. |
+
+The freestanding portal arch is **not** a home design (unless a later cosmetic pack says otherwise).
+
+### Content volume in worlds
+
+Adventure spaces should feel **full of authored-looking stuff**: many generated-and-**approved** buildings, items, and props from the content catalog — not three graybox houses. Players learn about and collect what they find. See [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) for the generate → approve → place → collect loop.
+
+**First pump:** a **log cabin set** (variations of cozy timber dwellings and related cabin kit pieces). **Minimum library before dense placement:** **20 approved buildings**.
 
 ### Trust gate
 
-Bringing someone home is **not** a recruit-at-first-meeting action. See **Companions** below. Until 100% trust they can fight in the story that recruited them; they do not live in the hub or join unrelated quests.
+Bringing someone home is **not** a recruit-at-first-meeting action. See **Companions** below. Until 100% trust they can fight in the story that recruited them; they do not live in the Sanctum or join unrelated quests.
 
 ---
 
@@ -184,7 +372,7 @@ The player writes (or pastes) the story they want to experience. That text:
 
 The engine still owns authoritative state. The prompt is untrusted input that shapes generation; it does not rewrite the save by prose alone.
 
-Worlds are places you visit. The hub is where you return.
+Worlds are places you visit. The Sanctum is where you return.
 
 **New random** and **Prompt** run the **world compiler** as an in-game sequence (watch geography, factions, NPCs, conflicts form). That screen is gameplay, not a mute load. **Continue** skips genesis and resumes persisted mutations. See [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md) and [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md).
 
@@ -204,11 +392,11 @@ Whatever the player is **currently equipped with** comes with them:
 
 ### What stays safe at home
 
-The player can eventually **build storage** in the village. Unequipped finds can be parked there so they are not lost when chasing a new world.
+The player can **build storage** on the Sanctum (often as part of a placed home design or a dedicated stash structure). Unequipped finds and **materials** bank here so they are not lost when chasing a new world.
 
-Until storage exists, the practical rule is: **worn loadout** (hands, armor, accessories) is what you keep.
+Until storage exists, the practical rule is: **worn loadout** (hands, armor, accessories) is what you keep. Materials for Sanctum building may need a minimal early stash once farming / designs land.
 
-Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout.
+Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout. **Sanctum level**, farm state, placed buildings, and the home-design catalog persist on the hub save.
 
 **100% trust companions** persist on the hub roster with their own loadout, outfit, levels, and affinities. They travel through the portal when selected into a field slot. Story-only recruits stay in that world until the trust gate.
 
@@ -248,7 +436,7 @@ Default: **the world is climbable**. Marked yellow ledges only are the wrong tar
 
 Exceptions are allowed (ice, grease, sacred / story-blocked faces, interiors we do not want cheesed). Those should read as exceptions in material or VFX, not as “you forgot to tag the mesh.”
 
-Hub architecture should still be parkour-legal (roofs, walls, the portal approach). Cozy is not an excuse for invisible walls at waist height.
+Hub architecture should still be parkour-legal (rim cliffs, stacks, the portal approach). Cozy is not an excuse for invisible walls at waist height. Falling off the Sanctum uses the soft return rule above.
 
 ### Feel
 
@@ -387,14 +575,14 @@ North stars: **Mass Effect** (two people in the field, you pick them) and **Arkn
 
 | Layer | What it is |
 | --- | --- |
-| Roster | Every companion at **100% trust**. They live in the hub. Arknights-like collection. |
+| Roster | Every companion at **100% trust**. They live in the Sanctum. Arknights-like collection. |
 | Field slots | **Two** active companions plus the player (Mass Effect-like). Chosen at the portal from the roster. Slots may be empty. |
 
 A story can recruit someone who is not on the roster yet. They may occupy a field slot **in that world** (swap if both slots are full). They cannot be taken home or onto other quests until trust hits 100%.
 
 Trust is a 0–100% relationship, earned in stories (and later in the hub). **100%** unlocks both:
 
-1. Follow the player back to the hub to live.
+1. Follow the player back to the Sanctum to live.
 2. Join the roster for further quests (portal squad select).
 
 ### Full characters
@@ -450,11 +638,13 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | This file | What the player experiences |
 | [`art-style.md`](art-style.md) | How it looks; generator lock |
 | [`feature-list.md`](feature-list.md) | What to build, in order |
+| [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible defs |
+| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech, character record, creator lighting, apply→capsule |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
-**Living Town** in earlier writing maps to the **hub village**, with one design change: it starts empty and is populated by trusted companions, not by a pre-authored cast.
+**Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
 
-Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the village, the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
+Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the Sanctum (level, farms, buildings, design catalog), the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
 
 ---
 
@@ -467,10 +657,12 @@ Recorded so we do not silently invent them during implementation:
 - Dual-wield rules and two-handed weapons as a distinct slot vs two occupied hands.
 - Whether combat shares the traversal stamina meter or stays animation-recovery only.
 - Glider, grapple, and swim (not required for the first parkour slice).
-- What “demi-human” covers in the first shippable creator (ears/tails only vs broader kitsune/horned/etc.).
+- Broader demi-human kits beyond ears / horns / tails (wings, full scales body, etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
-- Whether hub time advances while the player is in a world.
+- Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
+- Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.
 - Family / kids as a cozy-sim layer on top of romance.
 - Whether heal nodes are placeable by the player or only found in the world.
+- Whether world loot maps 1:1 into wood/metal/fiber or uses a convert step.

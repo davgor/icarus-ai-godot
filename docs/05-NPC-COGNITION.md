@@ -5,6 +5,7 @@ An NPC is primarily **structured state**, not a chat session.
 ```text
 NPC
 ├── Identity
+├── Appearance  (creator-legal CharacterRecord / appearance slice — same catalog as the player)
 ├── Personality
 ├── Skills / path XP / affinities
 ├── Needs
@@ -14,11 +15,13 @@ NPC
 ├── Knowledge
 ├── Relationships (incl. player: trust, romance)
 ├── Occupation
-├── Loadout + outfit  (same slot rules as the player)
+├── Loadout + outfit  (same slot rules as the player; outfit ids from creator catalog)
 └── Current State    (location, downed, field-slot, …)
 ```
 
 Companions are NPCs plus roster/field-slot rules. They are full characters ([`game-design.md`](game-design.md)). No player-built talent tree. Low-level recruits stay plastic; high-level recruits stay mostly locked.
+
+**Appearance:** every NPC/companion face and body must be **makeable in the character creator** ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Generators pick catalog ids + morphs; they do not invent unique meshes.
 
 A frontier model does not run every tick.
 

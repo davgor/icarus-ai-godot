@@ -23,7 +23,7 @@ PLAYABLE WORLD  (engine state + lazy materialization)
 
 Agents translate creative intent into **structured decisions**. Deterministic systems turn those into state. Validation sits between the model and any mutation ([`04-SIMULATION.md`](04-SIMULATION.md)).
 
-Hub village is **not** compiled from the world prompt. The hub is the player’s persistent home ([`game-design.md`](game-design.md)). Worlds hang off the portal.
+The **Sanctum** (hub) is **not** compiled from the world prompt. The Sanctum is the player’s persistent home ([`game-design.md`](game-design.md)). Worlds hang off the portal.
 
 ---
 
@@ -53,3 +53,7 @@ Random new worlds skip the player prompt and still produce a constitution from t
 - Engine commits: maps, NPCs, inventories, time, combat results.
 - Compiler UI is part of the game ([`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md)).
 - Child content derives from seeds ([`03-SEED-ARCHITECTURE.md`](03-SEED-ARCHITECTURE.md)), then lazy-fills ([`07-LAZY-GENERATION.md`](07-LAZY-GENERATION.md)).
+
+Settlements and loot should feel **stocked**. The compiler places **approved catalog** buildings, items, and props by id — it does not invent mesh paths as free prose. Generate → approve → ship catalog is [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md). Players learn collectible entries in-world; they do not start owning the whole library.
+
+**NPCs and faces** use the **character creator** vocabulary only ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Compiler/directors sample creator-legal `CharacterRecord` slices; they do not invent one-off character art.

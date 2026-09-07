@@ -141,8 +141,28 @@ Do not invent a second art pipeline. Visual generate/import goes through Summer 
 1. Read [`art-style.md`](art-style.md) and [`art/prompt-lock.md`](art/prompt-lock.md).
 2. Prepend the lock prefix. Set image `style` to `"anime"` (never default `"realistic"`).
 3. Attach `game/art/_style/` stills when they exist. Never use `game/art/town/` Kenney/graybox as style.
-4. Generate → `Read` the preview → import into `game/art/{characters,hub,worlds,ui,vfx,gear}/`.
+4. Generate → `Read` the preview → import into the correct path (`game/art/{characters,hub,worlds,ui,vfx,gear}/` or catalog inbox — see below).
 5. To change the look, bump the lock version in both art docs in the same change.
+
+### Content catalog pump
+
+Volume buildings / items / props for worlds use the **generate → agent review → your approval → catalog** loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md):
+
+1. Generate into `game/art/catalog/_inbox/<id>/` with a `pending` JSON draft under `content/catalog/_inbox/` (concept → **mesh**).
+2. **Agent** reviews against the art bible + schema (`Read` concept and mesh). Reject/regenerate, or set `ready_for_review` only when a mesh exists, with short notes.
+3. **You** give final approval. Only then: move art + def into approved catalog paths, set `status: approved`, commit/merge.
+4. Runtime and the world compiler **only** sample approved rows. Sanctum buildables reuse that mesh.
+
+First pump target: **log cabin set**, aiming at **20 approved buildings** before dense world placement. Do not drop raw generations straight into playable world folders. Do not self-approve as an agent.
+
+## Character creator tooling
+
+When working on appearance, NPCs, or companions:
+
+1. Treat the creator catalog + schema v1 as the **only** legal look vocabulary ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
+2. Open the creator scene in Summer to verify parts and lighting.
+3. Apply generated `CharacterRecord`s to the preview applier — if it cannot load, the record is illegal.
+4. Never invent one-off character meshes for a story beat; add the part to the creator first.
 
 ## Do not go back to
 
