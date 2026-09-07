@@ -34,6 +34,8 @@ func _run_suite() -> int:
 	failed += _ok("title_menu_actions", _test_title_menu_actions())
 	failed += _ok("title_stubs_return", _test_title_stubs_return())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
+	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
+	failed += _ok("settings_sections", _test_settings_sections())
 	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
 	return failed
 
@@ -218,7 +220,7 @@ func _test_title_stubs_return() -> bool:
 	var flow := _flow()
 	if flow == null:
 		return false
-	for action in ["New", "Load", "Settings"]:
+	for action in ["New", "Load"]:
 		flow.show_stub(action)
 		if str(flow.screen_name()) != "stub":
 			push_error("Stub did not open for %s" % action)
@@ -236,6 +238,56 @@ func _test_title_stubs_return() -> bool:
 func _test_quit_path_callable() -> bool:
 	var flow := _flow()
 	return flow != null and flow.has_method("request_quit")
+
+
+func _test_settings_open_and_back() -> bool:
+	var flow := _flow()
+	if flow == null:
+		push_error("AppFlow autoload missing")
+		return false
+	flow.show_title()
+	flow.show_settings()
+	if str(flow.screen_name()) != "settings":
+		push_error("Settings did not open from title")
+		flow.hide_flow()
+		return false
+	flow.show_title()
+	if str(flow.screen_name()) != "title":
+		push_error("Settings did not return to title")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_settings_sections() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_settings()
+	var ids: PackedStringArray = flow.settings_section_ids()
+	if ids != PackedStringArray(["audio", "graphics", "controls"]):
+		push_error("Settings sections were %s" % str(ids))
+		flow.hide_flow()
+		return false
+	var notice := str(flow.settings_placeholder_notice())
+	if notice.find("not saved") < 0:
+		push_error("Settings missing placeholder persistence notice")
+		flow.hide_flow()
+		return false
+	flow.show_settings_section("controls")
+	if str(flow.settings_current_section()) != "controls":
+		push_error("Controls section did not become current")
+		flow.hide_flow()
+		return false
+	var blurb := str(flow.settings_controls_blurb()).to_lower()
+	if blurb.find("keyboard") < 0 or blurb.find("gamepad") < 0:
+		push_error("Controls section does not acknowledge KBM + gamepad")
+		flow.hide_flow()
+		return false
+	flow.show_title()
+	flow.hide_flow()
+	return true
 
 
 func _test_create_overlay_hidden_on_boot() -> bool:
