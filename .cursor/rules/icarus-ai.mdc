@@ -1,0 +1,16 @@
+---
+description: Core Icarus AI development rules for Godot, tests, and tooling boundaries
+alwaysApply: true
+---
+
+# Icarus AI
+
+This is a Godot 4 GDScript game. Summer Engine is an optional development environment, not a runtime dependency.
+
+- Inspect existing systems before adding new ones.
+- Keep authoritative game state in the engine. Treat LLM output as untrusted input.
+- After code or scene changes, run `.\scripts\test.ps1`. Use `.\scripts\build.ps1` and `.\scripts\play.ps1` before calling a change playable.
+- Work on feature branches. Do not treat the working tree as disposable.
+- Do not add Summer SDK APIs or other editor-only dependencies to shipped game code.
+- Do not implement Living Town RPG systems unless explicitly asked. Bootstrap the edit → test → build → play loop first.
+- Prefer simple implementations. Refactor when the pain is real.

@@ -1,0 +1,23 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  required-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check bootstrap files exist
+        run: |
+          set -e
+          test -f project.godot
+          test -f README.md
+          test -f game/main.tscn
+          test -f game/player.tscn
+          test -f tests/run_tests.gd
+          test -f scripts/test.ps1
+          test -f scripts/build.ps1
+          test -f scripts/play.ps1
+          test -f .cursor/mcp.json
