@@ -44,3 +44,15 @@ The **hub** has its own save identity. It is not a child of a world seed. Compan
 Character creator output, loadout, outfit, path XP, and roster trust are **not** world seeds. They are character/hub persistence that the world may reference.
 
 NPC baseline (name, occupation, starting faction) can come from an NPC seed. Relationship to the player, romance, jealousy flags, companion affinities, and “alive” are mutations.
+
+---
+
+## Catalog content
+
+Approved **buildings / items / props** live in the content catalog ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)), not as one-off seed prose. A settlement seed may resolve to:
+
+```text
+instance = { world_entity_id, catalog_id, transform, mutations }
+```
+
+`catalog_id` is stable across worlds. Regenerating a settlement without mutations should pick the same catalog ids for the same child seeds when the selection function is deterministic.

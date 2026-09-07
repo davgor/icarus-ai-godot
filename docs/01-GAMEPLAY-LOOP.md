@@ -16,9 +16,9 @@ BOOT / LOADING
  CHARACTER CREATION
         │
         ▼
- HUB VILLAGE  ◄──────────────────────────────┐
+ HUB — SANCTUM  ◄────────────────────────────┐
         │                                    │
-        │ portal                             │ return
+        │ portal                             │ return (materials, designs, people)
         ▼                                    │
  PORTAL: Continue | New random | Prompt      │
         │                                    │
@@ -31,10 +31,14 @@ BOOT / LOADING
         ▼                                    │
  ENTER WORLD → explore / interact / change ──┘
         │
-        └─ persist; 100% trust → hub roster
+        └─ persist; 100% trust → Sanctum roster
+        └─ home designs unlocked → Sanctum catalog
+        └─ materials → Sanctum bank / builds / farm loop
 ```
 
 **Continue** resumes materialized state. It does not re-run the compiler as a new genesis.
+
+Between portal trips the player **lives on the Sanctum**: farm, place unlocked home designs, bank materials, dwell with the roster. That cozy loop is first-class, not a menu between loads.
 
 **New random** and **Prompt** go through the compiler. Prompted text is untrusted input that becomes a constitution and a seed ([`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md)).
 
@@ -65,7 +69,7 @@ Play is a normal third-person action-RPG: parkour, soulslike-weight combat (fair
 
 Do not skip this for a compiler demo:
 
-Title → thin creator → empty hub + portal → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
+Title → thin creator → empty Sanctum + portal → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
 
 ---
 

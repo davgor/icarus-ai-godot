@@ -17,12 +17,12 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | # | Epic pack | Feature-list | Detail | Status |
 | --- | --- | --- | --- | --- |
 | 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | Planned |
-| 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) | Planned |
-| 3 | Empty hub village + portal | §3 | *TBD* | — |
+| 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | Planned |
+| 3 | Empty **Sanctum** + portal | §3 | *TBD* | — |
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
 
-Later packs (after first playable): combat / Fable XP (§6), companions + living hub (§7), worlds / compiler depth (§8). Do not skip the hub for a compiler demo.
+Later packs (after first playable): combat / Fable XP (§6), companions + **Sanctum cozy sim** — farm, simple build, design collectibles, Sanctum level (§7), worlds / compiler depth + **content catalog** generate→approve→collect (§8). Do not skip the hub for a compiler demo.
 
 ---
 

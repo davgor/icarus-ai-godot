@@ -18,7 +18,7 @@ Player-facing systems (hub, creator, combat, parkour, companions, gear, art) are
 
 1. Boot to title (New / Load / Settings / Quit).
 2. Create or load a character (Code Vein-depth creator on New).
-3. Live in the **hub village** (empty at first except the portal; filled by 100% trust companions).
+3. Live in the **Sanctum** (floating hub rock; empty at first except the portal; grows into a cozy sim — farm, build collectible home designs, house 100% trust companions).
 4. At the portal: continue a world, roll a new random one, or **prompt** one.
 5. For prompted / new-compile worlds: watch the **world compiler** work (that screen is gameplay).
 6. Pick up to two field companions from the roster (empty allowed).
@@ -50,7 +50,7 @@ Architectural priority order: iteration speed, fun, debuggability, determinism, 
 ## Milestones (do not skip)
 
 1. **Bootstrap** — proven: Cursor edit → `.\scripts\test.ps1` → build → play.
-2. **First playable** — hub village loop in [`feature-list.md`](feature-list.md) (title, creator, empty hub, parkour, portal, persist worn loadout). Not a pre-filled town.
+2. **First playable** — Sanctum hub loop in [`feature-list.md`](feature-list.md) (title, creator, empty Sanctum, parkour, portal, persist worn loadout). Not a pre-filled town.
 3. **World nucleus** — the “holy shit” test in [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md): compile, meet someone, change something, leave, return, they remember why.
 4. **Expansion** — combat depth, art, huge maps, roster, romance. Architecture exists so we can keep stuffing features **without violating the locks above**.
 
