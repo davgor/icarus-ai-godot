@@ -82,7 +82,7 @@ Mutation rules (copy from the operating loop):
 
 **Pipeline per asset:** read art docs → prepend lock → generate → `Read` preview → compare to bible → import under the correct `game/art/...` folder → wire in the creator scene via Summer → play → diagnostics.
 
-**Call-forward from OS-5:** discard or demote `creator_stub_bg` once the real atelier exists; do not keep the stub as the intended New destination.
+**Call-forward from OS-5:** discard or demote `creator_stub_bg` once the real atelier exists; do not keep the stub as the intended New destination — Deferred: [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md).
 
 ### Summer play acceptance (pack-level)
 
@@ -95,7 +95,7 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 5. Change starting outfit; confirm loadout slots are **not** required.
 6. Orbit / frame the preview on pad (CC-9) or mouse.
 7. Confirm → character written → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
-8. Back / cancel from creator returns to title without writing a character (unless an explicit “save draft” is added later — not required here).
+8. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
 
 After each smoke: `summer_get_diagnostics`. Fix before declaring the epic playable.
 
@@ -194,9 +194,9 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 ### Out of scope
 
-- Story dialogue reactions (later systems consume the tag)
+- Story dialogue reactions (later systems consume the tag) — Deferred: [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md)
 - Locking options per race
-- Full demi-human part catalog (CC-6); demi-human race may enable the Features tab early
+- Full demi-human part catalog deepen — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns the vertical-slice minimum; demi-human race may enable the Features tab early
 
 ### Dependencies
 
@@ -250,7 +250,7 @@ Body category exposes **height**, **weight**, a **muscle ↔ fat** bar, and a fi
 
 - First-class height and weight sliders
 - Muscle ↔ fat as one bar (not separate unrelated toggles)
-- Proportion regions for the slice: at least head, torso, arms, legs (expand later inside this epic ID)
+- Proportion regions for the slice: at least head, torso, arms, legs (deepen later — Deferred: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md))
 - Live preview updates (scale / blend shapes / bone scales — engine choice, keep one approach)
 - Capsule / collision preview scale hooks for later parkour (document; full move kit is pack 04)
 
@@ -258,7 +258,7 @@ Body category exposes **height**, **weight**, a **muscle ↔ fat** bar, and a fi
 
 - Soft-body motion (CC-4)
 - Face part catalog (CC-5)
-- Final animation retarget for every extreme morph (best-effort clip; document known limits)
+- Final animation retarget for every extreme morph (best-effort clip; document known limits) — Deferred: [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md)
 
 ### Dependencies
 
@@ -313,7 +313,7 @@ Preview (and later in-world) soft motion is driven by the **muscle ↔ fat** bar
 ### Out of scope
 
 - Adult-only toggle sprawl / separate breast/hip checkbox farms
-- Final cloth cape physics (loadout/outfit cape ships with gear persistence; outfit cloth may stub here)
+- Final cloth cape physics (loadout/outfit cape ships with gear persistence; outfit cloth may stub here) — Deferred: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md)
 
 ### Dependencies
 
@@ -367,8 +367,8 @@ Face category offers an anime **starter kit**: face morphs, eyes, hair (styles +
 
 ### Out of scope
 
-- Closed “final” catalog — expand in follow-up PRs tagged CC-5
-- Makeup / scar / marking fullness (may add as deepen items under the same ID)
+- Closed “final” catalog — expand in follow-up PRs — Deferred: [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
+- Makeup / scar / marking fullness — same ticket [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
 
 ### Dependencies
 
@@ -477,8 +477,8 @@ Player picks a **starting outfit** (clothes / appearance). It is stored as **out
 
 ### Out of scope
 
-- Full transmog wardrobe endgame
-- Cape cloth physics final (may stub; gear epic owns cape slot physics)
+- Full transmog wardrobe endgame — Deferred: [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md)
+- Cape cloth physics final (may stub; gear epic owns cape slot physics) — Deferred: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md)
 - Accessories as combat gear (necklace/rings/earrings are loadout later — optional cosmetic-only dupes only if they stay outfit-scoped and documented)
 
 ### Dependencies
@@ -533,9 +533,9 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 
 ### Out of scope
 
-- Full hub village art and portal modes (pack 03 / 05)
+- Full hub village art and portal modes (packs 03 / 05 — not deferred tickets)
 - Loadout persistence across worlds (pack 05) — only ensure outfit/body survive this handoff
-- Continue / Load of that save from title (may smoke if trivial; OS-4 empty state can remain until persistence pack)
+- Continue / Load of that save from title (may smoke if trivial; OS-4 empty state can remain until persistence) — Deferred: [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md)
 
 ### Dependencies
 
@@ -556,7 +556,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 | Confirm flourish / wipe | `game/art/vfx/creator_confirm_wipe.png` | Polish | Short mystical bloom/wipe; sparse; no text |
 | Hub stub skybox / ground (if needed) | `game/art/hub/hub_stub_*.png` | Only if pack 03 absent | Empty cozy dusk plaza; portal hint OK; not Millbrook graybox style |
 
-**Call-forward:** pack 03 replaces hub stub with the real empty village + portal.
+**Call-forward:** pack 03 replaces hub stub with the real empty village + portal (epic pack — not a `DEF` ticket).
 
 ### Acceptance
 
@@ -590,7 +590,7 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, camera 
 
 ### Out of scope
 
-- Full Controls rebind screen (title Settings placeholder remains)
+- Full Controls rebind screen (title Settings placeholder remains) — Deferred: [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md)
 - Mouse-cursor stick emulation as the solution
 
 ### Dependencies
@@ -638,7 +638,7 @@ This pack is **Playable** (vertical slice) when:
 8. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 9. Millbrook name-only create is not the intended New path.
 
-**Deepen still inside this pack (not a new pack):** richer proportions, larger hair/eye/feature/outfit catalogs, jiggle polish (CC-4), more demi-human parts (CC-6).
+**Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
 
 **Not required for this pack:** real hub village content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
 
@@ -652,3 +652,4 @@ This pack is **Playable** (vertical slice) when:
 - Do not collapse outfit into armor slots. Do not add Summer SDK to runtime.
 - When pack 03 starts, replace the hub stub only — keep the character record and creator scene.
 - Generate art in the same change series as the systems that show it; do not merge “forever gray mannequin” without the asset tables above tracked as in-branch follow-ups.
+- **Deferments:** file new ones under [`../backlog/deferred/`](../backlog/deferred/). Before implementing any CC epic, review Open `DEF-*` tickets and rope in matches (especially [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md) with CC-1).

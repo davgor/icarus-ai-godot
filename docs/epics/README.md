@@ -4,6 +4,10 @@ Breaks [`feature-list.md`](../feature-list.md) into implementable epics. Player-
 
 **Rule:** every epic includes an **Asset generation** section. Systems-only epics still call out chrome, transitions, glyphs, or “no new art — reuse X.” Do not ship a graybox UI as the destination look without naming the replace assets.
 
+**Deferments:** do not leave “later / out of scope / call-forward” only in the epic body. File a ticket under [`../backlog/deferred/`](../backlog/deferred/) with a **Source** link back here, and link that ticket from the epic. Sequenced **next epic packs** in the table below are not deferred tickets — point at the pack. Pack-internal sequencing (“CC-3 owns morphs”) is not a deferment.
+
+**Before implementing any epic/ticket:** review Open items in `docs/backlog/deferred/` and rope in anything that fits the same change. Process: [`../backlog/deferred/README.md`](../backlog/deferred/README.md).
+
 Status: **Planned** → **In progress** → **Playable** → **Done**. Detail docs land before implementation on that slice.
 
 ---
@@ -28,11 +32,12 @@ Use this shape when writing a detail doc:
 
 1. **Outcome** — what the player can do when the epic is playable  
 2. **Maps to** — feature-list IDs  
-3. **In / out of scope**  
+3. **In / out of scope** — out-of-scope deferrals that leave this deliverable link a `DEF-NNN` ticket (or a named later pack)  
 4. **Dependencies**  
 5. **Work** — scenes, scripts, input, tests  
 6. **Asset generation** — what to generate, path, lock, prompt intent, import gate  
 7. **Acceptance** — controller + KBM where required; `TEST_RESULT: PASS`; Summer diagnostics after play when MCP is available  
+8. **Deferred review** (implementation PRs) — which Open `DEF-*` tickets were checked; which were roped in or skipped  
 
 ### Asset generation callout (minimum)
 
