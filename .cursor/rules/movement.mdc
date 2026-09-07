@@ -1,0 +1,16 @@
+---
+description: Light parkour movement lock — climb and wall-run like WuWa / TotK / Genshin
+globs: game/**/*player*.gd,game/**/player*.gd
+alwaysApply: false
+---
+
+# Movement
+
+Player locomotion follows [`docs/game-design.md`](docs/game-design.md) (Movement). Do not ship walk-and-jump as the destination controller.
+
+- Kit: walk/run/sprint, jump, mantle, **wall climb**, **wall run**, ledge hang.
+- Surfaces default to climbable. Yellow-ledge-only is wrong.
+- Traversal meter is generous (sprint/climb/wall-run). Empty = slide/drop, not death.
+- Same kit in hub and worlds, on a controller. Combat stays heavy; parkour is not removed in fights.
+- Creator body scale changes capsule/anims, not the move list.
+- Not in the first slice: glider, grapple, swim.

@@ -1,0 +1,12 @@
+---
+description: Deferred backlog — file tickets on deferment; review before implementing
+alwaysApply: true
+---
+
+# Deferred backlog
+
+Do not leave deferrals only in epic “Out of scope” / “later” notes.
+
+- **On deferment:** add `docs/backlog/deferred/DEF-NNN-short-slug.md` with a **Source** link to the epic heading or PR, and link that ticket from the epic. Process + template: [`docs/backlog/deferred/README.md`](docs/backlog/deferred/README.md).
+- **Not a DEF ticket:** the next named epic pack in `docs/epics/README.md`, or pack-internal sequencing.
+- **Before implementing** any epic/ticket: list Open items in `docs/backlog/deferred/` and rope in anything that fits the same change. Note roped-in or “none” in the PR.

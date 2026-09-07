@@ -2,6 +2,8 @@
 
 This is the proven development path for this repository. Do not invent a replacement.
 
+Design north star: [`README.md`](README.md). Player-facing locks: [`game-design.md`](game-design.md). This file is **how** to implement, not what the game is.
+
 Verified 2026-09-07 on branch `bootstrap/dev-loop` with Cursor + Summer Engine MCP + `.\scripts\test.ps1` / `build.ps1` / `play.ps1`.
 
 ## Layers
@@ -37,12 +39,13 @@ Engine resolution (already implemented in `scripts/lib/engine.ps1`):
 ## After every implementation
 
 1. Inspect the existing system and tests.
-2. Make a focused change.
-3. Run `.\scripts\test.ps1`.
-4. If Summer MCP is connected: play the affected scene, wait, `summer_get_diagnostics`, fix, repeat.
-5. `.\scripts\build.ps1` when the change should be playable.
-6. `.\scripts\play.ps1` or Summer play as appropriate.
-7. Report exactly what changed.
+2. Review Open tickets in [`backlog/deferred/`](backlog/deferred/) and rope in any that fit this change (same scene/system/art pass). File a new `DEF-NNN` ticket if you newly defer work — do not leave deferrals only in epic “Out of scope” notes. See [`backlog/deferred/README.md`](backlog/deferred/README.md).
+3. Make a focused change.
+4. Run `.\scripts\test.ps1`.
+5. If Summer MCP is connected: play the affected scene, wait, `summer_get_diagnostics`, fix, repeat.
+6. `.\scripts\build.ps1` when the change should be playable.
+7. `.\scripts\play.ps1` or Summer play as appropriate.
+8. Report exactly what changed (include deferred review: roped in / none).
 
 Compiling is not done.
 
@@ -131,6 +134,16 @@ in the base class "PhysicsBody3D".
 
 Use `forced_move_input`. Summer diagnostics caught this on the first play; compile-only checks did not.
 
+## Asset generation
+
+Do not invent a second art pipeline. Visual generate/import goes through Summer MCP (or an explicit user-named provider) **and** the style lock.
+
+1. Read [`art-style.md`](art-style.md) and [`art/prompt-lock.md`](art/prompt-lock.md).
+2. Prepend the lock prefix. Set image `style` to `"anime"` (never default `"realistic"`).
+3. Attach `game/art/_style/` stills when they exist. Never use `game/art/town/` Kenney/graybox as style.
+4. Generate → `Read` the preview → import into `game/art/{characters,hub,worlds,ui,vfx,gear}/`.
+5. To change the look, bump the lock version in both art docs in the same change.
+
 ## Do not go back to
 
 - Hand-rolling `godot --headless -s addons/gut/...`
@@ -142,3 +155,6 @@ Use `forced_move_input`. Summer diagnostics caught this on the first play; compi
 - Running `--import` against a project whose editor is open
 - Treating ObjectDB leak lines as test failures
 - Treating engine exit code 0 as test success without `TEST_RESULT: PASS`
+- Generating art with Summer’s default `style: "realistic"` or without the art-style lock
+- Deferring work only inside an epic footnote without a [`backlog/deferred/`](backlog/deferred/) ticket + source link
+- Starting a slice without checking Open deferred tickets for rope-ins

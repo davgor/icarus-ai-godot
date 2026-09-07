@@ -27,3 +27,5 @@ Required cycle after a scene or runtime-affecting change:
 ```
 
 Do not: run `--import` while the editor is open; use Summer SDK in game code; treat Summer Cloud as source of truth; declare playable without a diagnostics pass.
+
+Visual generate/import follows [`docs/art-style.md`](docs/art-style.md). Image `style` is `"anime"`.

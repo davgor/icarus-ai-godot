@@ -4,6 +4,8 @@ Ordered backlog for the player-facing design in [`game-design.md`](game-design.m
 
 Do not treat this as “implement everything in one branch.” Each slice should stay playable. Bootstrap / graybox work already in the tree is a pipeline, not a substitute for these features.
 
+All generated and imported visuals follow [`art-style.md`](art-style.md) and [`art/prompt-lock.md`](art/prompt-lock.md). Image `style` is `"anime"`. Architecture bundle: [`README.md`](README.md). Player-facing locks in [`game-design.md`](game-design.md) beat outside notes.
+
 Status key: **Now** = next when we start this design. **Next** = after the previous slice is playable. **Later** = needs earlier systems. **Open** = blocked on a design question.
 
 ---
@@ -18,6 +20,8 @@ Status key: **Now** = next when we start this design. **Next** = after the previ
 ---
 
 ## 1. Boot and title — Now
+
+Epics: [`epics/01-opening-screen.md`](epics/01-opening-screen.md) (OS-1…OS-6). Index: [`epics/README.md`](epics/README.md).
 
 The game must open as a game, not as a graybox drop-in.
 
@@ -36,6 +40,8 @@ The game must open as a game, not as a graybox drop-in.
 ---
 
 ## 2. Character creation — Now / Next
+
+Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-9). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
 
 Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 
@@ -72,8 +78,31 @@ Cozy home. Empty except the portal.
 | 3.5 | Return point | Leaving a world always comes back here |
 | 3.6 | Cozy-sim foundation | Place to stand, look, and later place buildings / storage (hooks only at first) |
 | 3.7 | Hub on controller | Walk, look, interact with the portal without a mouse |
+| 3.8 | Parkour-legal hub | Roofs, walls, and the portal approach are climbable; no waist-high invisible walls |
 
 The existing Living Town sim with a pre-seeded cast is **not** this hub. Replace or isolate it when this slice starts; do not grow the prototype town as if it were home.
+
+---
+
+## Movement and parkour — Next
+
+Ships with the hub, required in every world. North stars: Wuthering Waves, Tears of the Kingdom, Genshin. Light, not a precision platformer. Same kit on controller and KBM.
+
+| ID | Feature | Notes |
+| --- | --- | --- |
+| MV.1 | Walk / run / sprint | Analog; sprint is a hold |
+| MV.2 | Jump | Ground, off-wall, short air control |
+| MV.3 | Mantle / vault | Low ledges do not eat the character |
+| MV.4 | Wall climb | Attach and climb near-vertical faces; world-default climbable |
+| MV.5 | Wall run | Limited horizontal run along walls (WuWa-class) |
+| MV.6 | Ledge hang | Shimmy, climb up, or drop |
+| MV.7 | Traversal meter | Shared drain for sprint / climb / wall-run; generous; slide/drop on empty, not death |
+| MV.8 | Gamepad parkour | Jump, sprint, attach, drop fully on a controller |
+| MV.9 | Camera on walls | Follow cam stays readable during climb and wall-run |
+
+Body size scales capsule and anims. It does not unlock a different move list.
+
+Not in this slice: glider, grapple, swim.
 
 ---
 
@@ -86,9 +115,12 @@ Three choices when the player uses the portal.
 | 4.1 | Portal UI | Continue / New random / Prompt |
 | 4.2 | New randomized world | Seeded world, enter, play, return |
 | 4.3 | Continue previous world | Resume last (or selected) world state |
-| 4.4 | Prompted world | Player supplies story text → influences seed + story direction |
+| 4.4 | Prompted world | Player supplies story text → constitution + seed + compiler screen |
 | 4.5 | World save | Engine-owned world state, distinct from hub state |
 | 4.6 | Prompt storage | Remember the prompt with that world for Continue |
+| 4.7 | Parkour-legal worlds | Generated / authored spaces default to climbable; traversal kit works the moment you step through |
+| 4.8 | Squad select | Two field slots from the 100% trust roster before enter; empty allowed; controller-usable |
+| 4.9 | Compiler screen | In-game genesis for new/prompt worlds (watch factions/NPCs form). Continue skips it |
 
 Prompted worlds still obey: AI suggests, engine commits.
 
@@ -96,17 +128,22 @@ Prompted worlds still obey: AI suggests, engine commits.
 
 ## 5. Loadout persistence — Next
 
-Worn gear is the character’s through-line.
+Worn **loadout** is the character’s through-line. Outfit is saved too, and is not the loadout.
 
 | ID | Feature | Notes |
 | --- | --- | --- |
 | 5.1 | Two-hand equipment | Left / right (or main / off) slots |
-| 5.2 | Equip in hub and worlds | Same character, same worn items |
-| 5.3 | Travel rule | Current equipment always comes through the portal both ways |
-| 5.4 | Character save | Body, race tag, skills, worn gear survive quit / relaunch |
-| 5.5 | Village storage | **Later** — buildable stash so finds can stay home unequipped |
+| 5.2 | Armor slots | Helmet, torso, gloves, **cape**, legs, boots |
+| 5.3 | Cape physics | Cloth sim on the cape slot / visible outfit cape |
+| 5.4 | Accessory slots | Necklace, **2 rings**, **2 earrings**. Gear, not deferred flavor |
+| 5.5 | Outfit layer | Full cosmetic control. Armor ≠ appearance. Does not change playstyle |
+| 5.6 | Same slots on companions | Player can fully kit and dress them |
+| 5.7 | Equip in hub and worlds | Same character, same loadout + outfit |
+| 5.8 | Travel rule | Current loadout and outfit always come through the portal both ways |
+| 5.9 | Character save | Body, race tag, skills, loadout, outfit survive quit / relaunch |
+| 5.10 | Village storage | **Later** — buildable stash so finds can stay home unequipped |
 
-Until 5.5, worn = what you keep.
+Until 5.10, worn loadout = what you keep. Dressing someone in a different outfit must not rewrite their combat role.
 
 ---
 
@@ -127,26 +164,41 @@ Gear decides both moves and growth. Feel is soulslike; tuning is not.
 | 6.9 | Heavy commitment | Startup, recovery, readable swings — weight, not floaty hack-and-slash |
 | 6.10 | Fair difficulty | Telegraphs and recovery room; not Souls-grade punishment |
 | 6.11 | Gamepad combat | Attack, evade, lock, items, and two-hand swaps on a controller from the first fight |
+| 6.12 | Companion combat | Field companions fight with the same gear/XP rules; AI-driven, not player-specced |
+| 6.13 | Downed | Player and companions can go down and be healed back up |
+| 6.14 | Heal nodes | World crystal shards (Arknights originium-shard analog); range heal + raise downed |
+| 6.15 | Party wipe | Everyone down, no node in range → retreat to last node or entrance; keep loadout |
 
-Unarmed, two-handed weapons, stamina-as-resource, and death rules wait on open questions in the design doc.
+Unarmed, two-handed weapons, and shared-vs-separate combat stamina wait on open questions in the design doc. Parkour stays available in combat spaces; attacks stay heavy. First down is not permadeath.
 
 ---
 
 ## 7. Companions and a living hub — Later
 
-The village fills because you chose people, not because the map shipped inhabited.
+Mass Effect field slots, Arknights roster. Companions are full characters. The player does not spec their trees.
 
 | ID | Feature | Notes |
 | --- | --- | --- |
-| 7.1 | Companion identity | Named characters in worlds |
-| 7.2 | Trust | High-trust gate before invite |
-| 7.3 | Invite home | Only after the gate; they appear in the hub |
-| 7.4 | Residents | Live in the village, presence when you return |
-| 7.5 | Help / labor | They can assist (scope TBD once trust exists) |
-| 7.6 | Shops | Trusted companions can open services in the hub |
-| 7.7 | Cozy sim loop | Decorate, build, dwell — layered on after people can arrive |
+| 7.1 | Companion identity | Named full characters: same loadout slots, outfit layer, Fable paths |
+| 7.2 | Story recruit | Recruited in a world; may fill/swap a field slot **in that story** before 100% trust |
+| 7.3 | Trust 0–100% | Earned in stories (and later in the hub). Not instant. |
+| 7.4 | 100% gate | Unlocks hub residence **and** roster eligibility for further quests |
+| 7.5 | Roster | All 100% companions live in the hub |
+| 7.6 | Field slots | **Two** + player. Portal picker. Empty OK. |
+| 7.7 | Action-driven growth | No player talent screen. Affinities from what they actually do |
+| 7.8 | Plastic vs locked | Low-level recruits reshape (healer vs mage from whether they had to heal). High-level recruits stay mostly the person you hired |
+| 7.9 | Combat AI | Engine picks actions from affinities + party state. LLM does not spend their XP |
+| 7.10 | Outfit companions | Player dresses them; look ≠ playstyle |
+| 7.11 | Kit companions | Player may equip their hands/armor/accessories; weapons still drive XP |
+| 7.12 | Romance | Supported. **Polyamory allowed** — not a one-partner lock |
+| 7.13 | Jealousy | Some companions only. **Procs if they meet**, never omniscient |
+| 7.14 | Residents | Presence in the hub when you return |
+| 7.15 | Help / labor | They can assist (scope TBD once roster exists) |
+| 7.16 | Shops | Trusted companions can open services in the hub |
+| 7.17 | Cozy sim loop | Decorate, build, dwell — layered on after people can arrive |
+| 7.18 | Squad UI on controller | Pick/swap field slots without a mouse |
 
-Do not pre-place shop NPCs “for now” in the destination hub. Temporary debug spawns are fine if they cannot be invited without trust.
+Do not pre-place shop NPCs “for now” in the destination hub. Temporary debug spawns are fine if they cannot be invited without 100% trust. Do not ship a companion skill menu the player points at.
 
 ---
 
@@ -161,6 +213,11 @@ Deepen what happens beyond the portal.
 | 8.3 | Race tags in story | Worlds and NPCs can react to the stored race tag |
 | 8.4 | Continue fidelity | A previous world is recognizably the same place you left |
 | 8.5 | Multi-world | If we allow more than one continued world, a picker (open question) |
+| 8.6 | Heal nodes | Place crystal shards in generated/authored worlds as revive/heal infrastructure |
+| 8.7 | World compiler v0.1 | Constitution → seed → map/factions/major NPCs; compiler UI; enter first settlement |
+| 8.8 | Holy shit test | Generate, meet NPC, change something, leave, return, they remember why |
+
+Architecture notes: [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md), [`01-GAMEPLAY-LOOP.md`](01-GAMEPLAY-LOOP.md). Do not skip the hub first-playable slice for this.
 
 ---
 
@@ -171,9 +228,10 @@ Smallest thing that feels like *this* game rather than a walker:
 1. Loading screen → title (New / Load / Settings / Quit), **on a controller**
 2. New → race + a few body sliders → confirm, **on a controller**
 3. Empty village with a portal, same camera language
-4. Portal → one graybox “random world” → return still wearing a test item
+4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
+5. Portal → one graybox “random world” (still climbable) → return still wearing a test item
 
-Character morph depth, Fable combat, companions, and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick.
+Character morph depth, Fable combat, **companion roster**, and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
 
 ---
 
@@ -182,3 +240,8 @@ Character morph depth, Fable combat, companions, and prompted story come after t
 - Summer / Cursor / MCP features (tooling, not the game)
 - Replacing the test/build/play scripts
 - Making the LLM own village or inventory state
+- Treating Kenney / graybox town meshes as the art target
+- A player-facing talent tree for companions
+- Treating armor/loadout as the character’s visible outfit
+- Omniscient jealousy (if they have not met, it does not fire)
+- Permadeath on a single down
