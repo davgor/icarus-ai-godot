@@ -39,3 +39,20 @@ Never declare a feature complete merely because the code compiles.
 - Main scene: `res://game/main.tscn`
 - Export preset: `WindowsDesktop`
 - Player test hook: `forced_move_input`
+- Art style lock: [`docs/art-style.md`](../docs/art-style.md)
+- Generation prompt lock: [`docs/art/prompt-lock.md`](../docs/art/prompt-lock.md)
+- Style reference stills: `res://game/art/_style/`
+- Movement lock: [`docs/game-design.md`](../docs/game-design.md) (section Movement)
+- Companion lock: [`docs/game-design.md`](../docs/game-design.md) (section Companions)
+- Gear vs outfit: [`docs/game-design.md`](../docs/game-design.md) (section Gear and appearance)
+- Design bundle: [`docs/README.md`](../docs/README.md)
+
+## Art generation
+
+Before `summer_generate_image`, `summer_generate_3d`, `summer_generate_video`, or any other visual generate/import:
+
+1. Read the style lock and prepend the prompt lock. Do not paraphrase the lock away.
+2. Image `style` must be `"anime"`. Default `"realistic"` is wrong.
+3. Do not use Kenney / `game/art/town/` prototypes as style references.
+4. Import finals under `game/art/{characters,hub,worlds,ui,vfx,gear}/`.
+5. To change the look, bump the lock version in both art docs in the same change.

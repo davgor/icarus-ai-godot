@@ -1,0 +1,16 @@
+---
+description: Companion roster, action-driven growth, poly romance, meet-only jealousy
+globs: game/**/*companion*.gd,game/**/npc/**/*.gd,game/**/town_npc.gd
+alwaysApply: false
+---
+
+# Companions
+
+Follow [`docs/game-design.md`](docs/game-design.md) (Companions, Gear and appearance). Full characters, not pets.
+
+- **Two** field slots + player. Roster = 100% trust, lives in the hub.
+- Same loadout as the player: 2 hands, armor (incl. cape + physics), necklace, 2 rings, 2 earrings. Outfit layer is separate.
+- Player may kit and dress them. Outfit must not change playstyle. Weapons still drive Fable XP.
+- Growth from **level and actions**. No talent screen the player builds.
+- Romance + **polyamory** are in. Jealousy is a per-character trait and **only procs if those NPCs meet**.
+- Downed can be healed up (ally or world heal node). Engine owns trust, romance, jealousy, affinities.

@@ -1,0 +1,15 @@
+---
+description: Visual style lock for generated and imported art — WuWa-class 3D anime, dark high-depth color
+alwaysApply: true
+---
+
+# Art style
+
+Before generating or importing images, textures, 3D, video, or VFX, read [`docs/art-style.md`](docs/art-style.md) and prepend [`docs/art/prompt-lock.md`](docs/art/prompt-lock.md).
+
+- North star: **Wuthering Waves–class 3D anime**, dark jewel color, bright rims. Inspiration only — do not copy IP.
+- Summer `summer_generate_image`: `style` **must** be `"anime"`. Never leave default `"realistic"`.
+- Use `options.negative_prompt` from the prompt lock.
+- If `game/art/_style/` has approved stills, use them as references. Do not use `game/art/town/` Kenney/graybox as style.
+- Import into `game/art/{characters,hub,worlds,ui,vfx,gear}/`. Keep `_style/` for lock refs only.
+- To change the look, bump the lock version in those two docs in the same change. Do not drift per-asset.
