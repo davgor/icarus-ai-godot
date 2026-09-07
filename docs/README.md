@@ -37,6 +37,7 @@ The numbered set is the **living architecture**. It does not replace the player-
 | --- | --- |
 | [`game-design.md`](game-design.md) | Player-facing design (source of truth) |
 | [`feature-list.md`](feature-list.md) | Ordered backlog |
+| [`epics/README.md`](epics/README.md) | Execution-order epics (asset callouts required) |
 | [`art-style.md`](art-style.md) | Visual lock |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | Test / Summer / play contract |
 | [`development-loop.md`](development-loop.md) | Personal edit → play loop |
