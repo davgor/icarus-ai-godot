@@ -79,15 +79,32 @@ Exported: $exportPath
 Set-Content -LiteralPath (Join-Path $windowsDir "BUILD.txt") -Value $buildRecord
 Set-Content -LiteralPath (Join-Path $archiveDir "BUILD.txt") -Value $buildRecord
 Copy-Item -LiteralPath $exportPath -Destination (Join-Path $archiveDir $exeName) -Force
-Copy-Item -LiteralPath $exportPath -Destination (Join-Path $latestDir $exeName) -Force
-Copy-Item -LiteralPath (Join-Path $windowsDir "BUILD.txt") -Destination (Join-Path $latestDir "BUILD.txt") -Force
+
+function Copy-LatestFile {
+    param([string]$Source, [string]$Destination)
+    try {
+        Copy-Item -LiteralPath $Source -Destination $Destination -Force
+        return $true
+    } catch {
+        Write-Warning "Could not update $Destination (is the game running?). The new file is at $Source"
+        return $false
+    }
+}
+
+$latestUpdated = Copy-LatestFile -Source $exportPath -Destination (Join-Path $latestDir $exeName)
+Copy-LatestFile -Source (Join-Path $windowsDir "BUILD.txt") -Destination (Join-Path $latestDir "BUILD.txt") | Out-Null
 
 Get-ChildItem -LiteralPath $windowsDir -Filter "IcarusAI.*" |
     Where-Object { $_.Name -ne $exeName } |
     ForEach-Object {
-        Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $latestDir $_.Name) -Force
+        Copy-LatestFile -Source $_.FullName -Destination (Join-Path $latestDir $_.Name) | Out-Null
         Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $archiveDir $_.Name) -Force
     }
 
 Write-Host $buildRecord
-Write-Host "Play with: .\scripts\play.ps1"
+if (-not $latestUpdated) {
+    Write-Host "Play this export from: $exportPath"
+    Write-Host "Or close the running game and copy it to builds\latest."
+} else {
+    Write-Host "Play with: .\scripts\play.ps1"
+}
