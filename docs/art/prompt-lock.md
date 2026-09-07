@@ -75,6 +75,12 @@ Do not ask 3D models for “low poly Kenney” unless the user explicitly wants 
 Full-body or bust as requested, anime facial proportions, detailed hair, costume with material breakup, cloth cape when worn, readable jewelry (necklace, earrings, rings) as accessories not fused into the skin, rim light, dark jewel backdrop, Icarus character creator quality.
 ```
 
+**Demi-human feature (ears / horns / tails)**
+
+```text
+Isolated or socketed anime demi-human feature for character creator: ears, horns, or tails (include lizard/dragon tail variants when requested), clean silhouette, game-ready, dark jewel void backdrop, not a full character unless asked.
+```
+
 **Hub — Sanctum**
 
 ```text
