@@ -1,0 +1,18 @@
+---
+description: GDScript naming and inspectable-state rules proven during bootstrap
+globs: "**/*.gd"
+alwaysApply: false
+---
+
+# GDScript
+
+Do not shadow engine methods. `PhysicsBody3D.test_move()` exists; a player field named `test_move` warns at reload.
+
+```gdscript
+❌ var test_move := Vector2.ZERO
+✅ var forced_move_input := Vector2.ZERO
+```
+
+Headless tests drive movement through `forced_move_input` (`player.set("forced_move_input", Vector2(0, -1))`), not by faking OS key events.
+
+Keep gameplay working without an LLM. Authoritative state stays in engine types and resources, not prose.

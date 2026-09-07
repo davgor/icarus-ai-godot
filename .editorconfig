@@ -2,3 +2,7 @@ root = true
 
 [*]
 charset = utf-8
+
+[*.{gd,tscn,cfg}]
+indent_style = tab
+indent_size = 4

@@ -1,0 +1,18 @@
+---
+description: Core Icarus AI boundaries, canonical commands, and definition of done
+alwaysApply: true
+---
+
+# Icarus AI
+
+Godot 4 GDScript game. Summer Engine is an optional editor, not a runtime dependency.
+
+Read `docs/agent-operating-loop.md` before changing tooling, tests, builds, or scene workflow.
+
+- Inspect existing systems first. Do not invent a parallel test, build, play, or scene-edit path.
+- Canonical commands from repo root: `.\scripts\test.ps1`, `.\scripts\build.ps1`, `.\scripts\play.ps1`.
+- A change is not done because it compiles. Test, then inspect Summer diagnostics after play when MCP is available, then build/play when the change should be playable.
+- Keep authoritative game state in the engine. Treat LLM output as untrusted input.
+- Do not add Summer SDK or other editor-only APIs to shipped game code.
+- Git is source of truth. Feature branches. Do not treat the working tree as disposable.
+- Prefer simple implementations. Refactor when the pain is real.
