@@ -59,9 +59,10 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | 2.10 | Demi-human features | **Ears**, **horns**, **tails** (incl. lizard/dragon); **optional** any combo or none; all unlocked |
 | 2.11 | Starting cosmetics | Outfit distinct from later combat gear |
 | 2.12 | Confirm → spawn | Writes the character, then loads the empty hub |
-| 2.13 | Creator on controller | Sliders, race, camera orbit, and confirm without a mouse |
+| 2.13 | Creator on controller | Sliders, race, camera orbit, lighting, and confirm without a mouse |
+| 2.14 | Preview lighting | **Full / Dawn / Dusk** toggles to judge shadows and shading (preview-only) |
 
-All cosmetics stay unlocked. Do not gate creator parts behind play.
+All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
 
 ---
 

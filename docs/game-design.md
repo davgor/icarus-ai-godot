@@ -125,6 +125,20 @@ The player has full control of:
 
 **Soft-body / jiggle** is driven by that muscle–fat bar: higher fat increases motion, higher muscle reduces it. This is a customization/readability system, not a separate toggle maze.
 
+Technical contract (hybrid bone scale + blend shapes, record schema, apply→capsule): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+
+### Creator preview lighting
+
+The atelier includes a **lighting preset** toggle so players can judge shadows and shading before Confirm:
+
+| Preset | Intent |
+| --- | --- |
+| **Full** | Bright, even light — clear materials and colors |
+| **Dawn** | Warm low sun, longer soft shadows |
+| **Dusk** | Cool jewel dusk, deeper shadows (Sanctum-adjacent mood) |
+
+Preview-only. Does not change Sanctum or world time. Default **Full**. Gamepad-usable.
+
 ### Demi-human features (first ship)
 
 Demi-human cosmetics for the first shippable creator:
@@ -589,6 +603,7 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | [`art-style.md`](art-style.md) | How it looks; generator lock |
 | [`feature-list.md`](feature-list.md) | What to build, in order |
 | [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible defs |
+| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech, character record, creator lighting, apply→capsule |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
 **Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
