@@ -406,7 +406,7 @@ Vertical-slice minimum: **≥3 hair styles, ≥3 eye styles, ≥3 face morph ext
 
 ### Outcome
 
-Ears, tails, horns, and similar features are available and **unlocked**. Demi-human race may highlight them; other races can still equip them (race is not a lock).
+**Ears** and **tails** are available and **unlocked**. They are **optional on creation** (none, ears, tails, or both). Demi-human race may offer presets; the player can clear them. No horns in this pack’s first ship.
 
 ### Maps to
 
@@ -416,13 +416,15 @@ Ears, tails, horns, and similar features are available and **unlocked**. Demi-hu
 
 ### In scope
 
-- Features category: ears, tails, horns (minimum set); slots expandable
+- Features category: **ears**, **tails** only (first ship)
+- Optional: default off unless demi-human preset applies; player can unequip either/both
 - Attach points on the preview rig
-- All listed features unlocked from the start
-- Race preset may enable defaults for demi-human without restricting others
+- All listed ear/tail options unlocked from the start
+- Race preset may enable demi-human ear/tail defaults without forcing them
 
 ### Out of scope
 
+- Horns / broader demi kits — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) (deepen ears/tails first; horns later)
 - Gameplay bonuses tied to features
 - Gating behind story flags
 
@@ -432,26 +434,27 @@ Ears, tails, horns, and similar features are available and **unlocked**. Demi-hu
 
 ### Work
 
-- Feature ids → meshes on sockets
-- UI list/grid; multiple features combinable where sane (document conflicts)
-- Tests: equip/unequip updates record; demi preset applies at least one feature
-- **Summer:** generate feature concepts → 3D → socket on Preview; play combinations; diagnostics
+- Feature ids → meshes on sockets (ears, tails)
+- UI list/grid; ears + tails combinable; document any conflicts
+- Tests: equip/unequip updates record; demi preset may apply defaults; player can clear to none
+- **Summer:** generate feature concepts → 3D → socket on Preview; play none/ears/tails/both; diagnostics
 
 ### Asset generation
 
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
-| Ears / horns / tails concepts | `game/art/characters/feature_{ears,horns,tails}_*.png` | Start of CC-6 | Isolated or on neutral head/hips; anime; readable silhouette; dark jewel void |
-| Feature meshes | `game/art/characters/feature_*.glb` | After concepts | image-to-3d; `assetIntent: "character"` or object for isolated props; clean pivots for sockets |
+| Ears / tails concepts | `game/art/characters/feature_{ears,tails}_*.png` | Start of CC-6 | Isolated or on neutral head/hips; anime; readable silhouette; dark jewel void |
+| Feature meshes | `game/art/characters/feature_*.glb` | After concepts | image-to-3d; clean pivots for sockets |
 
-Vertical-slice minimum: **one ears, one horns, one tail** option (more encouraged).
+Vertical-slice minimum: **one ears option, one tail option** (more ear/tail variants encouraged). No horns required.
 
 ### Acceptance
 
-- [ ] Features equippable regardless of race lock attempts
-- [ ] Demi-human preset can auto-apply defaults
+- [ ] Ears and tails equippable; can create with neither
+- [ ] Demi-human preset may auto-apply defaults; player can clear
+- [ ] No horns in the first-ship feature set
 - [ ] Meshes socket correctly on preview
-- [ ] Summer combination smoke + diagnostics clean
+- [ ] Summer combination smoke (none / ears / tails / both) + diagnostics clean
 - [ ] `TEST_RESULT: PASS`
 
 ---

@@ -56,7 +56,7 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | 2.7 | Muscle ↔ fat bar | Drives silhouette and jiggle |
 | 2.8 | Jiggle / soft-body | Driven by the muscle–fat bar, not a pile of unrelated toggles |
 | 2.9 | Face / hair / eyes | Anime kit; grow the catalog |
-| 2.10 | Demi-human features | Ears, tails, horns, etc.; all unlocked |
+| 2.10 | Demi-human features | **Ears** and **tails** only (first ship); **optional** on creation (none / either / both); all unlocked |
 | 2.11 | Starting cosmetics | Outfit distinct from later combat gear |
 | 2.12 | Confirm → spawn | Writes the character, then loads the empty hub |
 | 2.13 | Creator on controller | Sliders, race, camera orbit, and confirm without a mouse |

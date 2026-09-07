@@ -125,12 +125,23 @@ The player has full control of:
 
 **Soft-body / jiggle** is driven by that muscle–fat bar: higher fat increases motion, higher muscle reduces it. This is a customization/readability system, not a separate toggle maze.
 
+### Demi-human features (first ship)
+
+Demi-human cosmetics are **ears** and **tails** only for the first shippable creator. No horns (or broader kitsune/etc. kits) until a later deepen.
+
+| Lock | Meaning |
+| --- | --- |
+| Scope | **Ears** and **tails** |
+| Optional | On creation the player may take **none, ears, tails, or both** — nothing forced |
+| Race | Demi-human race may offer ear/tail **presets**; the player can clear them. Race still does not hard-lock other cosmetics |
+| Unlocked | Ear and tail options are available from the start (no story gate) |
+
 ### Visual identity
 
 Anime style. Combinations should include (expand during implementation, do not treat as a closed list):
 
 - face morphs, eyes, hair, scars, markings
-- ears, horns, tails, and other demi-human features
+- demi-human **ears** and **tails** (optional; see above)
 - clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
 
 ---
@@ -588,7 +599,7 @@ Recorded so we do not silently invent them during implementation:
 - Dual-wield rules and two-handed weapons as a distinct slot vs two occupied hands.
 - Whether combat shares the traversal stamina meter or stays animation-recovery only.
 - Glider, grapple, and swim (not required for the first parkour slice).
-- What “demi-human” covers in the first shippable creator (ears/tails only vs broader kitsune/horned/etc.).
+- What “demi-human” covers beyond first-ship ears/tails (horns, broader kits, etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
