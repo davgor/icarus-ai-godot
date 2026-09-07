@@ -445,6 +445,8 @@ Vertical-slice minimum: **7 named morphs wired**, **≥3 hair**, **≥3 eyes**, 
 
 **Ears**, **horns**, and **tails** (including **lizard / dragon** tails) are available and **unlocked**. They are **optional on creation** (any combination or none). Demi-human race may offer presets; the player can clear them. Dragon-leaning demis are supported via horns + lizard tail (+ ears as desired) — no separate dragon race.
 
+**This epic is in the vertical-slice cut.** Pack 02 is not playable without CC-6 landed (demi must not be tag-only).
+
 ### Maps to
 
 | ID | Feature |
@@ -628,9 +630,10 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 
 ### In scope
 
-- Focus neighbors across category rail, lists, sliders, lighting control, confirm/back
+- Focus neighbors across category rail, lists, sliders, lighting, reset/randomize, confirm/back
 - Slider adjust via stick or shoulder buttons (pick one scheme; document)
 - Lighting presets cycle or three focusable options on pad
+- Reset / Randomize reachable without a mouse
 - Camera orbit on pad
 - Glyph prompts (reuse OS-6 set where possible)
 - Keyboard/mouse still work
@@ -675,17 +678,17 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 
 This pack is **Playable** (vertical slice) when:
 
-1. Title **New** opens the atelier creator (OS-5 stub body gone) with Full/Dawn/Dusk lighting.
-2. Player can set race (preset + tag), body core (hybrid morphs), face/hair/eyes starter kit, starting outfit.
+1. Title **New** opens the atelier creator (OS-5 stub body gone) with Full/Dawn/Dusk lighting and Reset/Randomize.
+2. Player can set race (preset + tag), body core (height/weight/muscle↔fat/skin), named face morphs, scars/markings, demi features (CC-6), starting outfit.
 3. Confirm writes schema v1 engine-owned character; spawn uses shared applier + capsule scale into hub (or hub stub).
 4. Outfit is distinct from loadout in data and UI.
-5. Gamepad path works per CC-9 (including lighting).
+5. Gamepad path works per CC-9 (including lighting, reset/randomize).
 6. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock + `style: "anime"`.
 7. Implementation followed [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) and the **Summer workflow** above.
 8. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 9. Millbrook name-only create is not the intended New path.
 
-**Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
+**Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) (more hair/eyes/scars/makeup — **not** the thin scar/marking starter), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
 
 **Not required for this pack:** real Sanctum content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
 
