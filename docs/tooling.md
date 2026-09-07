@@ -30,6 +30,19 @@ Project MCP servers often stay **disabled until approved**. After a Cursor resta
 
 The proven inspect → modify → play → inspect cycle, including value formats and traps, is in [`agent-operating-loop.md`](agent-operating-loop.md).
 
+## Character creator in tooling
+
+The creator is **dev-tooling exposed**, not only a New Game UI:
+
+| Need | Approach |
+| --- | --- |
+| Inspect atelier | Summer: open creator `scenePath`, tree, lights, preview |
+| Preview any face | Apply a valid schema v1 `CharacterRecord` to the preview (same applier as runtime) |
+| Verify generated NPCs | Round-trip: record → apply → serialize; reject illegal catalog ids |
+| Add a new look | Add part to creator catalog + UI first; then world gen may sample it |
+
+**Rule:** any character generated in the game must be makeable in the creator ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Do not ship unique NPC meshes that the creator cannot rebuild.
+
 ## Canonical commands
 
 | Command | Meaning |

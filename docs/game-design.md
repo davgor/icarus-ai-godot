@@ -114,6 +114,19 @@ Race does **not** lock customization. Race does:
 
 The player can then override the preset freely.
 
+### Creator is the appearance authority
+
+**Every character the game can show** — player, companion, NPC, story recruit, compiler-spawned face — must be expressible as a **creator-legal** appearance record ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
+
+| Lock | Meaning |
+| --- | --- |
+| One vocabulary | Same schema, morphs, part ids, and outfits as the character creator |
+| No unique snowflakes | Generators may not invent meshes, morphs, or colors outside the creator catalog |
+| Tooling exposed | Dev tooling (Summer / Cursor / debug) can open the creator, load any valid record, and preview/edit it |
+| Expand via creator | Need a new look in the world → add it to the creator catalog first (then generate characters with that id) |
+
+World directors and NPC agents propose **catalog ids + morph values**, not freehand art. Validation rejects illegal appearances.
+
 ### Body
 
 The player has full control of:

@@ -64,8 +64,9 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | 2.15 | Skin color | First-class; ≥6 swatches in slice |
 | 2.16 | Scars / markings | Thin starter (≥1 each + none); deepen later |
 | 2.17 | Reset / randomize | Reset all/category; randomize all/category (crude OK) |
+| 2.18 | Appearance authority | Every in-game character is creator-legal; tooling can load any valid record into the creator |
 
-All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md). Explicitly not: unique NPC faces the player cannot rebuild in the creator.
 
 ---
 
@@ -268,3 +269,4 @@ Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** 
 - Auto-approving every generated asset into the playable catalog
 - Letting agents mark catalog rows `approved` without your final say-so
 - Letting runtime directors invent new catalog art ids without the approval loop
+- Unique NPC / companion faces that cannot be rebuilt in the character creator

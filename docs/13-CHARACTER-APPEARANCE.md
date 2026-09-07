@@ -4,6 +4,30 @@ Technical contract so pack 02 can one-shot creator → spawn without inventing m
 
 ---
 
+## Appearance authority (locked)
+
+The **character creator catalog + schema v1** are the only legal appearance vocabulary for the game.
+
+```text
+Creator catalog (parts, morphs, colors, outfits)
+        │
+        ├── Player Confirm → CharacterRecord
+        ├── NPC / companion / recruit generation → CharacterRecord
+        └── Tooling preview / debug → load record into creator
+```
+
+Rules:
+
+1. **Makeable ⇒ creatable.** If a character appears in play, a player could recreate that look in the creator (same part ids and morph ranges).
+2. **Generators emit records, not art paths.** World compiler / directors / cognition output `race`, `body`, `face`, `features`, `outfit` using **existing catalog ids**. They do not emit ad-hoc `res://` meshes.
+3. **Validation rejects illegal ids** (unknown hair, out-of-range morph, missing skin_color, etc.) before commit ([`04-SIMULATION.md`](04-SIMULATION.md)).
+4. **New looks enter through the creator pipeline** — add part to `game/art/characters/` + catalog data, expose in creator UI, then allow generation to sample it.
+5. **Tooling must expose the creator:** Summer can open the creator scene; debug/dev can apply any valid `CharacterRecord` to the preview; agents use that path to verify generated faces.
+
+Companions and NPCs use the same `AppearanceApplier` as the player.
+
+---
+
 ## Morph technology (locked)
 
 **Hybrid.** Do not pick “only blendshapes” or “only bones.”
@@ -223,3 +247,18 @@ Rules:
 - Requiring blendshape-only body proportion (breaks anim/capsule story)
 - Wiring `weight` into jiggle
 - Full makeup suite (lipstick/eyeshadow farms) in the slice — scars/markings starter only; deepen in [`DEF-011`](backlog/deferred/DEF-011-face-catalog-deepen.md)
+- One-off NPC meshes or prompt-only faces that cannot be rebuilt in the creator
+- Letting world directors invent appearance outside the creator catalog
+
+---
+
+## Tooling exposure (dev)
+
+| Capability | Intent |
+| --- | --- |
+| Open creator scene via Summer | `scenePath` to the atelier; inspect preview + lights |
+| Apply `CharacterRecord` to preview | Same applier as runtime; for agent/debug verification |
+| Round-trip check | Record → apply → serialize ≈ record (catalog-legal) |
+| Generate NPC appearance | Sample creator catalog + schema; never freehand art |
+
+Shipped game code still must not call Summer SDK. Tooling is editor/MCP/debug only ([`tooling.md`](tooling.md)).

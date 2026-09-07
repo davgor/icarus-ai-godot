@@ -55,3 +55,5 @@ Random new worlds skip the player prompt and still produce a constitution from t
 - Child content derives from seeds ([`03-SEED-ARCHITECTURE.md`](03-SEED-ARCHITECTURE.md)), then lazy-fills ([`07-LAZY-GENERATION.md`](07-LAZY-GENERATION.md)).
 
 Settlements and loot should feel **stocked**. The compiler places **approved catalog** buildings, items, and props by id — it does not invent mesh paths as free prose. Generate → approve → ship catalog is [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md). Players learn collectible entries in-world; they do not start owning the whole library.
+
+**NPCs and faces** use the **character creator** vocabulary only ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Compiler/directors sample creator-legal `CharacterRecord` slices; they do not invent one-off character art.

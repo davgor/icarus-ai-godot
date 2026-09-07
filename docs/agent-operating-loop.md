@@ -155,6 +155,15 @@ Volume buildings / items / props for worlds use the **generate → agent review 
 
 First pump target: **log cabin set**, aiming at **20 approved buildings** before dense world placement. Do not drop raw generations straight into playable world folders. Do not self-approve as an agent.
 
+## Character creator tooling
+
+When working on appearance, NPCs, or companions:
+
+1. Treat the creator catalog + schema v1 as the **only** legal look vocabulary ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
+2. Open the creator scene in Summer to verify parts and lighting.
+3. Apply generated `CharacterRecord`s to the preview applier — if it cannot load, the record is illegal.
+4. Never invent one-off character meshes for a story beat; add the part to the creator first.
+
 ## Do not go back to
 
 - Hand-rolling `godot --headless -s addons/gut/...`

@@ -30,6 +30,7 @@ Suggested ship order: **CC-1 → CC-2 → CC-3 → CC-5 / CC-6 (parallel after r
 - Creator preview lighting: **Full / Dawn / Dusk** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)). Preview-only; default Full.
 - **Reset** (all + category) and **Randomize** (all + category) are in the vertical slice.
 - **CC-6 demi features are in the vertical-slice cut** — demi-human must not ship as tag-only.
+- **Appearance authority:** every generated character is creator-legal; tooling exposes the creator for preview/apply of any valid record ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)).
 - Headless tests: `tests/run_tests.gd` (`extends SceneTree`), gate on `TEST_RESULT: PASS`.
 - Canonical commands: `.\scripts\test.ps1` → Summer play/diagnostics when scene work lands → `.\scripts\build.ps1` / `.\scripts\play.ps1` when the slice should be playable.
 - Do **not** add Summer SDK or editor-only APIs to shipped game code. Do **not** run `godot --import` while Summer is open on this repo.
@@ -683,10 +684,11 @@ This pack is **Playable** (vertical slice) when:
 3. Confirm writes schema v1 engine-owned character; spawn uses shared applier + capsule scale into hub (or hub stub).
 4. Outfit is distinct from loadout in data and UI.
 5. Gamepad path works per CC-9 (including lighting, reset/randomize).
-6. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock + `style: "anime"`.
-7. Implementation followed [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) and the **Summer workflow** above.
-8. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
-9. Millbrook name-only create is not the intended New path.
+6. **Appearance authority:** shared applier can load any valid schema v1 record into creator preview (tooling/debug); illegal catalog ids rejected.
+7. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock + `style: "anime"`.
+8. Implementation followed [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) and the **Summer workflow** above.
+9. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
+10. Millbrook name-only create is not the intended New path.
 
 **Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) (more hair/eyes/scars/makeup — **not** the thin scar/marking starter), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
 

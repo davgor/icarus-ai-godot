@@ -20,9 +20,11 @@ The LLM does not drive Godot nodes, combat math, inventories, or physics.
 
 ## Deterministic simulation owns
 
-Time, movement, parkour, schedules, combat, downed/heal nodes, economy, inventory, loadout vs outfit, relationships, romance/jealousy flags, faction mechanics, quests, world events, production, population, navigation, physics.
+Time, movement, parkour, schedules, combat, downed/heal nodes, economy, inventory, loadout vs outfit, **appearance application** (creator-legal records only), relationships, romance/jealousy flags, faction mechanics, quests, world events, production, population, navigation, physics.
 
 Player-facing rules for combat, parkour, gear, and companions live in [`game-design.md`](game-design.md). This layer **implements** those rules; it does not invent a second combat model.
+
+**Appearance validation:** reject NPC/companion/player mutations that reference unknown creator catalog ids or out-of-range morphs ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
 
 ---
 

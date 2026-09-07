@@ -26,4 +26,5 @@ During the compiler screen, directors may run so the player can watch constructi
 - Cannot contradict committed engine state.
 - Cannot grant hub residence or field-slot eligibility without 100% trust.
 - Cannot spend companion XP or rewrite outfit into loadout.
+- Cannot invent character appearance outside the **creator catalog** ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)); propose schema fields + catalog ids only.
 - Cannot omit validation.
