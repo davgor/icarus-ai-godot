@@ -18,7 +18,7 @@ Player-facing systems (hub, creator, combat, parkour, companions, gear, art) are
 
 1. Boot to title (New / Load / Settings / Quit).
 2. Create or load a character (Code Vein-depth creator on New).
-3. Live in the **Sanctum** (floating hub rock; empty at first except the portal; filled by 100% trust companions).
+3. Live in the **Sanctum** (floating hub rock; empty at first except the portal; grows into a cozy sim — farm, build collectible home designs, house 100% trust companions).
 4. At the portal: continue a world, roll a new random one, or **prompt** one.
 5. For prompted / new-compile worlds: watch the **world compiler** work (that screen is gameplay).
 6. Pick up to two field companions from the roster (empty allowed).

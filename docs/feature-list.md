@@ -76,7 +76,7 @@ Cozy floating home rock in a dusk-void sky. Empty except the portal.
 | 3.3 | Portal present | Freestanding arch on the overlook; interactable. Form may change later / become player-swappable |
 | 3.4 | Player spawn | After creator, stand on the Sanctum, not in a dungeon |
 | 3.5 | Return point | Leaving a world always comes back here |
-| 3.6 | Cozy-sim foundation | Home bowl pads for later buildings / storage (hooks only at first) |
+| 3.6 | Cozy-sim foundation | Home bowl pads + farm plot hooks for later building / farming (hooks only in first Sanctum slice) |
 | 3.7 | Hub on controller | Walk, look, interact with the portal without a mouse |
 | 3.8 | Parkour-legal hub | Rim cliffs, stacks, and the portal approach are climbable; no waist-high invisible walls |
 | 3.9 | Dusk-void + stardust | Always dusk-void sky; floaty embers / stardust around the rock |
@@ -143,7 +143,7 @@ Worn **loadout** is the character’s through-line. Outfit is saved too, and is 
 | 5.7 | Equip in hub and worlds | Same character, same loadout + outfit |
 | 5.8 | Travel rule | Current loadout and outfit always come through the portal both ways |
 | 5.9 | Character save | Body, race tag, skills, loadout, outfit survive quit / relaunch |
-| 5.10 | Village storage | **Later** — buildable stash so finds can stay home unequipped |
+| 5.10 | Sanctum storage | **Later** — buildable stash / home storage so finds and materials can stay home unequipped |
 
 Until 5.10, worn loadout = what you keep. Dressing someone in a different outfit must not rewrite their combat role.
 
@@ -175,9 +175,9 @@ Unarmed, two-handed weapons, and shared-vs-separate combat stamina wait on open 
 
 ---
 
-## 7. Companions and a living hub — Later
+## 7. Companions and a living Sanctum — Later
 
-Mass Effect field slots, Arknights roster. Companions are full characters. The player does not spec their trees.
+Mass Effect field slots, Arknights roster. Companions are full characters. The player does not spec their trees. The Sanctum is a **cozy sim** that grows with people, farms, and collectible home designs.
 
 | ID | Feature | Notes |
 | --- | --- | --- |
@@ -185,7 +185,7 @@ Mass Effect field slots, Arknights roster. Companions are full characters. The p
 | 7.2 | Story recruit | Recruited in a world; may fill/swap a field slot **in that story** before 100% trust |
 | 7.3 | Trust 0–100% | Earned in stories (and later in the hub). Not instant. |
 | 7.4 | 100% gate | Unlocks hub residence **and** roster eligibility for further quests |
-| 7.5 | Roster | All 100% companions live in the hub |
+| 7.5 | Roster | All 100% companions live in the Sanctum |
 | 7.6 | Field slots | **Two** + player. Portal picker. Empty OK. |
 | 7.7 | Action-driven growth | No player talent screen. Affinities from what they actually do |
 | 7.8 | Plastic vs locked | Low-level recruits reshape (healer vs mage from whether they had to heal). High-level recruits stay mostly the person you hired |
@@ -194,13 +194,19 @@ Mass Effect field slots, Arknights roster. Companions are full characters. The p
 | 7.11 | Kit companions | Player may equip their hands/armor/accessories; weapons still drive XP |
 | 7.12 | Romance | Supported. **Polyamory allowed** — not a one-partner lock |
 | 7.13 | Jealousy | Some companions only. **Procs if they meet**, never omniscient |
-| 7.14 | Residents | Presence in the hub when you return |
-| 7.15 | Help / labor | They can assist (scope TBD once roster exists) |
-| 7.16 | Shops | Trusted companions can open services in the hub |
-| 7.17 | Cozy sim loop | Decorate, build, dwell — layered on after people can arrive |
-| 7.18 | Squad UI on controller | Pick/swap field slots without a mouse |
+| 7.14 | Residents | Presence in the Sanctum when you return |
+| 7.15 | Help / labor | Companions assist farming, harvest, and light upkeep |
+| 7.16 | Shops | Trusted companions can open services in the Sanctum |
+| 7.17 | Sanctum level | Home progression separate from combat paths; XP from materials, harvests, designs, builds, companions housed |
+| 7.18 | Farming | Plots on the rock; plant → grow → harvest materials; capacity gated by Sanctum level |
+| 7.19 | Simple building | Place unlocked designs with materials on pads; no voxel / stud construction |
+| 7.20 | Home design collectibles | Encounter architecture in stories → unlock design catalog entry → build at home |
+| 7.21 | Starter camp design | Humble early unlock so building can start before rare story finds |
+| 7.22 | Materials bank | World finds + farm output → Sanctum storage → spend on builds |
+| 7.23 | Cozy dwell | Live with roster, romance, decorate (decorate layers after structures) |
+| 7.24 | Squad UI on controller | Pick/swap field slots without a mouse |
 
-Do not pre-place shop NPCs “for now” in the destination hub. Temporary debug spawns are fine if they cannot be invited without 100% trust. Do not ship a companion skill menu the player points at.
+Do not pre-place shop NPCs “for now” in the destination hub. Temporary debug spawns are fine if they cannot be invited without 100% trust. Do not ship a companion skill menu the player points at. Do not ship a freeform house editor.
 
 ---
 
@@ -233,7 +239,7 @@ Smallest thing that feels like *this* game rather than a walker:
 4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
 5. Portal → one graybox “random world” (still climbable) → return still wearing a test item
 
-Character morph depth, Fable combat, **companion roster**, and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
+Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** (farm / build / design collectibles), and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
 
 ---
 
@@ -241,9 +247,11 @@ Character morph depth, Fable combat, **companion roster**, and prompted story co
 
 - Summer / Cursor / MCP features (tooling, not the game)
 - Replacing the test/build/play scripts
-- Making the LLM own village or inventory state
+- Making the LLM own Sanctum, inventory, farm, or building state
 - Treating Kenney / graybox town meshes as the art target
 - A player-facing talent tree for companions
+- A freeform voxel / stud-by-stud house editor
 - Treating armor/loadout as the character’s visible outfit
 - Omniscient jealousy (if they have not met, it does not fire)
 - Permadeath on a single down
+- Dumping the full home-design catalog on New Game

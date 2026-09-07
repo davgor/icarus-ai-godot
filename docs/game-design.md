@@ -10,14 +10,14 @@ This document is the source of truth for **what the game is**. It is not an impl
 
 A single-player, persistent anime-fantasy RPG. You make a character in extreme depth, wake on an empty floating sanctum that becomes your home, and leave through a portal into worlds that may be random, continued, or prompted by you.
 
-The **Sanctum** is the cozy hub. The portal is the adventure. You take a small squad into stories, earn 100% trust, and bring people home as full characters with their own gear and growth. Skills grow the way you fight.
+The **Sanctum** is the cozy hub. The portal is the adventure. You farm and build at home, level the Sanctum itself, collect home designs from stories, and bring people back when they trust you. Out in the worlds you take a small squad, earn 100% trust, and grow skills the way you fight.
 
 ---
 
 ## Pillars
 
 1. **Mystical anime look** — stylized characters and spaces, deep shadows, bright lights, a world that feels otherworldly rather than naturalistic.
-2. **Home you grow** — the Sanctum starts almost empty and becomes a cozy sim through play, not through a pre-authored town.
+2. **Home you grow** — the Sanctum starts almost empty and becomes a **cozy sim** through play: farming, simple building, collectible home designs from stories, and people you earned. Not a pre-authored town.
 3. **Worlds on your terms** — resume a world, roll a new one, or prompt the story you want.
 4. **Identity is yours** — Code Vein-class character creation; race is a tag and a preset, not a lock.
 5. **You are what you wield** — two hands, gear-defined combat, Fable-style use-based progression.
@@ -174,13 +174,85 @@ This is a recovery beat, not a punishment run. Keep it readable and brief.
 
 ### What the Sanctum becomes
 
-As the player adventures, **100% trust** companions can be brought home. Over time that enables:
+The Sanctum is not a lobby between adventures. It is a **cozy-sim home loop** that grows beside the portal loop.
 
-- residents (the roster lives here)
-- helpers
+As the player adventures and returns, the Sanctum enables:
+
+- **farming** — plots, crops, materials grown at home
+- **simple building** — place unlocked home designs with materials (no complex construction UI)
+- **home design collectibles** — encounter architecture in stories → unlock the design → build it on the Sanctum
+- **Sanctum level** — a home progression track (separate from combat path XP), fed by materials, builds, harvests, designs unlocked, and companions brought home
+- residents (100% trust roster lives here)
+- helpers / labor (companions can assist farming and upkeep)
 - shops and services
-- a cozy sim layer (decorate, build, live with the people you chose, including romance)
+- decorate / dwell / romance on top of the built home
 - squad select at the portal (who walks out with you next)
+
+### Dual loop
+
+```text
+SANCTUM (cozy sim)  ◄── materials, designs, people ──►  WORLDS (adventure)
+   farm / build / level home                              fight / recruit / explore
+   bank storage                                           bring designs + materials home
+```
+
+Neither loop is optional flavor. Adventure feeds the Sanctum; the Sanctum makes coming home matter.
+
+### Sanctum level
+
+**Sanctum level** is home progression. It is **not** the player’s Strength / Agility / Magic path level and not companion combat level.
+
+| Feeds Sanctum XP (examples) | Intent |
+| --- | --- |
+| Materials collected / banked at home | Bring the world back |
+| Crops planted and harvested | Cozy loop pays into growth |
+| Home designs unlocked | Collectible discovery |
+| Homes / structures placed | Building is progress |
+| Companions brought to 100% and housed | People are the biggest unlock |
+
+Sanctum level gates **capacity**, not combat power: more farm plots, more build pads, storage size, maybe rock terraces / expansions later. It does not raise attack damage.
+
+Exact XP weights and level curve are tuning. The split (home level vs combat paths) is locked.
+
+### Farming
+
+- Farm plots live on the Sanctum (unlocked / expanded by Sanctum level).
+- Plant → grow → harvest into **materials** (and later food / gifts if we add them).
+- Keep the loop light: readable seasons or timers, not a spreadsheet farm MMO.
+- 100% trust companions can **help** (plant, harvest, tend) once labor exists — see Companions.
+- Farming is a Sanctum activity. Worlds may drop rare seeds or crop unlocks; they do not replace the home farm.
+
+### Building — keep it simple
+
+Building is **place unlocked designs**, not a freeform voxel / wall-piece editor.
+
+| Rule | Meaning |
+| --- | --- |
+| Simple | Pick a design you own → spend materials → snap/place on a pad or clear site |
+| No construction minigame | No stud-by-stud framing, no blueprint puzzle |
+| Relocate / replace OK | Moving or swapping a placed home should stay easy |
+| Pads grow with Sanctum level | Empty rock first; more build sites as home level rises |
+| Parkour stays legal | Placed homes have climbable roofs / walls where it reads as architecture |
+
+v1 decorate is optional furniture-light or none. **Structure placement first.** Deep interior decorating can layer later.
+
+### Home designs as collectibles
+
+Home designs are a **collection**, like gear catalogs — but for the Sanctum.
+
+1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. that can become a design.
+2. Discovering / studying / clearing / befriending (exact beat can vary by story) **unlocks the design** in the Sanctum catalog.
+3. Back home, if the player has the **materials** and a **build site**, they can place that design.
+
+| Lock | Meaning |
+| --- | --- |
+| Designs come from play | Story encounters unlock builds. Do not dump a full catalog on New Game. |
+| Empty first | New Sanctum has **no** pre-placed houses (portal only). |
+| Starter design | A humble **starter camp / shelter** unlocks early (first return from a world, or first materials banked) so the cozy loop can start before rare finds. |
+| Rarity | Ordinary cottages common; striking story architecture rarer / signature. |
+| Own once, place under rules | Unlocking adds to the catalog. How many instances per design (one vs many) is an open question; default lean **one active instance per design** until we need repeats. |
+
+The freestanding portal arch is **not** a home design (unless a later cosmetic pack says otherwise).
 
 ### Trust gate
 
@@ -229,11 +301,11 @@ Whatever the player is **currently equipped with** comes with them:
 
 ### What stays safe at home
 
-The player can eventually **build storage** in the village. Unequipped finds can be parked there so they are not lost when chasing a new world.
+The player can **build storage** on the Sanctum (often as part of a placed home design or a dedicated stash structure). Unequipped finds and **materials** bank here so they are not lost when chasing a new world.
 
-Until storage exists, the practical rule is: **worn loadout** (hands, armor, accessories) is what you keep.
+Until storage exists, the practical rule is: **worn loadout** (hands, armor, accessories) is what you keep. Materials for Sanctum building may need a minimal early stash once farming / designs land.
 
-Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout.
+Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout. **Sanctum level**, farm state, placed buildings, and the home-design catalog persist on the hub save.
 
 **100% trust companions** persist on the hub roster with their own loadout, outfit, levels, and affinities. They travel through the portal when selected into a field slot. Story-only recruits stay in that world until the trust gate.
 
@@ -479,7 +551,7 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 
 **Living Town** in earlier writing maps to the **Sanctum** (hub), with two design changes: it starts empty and is populated by trusted companions, not by a pre-authored cast; and the place fantasy is a floating dusk-void rock, not a ground village.
 
-Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the Sanctum, the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
+Generative AI (prompted worlds, later NPC cognition) still must not be the authority for game state. The engine stores the Sanctum (level, farms, buildings, design catalog), the character, loadout, outfit, trust, romance, jealousy, companion affinities, and world saves.
 
 ---
 
@@ -494,8 +566,11 @@ Recorded so we do not silently invent them during implementation:
 - Glider, grapple, and swim (not required for the first parkour slice).
 - What “demi-human” covers in the first shippable creator (ears/tails only vs broader kitsune/horned/etc.).
 - Settings extras beyond graphics / audio / controls (accessibility, AI/provider).
-- Whether Sanctum time advances while the player is in a world.
+- Whether Sanctum time advances while the player is in a world (crops / labor).
 - Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.
+- How many active instances of one home design may be placed (default lean: one).
+- Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
+- Whether farm plots use real-time, session-time, or world-return catch-up growth.
 - How prompted-world text is stored, versioned, and shown in the continue list.
 - Whether a story can force a third field member or always respects the two-slot cap via swap.
 - Family / kids as a cozy-sim layer on top of romance.

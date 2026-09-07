@@ -78,7 +78,19 @@ Full-body or bust as requested, anime facial proportions, detailed hair, costume
 **Hub — Sanctum**
 
 ```text
-Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple and blue nebula depth, sparse stars, floaty embers and stardust around the islet, lantern gold warm on stone against cool void, empty except a bright mystical freestanding portal arch at the cliff overlook, lived-in but sparse, high depth fog, mystical 3D anime environment.
+Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple and blue nebula depth, sparse stars, floaty embers and stardust around the islet, lantern gold warm on stone against cool void, optional small farm plots and simple placed anime fantasy homes when built, empty except a bright mystical freestanding portal arch at the cliff overlook when new, lived-in but sparse, high depth fog, mystical 3D anime environment.
+```
+
+**Sanctum home design / building**
+
+```text
+Placeable cozy home or structure for a floating sanctum, game-ready exterior, readable silhouette, dark jewel materials with lantern gold accents, climbable roofs where natural, not a graybox blockhouse, mystical 3D anime dwelling.
+```
+
+**Sanctum farm / crops**
+
+```text
+Small mystical farm plot on stone sanctum soil, stylized anime crops, soft lantern light, readable growth stages, cozy not photoreal agriculture.
 ```
 
 **Portal world / combat space**

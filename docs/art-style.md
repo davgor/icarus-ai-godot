@@ -81,6 +81,8 @@ Hub (**Sanctum**) runs **warmer on the rock** (lantern gold in the dark) against
 | Style lock + approved refs | `game/art/_style/` |
 | Characters / creator / portraits | `game/art/characters/` |
 | Hub — Sanctum | `game/art/hub/` |
+| Sanctum homes / designs | `game/art/hub/homes/` |
+| Sanctum farm / crops | `game/art/hub/farm/` |
 | Portal worlds | `game/art/worlds/` |
 | UI, title, loading | `game/art/ui/` |
 | VFX, decals | `game/art/vfx/` |
@@ -107,5 +109,5 @@ Old generated assets do not have to be mass-replaced the day the lock bumps. New
 
 | Ver | Date | Change |
 | --- | --- | --- |
-| 2 | 2026-09-07 | Sanctum hub lock: floating dusk-void rock, purple/blue sky, lantern gold on stone, embers/stardust. |
+| 2 | 2026-09-07 | Sanctum hub lock: floating dusk-void rock, purple/blue sky, lantern gold on stone, embers/stardust. Cozy-sim paths for homes/farm art. |
 | 1 | 2026-09-07 | Initial lock: WuWa-class 3D anime, dark high-depth color, prompt + path contract. |
