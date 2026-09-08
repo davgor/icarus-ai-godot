@@ -1,28 +1,28 @@
 [gd_scene format=3 uid="uid://b7oox0tlcm8yn"]
 
 [ext_resource type="Script" uid="uid://c3pldako1b6ub" path="res://game/main.gd" id="1_main"]
-[ext_resource type="PackedScene" path="res://game/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://5kujbl8i8duu" path="res://game/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://game/npc/town_npc.tscn" id="3_npc"]
-[ext_resource type="PackedScene" path="res://game/art/hub/inn.glb" id="4_inn"]
-[ext_resource type="PackedScene" path="res://game/art/hub/shop.glb" id="5_shop"]
-[ext_resource type="PackedScene" path="res://game/art/hub/cottage.glb" id="6_cottage"]
-[ext_resource type="PackedScene" path="res://game/art/hub/cottage_stone.glb" id="7_stone"]
-[ext_resource type="PackedScene" path="res://game/art/hub/well.glb" id="8_well"]
-[ext_resource type="PackedScene" path="res://game/art/hub/crates.glb" id="9_crates"]
-[ext_resource type="PackedScene" path="res://game/art/hub/signpost.glb" id="10_sign"]
-[ext_resource type="PackedScene" path="res://game/art/hub/tree_pine.glb" id="11_oak"]
-[ext_resource type="PackedScene" path="res://game/art/hub/torii.glb" id="15_arch"]
-[ext_resource type="PackedScene" path="res://game/art/hub/lantern.glb" id="16_lantern"]
-[ext_resource type="PackedScene" path="res://game/art/hub/cart.glb" id="17_cart"]
-[ext_resource type="PackedScene" path="res://game/art/hub/stall.glb" id="18_stall"]
-[ext_resource type="Texture2D" path="res://game/art/hub/cobble_albedo.png" id="19_cobble"]
+[ext_resource type="PackedScene" uid="uid://c1ew1k61wtobm" path="res://game/art/hub/inn.glb" id="4_inn"]
+[ext_resource type="PackedScene" uid="uid://bb4vej650vuht" path="res://game/art/hub/shop.glb" id="5_shop"]
+[ext_resource type="PackedScene" uid="uid://dpoprw8mrgaom" path="res://game/art/hub/cottage.glb" id="6_cottage"]
+[ext_resource type="PackedScene" uid="uid://c6cnjsjvgoc5j" path="res://game/art/hub/cottage_stone.glb" id="7_stone"]
+[ext_resource type="PackedScene" uid="uid://bcpp6yoilqat3" path="res://game/art/hub/well.glb" id="8_well"]
+[ext_resource type="PackedScene" uid="uid://ba0pfltyfjsn" path="res://game/art/hub/crates.glb" id="9_crates"]
+[ext_resource type="PackedScene" uid="uid://c2g8xy7r4qftf" path="res://game/art/hub/signpost.glb" id="10_sign"]
+[ext_resource type="PackedScene" uid="uid://c471iunab6x8u" path="res://game/art/hub/tree_pine.glb" id="11_oak"]
+[ext_resource type="PackedScene" uid="uid://do55v7jt5qff4" path="res://game/art/hub/torii.glb" id="15_arch"]
+[ext_resource type="PackedScene" uid="uid://dy1wmuy3yh5ql" path="res://game/art/hub/lantern.glb" id="16_lantern"]
+[ext_resource type="PackedScene" uid="uid://4l0krot5nmc7" path="res://game/art/hub/cart.glb" id="17_cart"]
+[ext_resource type="PackedScene" uid="uid://b80n3ki8u8p1m" path="res://game/art/hub/stall.glb" id="18_stall"]
+[ext_resource type="Texture2D" uid="uid://du5aj42dfdk2t" path="res://game/art/hub/cobble_albedo.png" id="19_cobble"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.04, 0.05, 0.12, 1)
 sky_horizon_color = Color(0.28, 0.16, 0.22, 1)
+sky_energy_multiplier = 0.7
 ground_bottom_color = Color(0.03, 0.03, 0.06, 1)
 ground_horizon_color = Color(0.1, 0.09, 0.14, 1)
-sky_energy_multiplier = 0.7
 
 [sub_resource type="Sky" id="Sky_1"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
@@ -44,8 +44,8 @@ size = Vector3(48, 1, 48)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_floor"]
 albedo_texture = ExtResource("19_cobble")
-uv1_scale = Vector3(12, 12, 12)
 roughness = 0.85
+uv1_scale = Vector3(12, 12, 12)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
 size = Vector3(48, 1, 48)
@@ -125,75 +125,75 @@ npc_id = "brann"
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -16)
 interact_id = "gate"
 
-[node name="TownDecor" type="Node3D" parent="."]
+[node name="TownDecor" type="Node3D" parent="." unique_id=439052593]
 
-[node name="InnVisual" parent="TownDecor" instance=ExtResource("4_inn")]
+[node name="InnVisual" parent="TownDecor" unique_id=324825103 instance=ExtResource("4_inn")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -12, 0, -4)
 
-[node name="ShopVisual" parent="TownDecor" instance=ExtResource("5_shop")]
+[node name="ShopVisual" parent="TownDecor" unique_id=948773093 instance=ExtResource("5_shop")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 12, 0, -4)
 
-[node name="CottageWest" parent="TownDecor" instance=ExtResource("6_cottage")]
+[node name="CottageWest" parent="TownDecor" unique_id=695197664 instance=ExtResource("6_cottage")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -16, 0, 10)
 
-[node name="CottageEast" parent="TownDecor" instance=ExtResource("7_stone")]
+[node name="CottageEast" parent="TownDecor" unique_id=1553331917 instance=ExtResource("7_stone")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 16, 0, 10)
 
-[node name="Well" parent="TownDecor" instance=ExtResource("8_well")]
+[node name="Well" parent="TownDecor" unique_id=2064016749 instance=ExtResource("8_well")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 1)
 
-[node name="Signpost" parent="TownDecor" instance=ExtResource("10_sign")]
+[node name="Signpost" parent="TownDecor" unique_id=916539413 instance=ExtResource("10_sign")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -5, 0, 3)
 
-[node name="Crates" parent="TownDecor" instance=ExtResource("9_crates")]
+[node name="Crates" parent="TownDecor" unique_id=1695707994 instance=ExtResource("9_crates")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 7.5, 0, 0)
 
-[node name="GateArch" parent="TownDecor" instance=ExtResource("15_arch")]
+[node name="GateArch" parent="TownDecor" unique_id=1250168806 instance=ExtResource("15_arch")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, -16)
 
-[node name="PineSW" parent="TownDecor" instance=ExtResource("11_oak")]
+[node name="PineSW" parent="TownDecor" unique_id=1781339751 instance=ExtResource("11_oak")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, -20, 0, 12)
 
-[node name="PineSE" parent="TownDecor" instance=ExtResource("11_oak")]
+[node name="PineSE" parent="TownDecor" unique_id=2109490535 instance=ExtResource("11_oak")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 20, 0, 12)
 
-[node name="PineNW" parent="TownDecor" instance=ExtResource("11_oak")]
+[node name="PineNW" parent="TownDecor" unique_id=1466106248 instance=ExtResource("11_oak")]
 transform = Transform3D(5.5, 0, 0, 0, 5.5, 0, 0, 0, 5.5, -20, 0, -12)
 
-[node name="PineNE" parent="TownDecor" instance=ExtResource("11_oak")]
+[node name="PineNE" parent="TownDecor" unique_id=1124273406 instance=ExtResource("11_oak")]
 transform = Transform3D(5.5, 0, 0, 0, 5.5, 0, 0, 0, 5.5, 20, 0, -12)
 
-[node name="LanternInn" parent="TownDecor" instance=ExtResource("16_lantern")]
+[node name="LanternInn" parent="TownDecor" unique_id=1022058404 instance=ExtResource("16_lantern")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -9, 0, -1)
 
-[node name="LanternShop" parent="TownDecor" instance=ExtResource("16_lantern")]
+[node name="LanternShop" parent="TownDecor" unique_id=2133840134 instance=ExtResource("16_lantern")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 9, 0, -1)
 
-[node name="Cart" parent="TownDecor" instance=ExtResource("17_cart")]
+[node name="Cart" parent="TownDecor" unique_id=665065350 instance=ExtResource("17_cart")]
 transform = Transform3D(0, 0, 2.5, 0, 2.5, 0, -2.5, 0, 0, 6, 0, 4)
 
-[node name="Stall" parent="TownDecor" instance=ExtResource("18_stall")]
+[node name="Stall" parent="TownDecor" unique_id=1810469219 instance=ExtResource("18_stall")]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, -8)
 
-[node name="LightInn" type="OmniLight3D" parent="TownDecor"]
+[node name="LightInn" type="OmniLight3D" parent="TownDecor" unique_id=251013176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 2.4, -2.5)
 light_color = Color(1, 0.72, 0.38, 1)
 light_energy = 3.2
 omni_range = 12.0
 
-[node name="LightShop" type="OmniLight3D" parent="TownDecor"]
+[node name="LightShop" type="OmniLight3D" parent="TownDecor" unique_id=397190179]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 2.4, -2.5)
 light_color = Color(1, 0.72, 0.38, 1)
 light_energy = 3.2
 omni_range = 12.0
 
-[node name="LightWell" type="OmniLight3D" parent="TownDecor"]
+[node name="LightWell" type="OmniLight3D" parent="TownDecor" unique_id=2098430688]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 1)
 light_color = Color(0.35, 0.85, 1, 1)
 light_energy = 1.6
 omni_range = 8.0
 
-[node name="LightGate" type="OmniLight3D" parent="TownDecor"]
+[node name="LightGate" type="OmniLight3D" parent="TownDecor" unique_id=332999676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -16)
 light_color = Color(0.4, 0.9, 1, 1)
 light_energy = 2.4
