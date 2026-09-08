@@ -1,6 +1,6 @@
 # Epic pack 02 — Character creation
 
-**Status:** Planned  
+**Status:** In progress  
 **Feature-list:** [`feature-list.md`](../feature-list.md) §2 Character creation  
 **Design:** [`game-design.md`](../game-design.md) Character creation + Gear and appearance (outfit ≠ loadout)  
 **Art:** [`art-style.md`](../art-style.md), [`art/prompt-lock.md`](../art/prompt-lock.md) — Character / creator / portrait suffix  
@@ -127,7 +127,7 @@ New opens a dedicated **character atelier**: lit preview stage, **Full / Dawn / 
 ### In scope
 
 - Dedicated creator scene (or owned flow state) replacing the OS-5 stub body
-- Preview stage: ground/plinth, atelier lighting, dark jewel backdrop
+- Preview stage: generated 3D hall (from the atelier still), atelier lighting, orbit camera inside the set
 - **Lighting presets:** Full / Dawn / Dusk (cycle or three options); preview-only; default **Full** — [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
 - **Reset all / Reset category** and **Randomize all / Randomize category** chrome (wire to real behavior as categories land; must work by vertical-slice DOD)
 - Orbit / zoom framing around the preview character
@@ -167,7 +167,8 @@ Generate **atelier + chrome before** locking final panel sizes.
 | Asset | Dest | Generate when | Prompt intent (after lock prefix) |
 | --- | --- | --- | --- |
 | Atelier environment concept | `game/art/characters/creator_atelier_concept.png` | Start of CC-1 | Character atelier / mirror room; dark jewel; soft shafts; empty stage for a hero; **no** baked-in UI panels or readable sliders in the image |
-| Atelier backdrop / HDRI-style still | `game/art/characters/creator_atelier_bg.png` | With concept | Full-bleed backdrop for the 3D stage; mystical anime; no logo text |
+| Atelier backdrop / HDRI-style still | `game/art/characters/creator_atelier_bg.png` | With concept | Source still for the hall look; kept as art, not the live stage |
+| Atelier 3D hall | `game/art/characters/creator_atelier_chamber.glb` | After concept | Open-front gothic chamber from the still; live creator stage |
 | Lighting preset icons (×3) | `game/art/ui/creator_light_{full,dawn,dusk}.png` | With shell | Small mystical anime glyphs for Full / Dawn / Dusk; readable at HUD scale |
 | Reset / Randomize icons | `game/art/ui/creator_{reset,random}.png` | With shell | Compact mystical anime UI glyphs; no text baked in |
 | Category tab chrome | `game/art/ui/creator_tab.png` (+ `_active`) | With shell | Dark panel, sparse bright rim; readable at HUD scale |
@@ -175,19 +176,21 @@ Generate **atelier + chrome before** locking final panel sizes.
 | Confirm / Back buttons | Reuse pack 01 primary chrome or `game/art/ui/creator_btn.png` | With shell | Match title language; creator-scale padding |
 | Optional mote / dust sheet | `game/art/vfx/creator_motes.png` | Polish | Sparse gold/cyan motes; atelier atmosphere only |
 
-**3D (Summer):** if the stage needs a prop (plinth, mirror frame), `summer_generate_3d` from a locked concept; `assetIntent: "object"`. Preview **body** waits for CC-2 concepts unless a neutral mannequin is generated here as temporary.
+**3D (Summer):** `creator_atelier_chamber.glb` is the live stage — open-front gothic hall derived from the concept still (`assetIntent: "object"` / image-to-3d). Extra failed gens (`creator_atelier_room.glb`, `creator_atelier_set.glb`) are not wired. Preview **body** waits for CC-2 concepts unless a neutral mannequin is generated here as temporary.
 
 ### Acceptance
 
-- [ ] New → atelier creator (not Millbrook create-as-title, not hub)
-- [ ] Back → title without character write
-- [ ] Preview stage lit; camera orbits
-- [ ] Full / Dawn / Dusk presets change visible shading; default Full
-- [ ] Reset / Randomize controls present (behavior complete by pack DOD)
-- [ ] Category chrome visible (panels may be stubs)
-- [ ] Art under `game/art/characters/` and `game/art/ui/`
-- [ ] Summer: scene mutated via explicit `scenePath`; play + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] New → atelier creator (not Millbrook create-as-title, not hub)
+- [x] Back → title without character write
+- [x] Preview stage lit; camera orbits
+- [x] Full / Dawn / Dusk presets change visible shading; default Full
+- [x] Reset / Randomize controls present (behavior complete by pack DOD)
+- [x] Category chrome visible (panels may be stubs)
+- [x] Art under `game/art/characters/` and `game/art/ui/`
+- [x] Summer: scene mutated via explicit `scenePath`; play + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. Roped in [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md) (stub body retired; atelier is the New destination). 3D hall polish: no matching Open DEF (skipped draft save [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md), rebind [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md)). Confirm → hub remains CC-8.
 
 ---
 

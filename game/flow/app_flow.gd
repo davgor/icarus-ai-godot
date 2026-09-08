@@ -4,12 +4,12 @@ extends CanvasLayer
 ## Final boot/title audio: DEF-001.
 ## Settings persistence / rebind: DEF-002 / DEF-003.
 ## Load slot browser / Millbrook migration: DEF-004 / DEF-005.
-## Creator stub art retirement: DEF-006. Draft save: DEF-007.
+## Creator atelier: pack 02 CC-1. Stub art retired (DEF-006). Draft save: DEF-007.
 ## OS-6 pad path: glyphs + focus ring; full rebind stays DEF-003.
 
 const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 const LoadShellScript := preload("res://game/flow/load_shell.gd")
-const CreatorStubScript := preload("res://game/flow/creator_stub.gd")
+const CreatorPacked := preload("res://game/creator/character_creator.tscn")
 const PromptBarScript := preload("res://game/flow/prompt_bar.gd")
 
 signal world_requested
@@ -215,6 +215,77 @@ func creator_body() -> String:
 	return ""
 
 
+func creator_lighting_preset() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("lighting_preset"):
+		return str(_creator.lighting_preset())
+	return ""
+
+
+func creator_set_lighting(preset: String) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("set_lighting"):
+		_creator.set_lighting(preset)
+
+
+func creator_cycle_lighting() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("cycle_lighting"):
+		return str(_creator.cycle_lighting())
+	return creator_lighting_preset()
+
+
+func creator_category_ids() -> PackedStringArray:
+	ensure_ui()
+	if _creator and _creator.has_method("category_ids"):
+		return _creator.category_ids()
+	return PackedStringArray()
+
+
+func creator_current_category() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("current_category"):
+		return str(_creator.current_category())
+	return ""
+
+
+func creator_set_category(category: String) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("set_category"):
+		_creator.set_category(category)
+
+
+func creator_has_reset_randomize() -> bool:
+	ensure_ui()
+	if _creator == null:
+		return false
+	if not (
+		_creator.has_method("reset_all")
+		and _creator.has_method("reset_category")
+		and _creator.has_method("randomize_all")
+		and _creator.has_method("randomize_category")
+	):
+		return false
+	return (
+		_creator.find_child("ResetAll", true, false) != null
+		and _creator.find_child("RandomizeAll", true, false) != null
+	)
+
+
+func creator_atelier_ready() -> bool:
+	ensure_ui()
+	if _creator and _creator.has_method("atelier_art_ready"):
+		return bool(_creator.atelier_art_ready())
+	return false
+
+
+func creator_uses_stub() -> bool:
+	ensure_ui()
+	if _creator and _creator.has_method("uses_stub_backdrop"):
+		return bool(_creator.uses_stub_backdrop())
+	return true
+
+
 func show_settings() -> void:
 	ensure_ui()
 	current_screen = Screen.SETTINGS
@@ -338,6 +409,8 @@ func hide_flow() -> void:
 
 func try_cancel() -> bool:
 	if current_screen in [Screen.CREATOR, Screen.SETTINGS, Screen.LOAD]:
+		if current_screen == Screen.CREATOR and _creator and _creator.has_method("discard_draft"):
+			_creator.discard_draft()
 		show_title()
 		return true
 	return false
@@ -589,7 +662,7 @@ func _build_load() -> void:
 
 
 func _build_creator() -> void:
-	_creator = CreatorStubScript.new()
+	_creator = CreatorPacked.instantiate()
 	_creator.name = "CreatorScreen"
 	_creator.btn_normal = _btn_normal
 	_creator.btn_hover = _btn_hover

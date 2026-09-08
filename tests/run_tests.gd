@@ -35,6 +35,10 @@ func _run_suite() -> int:
 	failed += _ok("title_menu_actions", _test_title_menu_actions())
 	failed += _ok("new_opens_creator", _test_new_opens_creator())
 	failed += _ok("creator_back_to_title", _test_creator_back_to_title())
+	failed += _ok("creator_atelier_shell", await _test_creator_atelier_shell())
+	failed += _ok("creator_lighting_presets", _test_creator_lighting_presets())
+	failed += _ok("creator_reset_randomize", _test_creator_reset_randomize())
+	failed += _ok("character_record_schema_v1", _test_character_record_schema_v1())
 	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
 	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
@@ -241,17 +245,20 @@ func _test_new_opens_creator() -> bool:
 	new_button.pressed.emit()
 	var headline := str(flow.creator_headline()).to_lower()
 	var body := str(flow.creator_body()).to_lower()
-	var ok := (
+	var ok: bool = (
 		str(flow.screen_name()) == "creator"
 		and headline.find("character") >= 0
 		and body.find("creator") >= 0
 		and body.find("town") >= 0
-		and ResourceLoader.exists("res://game/art/ui/creator_stub_bg.png")
+		and flow.creator_atelier_ready()
+		and not flow.creator_uses_stub()
+		and ResourceLoader.exists("res://game/art/characters/creator_atelier_chamber.glb")
+		and ResourceLoader.exists("res://game/art/characters/creator_atelier_bg.png")
 		and ResourceLoader.exists("res://game/art/vfx/title_to_creator_wipe.png")
 	)
 	if not ok:
 		push_error(
-			"New should land on creator stub; screen=%s headline=%s"
+			"New should land on atelier creator; screen=%s headline=%s"
 			% [flow.screen_name(), flow.creator_headline()]
 		)
 	var creator := flow.get_node_or_null("CreatorScreen") as Control
@@ -261,6 +268,9 @@ func _test_new_opens_creator() -> bool:
 		ok = false
 	if millbrook and millbrook.visible:
 		push_error("Millbrook create overlay must stay hidden on the New path")
+		ok = false
+	if creator and creator.get_node_or_null("StageHost/StageView/Atelier") == null:
+		push_error("Creator atelier 3D stage missing")
 		ok = false
 	flow.hide_flow()
 	return ok
@@ -286,6 +296,121 @@ func _test_creator_back_to_title() -> bool:
 		push_error("Creator Back did not return to title")
 	flow.hide_flow()
 	return ok
+
+
+func _test_creator_atelier_shell() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	await process_frame
+	var creator := flow.get_node_or_null("CreatorScreen")
+	var ids: PackedStringArray = flow.creator_category_ids()
+	var expected := PackedStringArray(["race", "body", "face", "features", "outfit"])
+	var ok: bool = (
+		ids == expected
+		and str(flow.creator_current_category()) == "race"
+		and str(flow.creator_lighting_preset()) == "full"
+		and flow.creator_has_reset_randomize()
+		and creator != null
+		and creator.find_child("NameEdit", true, false) != null
+		and creator.find_child("Mannequin", true, false) != null
+		and creator.find_child("KeyLight", true, false) != null
+		and creator.find_child("Room", true, false) != null
+		and creator.find_child("Chamber", true, false) != null
+	)
+	if not ok:
+		push_error(
+			"Atelier shell incomplete; cats=%s light=%s name=%s mannequin=%s key=%s reset=%s"
+			% [
+				str(ids),
+				flow.creator_lighting_preset(),
+				str(creator.find_child("NameEdit", true, false) != null if creator else false),
+				str(creator.find_child("Mannequin", true, false) != null if creator else false),
+				str(creator.find_child("KeyLight", true, false) != null if creator else false),
+				str(flow.creator_has_reset_randomize()),
+			]
+		)
+	flow.creator_set_category("body")
+	if str(flow.creator_current_category()) != "body":
+		push_error("Category switch failed")
+		ok = false
+	flow.hide_flow()
+	return ok
+
+
+func _test_creator_lighting_presets() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var ok := str(flow.creator_lighting_preset()) == "full"
+	flow.creator_set_lighting("dawn")
+	ok = ok and str(flow.creator_lighting_preset()) == "dawn"
+	flow.creator_set_lighting("dusk")
+	ok = ok and str(flow.creator_lighting_preset()) == "dusk"
+	var cycled: String = str(flow.creator_cycle_lighting())
+	ok = ok and cycled != "dusk"
+	flow.creator_set_lighting("full")
+	ok = ok and str(flow.creator_lighting_preset()) == "full"
+	if not ok:
+		push_error("Lighting presets did not cycle; now=%s" % flow.creator_lighting_preset())
+	flow.hide_flow()
+	return ok
+
+
+func _test_creator_reset_randomize() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("randomize_all"):
+		push_error("Creator reset/randomize missing")
+		flow.hide_flow()
+		return false
+	creator.randomize_all()
+	var randomized: Dictionary = creator.draft.to_dict()
+	creator.reset_all()
+	var reset: Dictionary = creator.draft.to_dict()
+	var ok: bool = (
+		float(reset["body"]["height"]) == 0.5
+		and str(reset["race"]) == "human"
+		and str(reset["outfit"]["id"]) == "outfit_starter_01"
+		and (reset as Dictionary).has("loadout")
+		and randomized != reset
+	)
+	if not ok:
+		push_error("Reset/randomize did not mutate then restore the draft")
+	flow.hide_flow()
+	return ok
+
+
+func _test_character_record_schema_v1() -> bool:
+	var RecordScript := load("res://game/character/character_record.gd")
+	var record = RecordScript.new()
+	var data: Dictionary = record.to_dict()
+	var errors: PackedStringArray = RecordScript.validate_dict(data)
+	if not errors.is_empty():
+		push_error("Default record invalid: %s" % str(errors))
+		return false
+	if int(data.get("schema_version", 0)) != 1:
+		push_error("schema_version must be 1")
+		return false
+	if not data["loadout"]["hands"].has("main"):
+		push_error("loadout must stay distinct from outfit")
+		return false
+	var morphs: Dictionary = data["face"]["morphs"]
+	for key in ["brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"]:
+		if not morphs.has(key):
+			push_error("Missing face morph %s" % key)
+			return false
+	var bad := data.duplicate(true)
+	bad["race"] = "dragon"
+	if RecordScript.validate_dict(bad).is_empty():
+		push_error("Illegal race should fail validation")
+		return false
+	return true
 
 
 func _test_debug_skip_not_a_title_button() -> bool:

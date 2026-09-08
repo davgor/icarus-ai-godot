@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckatelierhall1"]
+
+[ext_resource type="Script" uid="uid://wgiiremvhdnm" path="res://game/creator/atelier_stage.gd" id="1_stage"]
+[ext_resource type="PackedScene" uid="uid://cgew8lnrjiymc" path="res://game/art/characters/creator_atelier_chamber.glb" id="2_chamber"]
+
+[node name="Atelier" type="Node3D"]
+script = ExtResource("1_stage")
+
+[node name="Room" type="Node3D" parent="."]
+
+[node name="Chamber" parent="Room" instance=ExtResource("2_chamber")]
