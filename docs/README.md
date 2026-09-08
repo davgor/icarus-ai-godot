@@ -31,7 +31,7 @@ The numbered set is the **living architecture**. It does not replace the player-
 | [`10-AI-DEVELOPMENT-WORKFLOW.md`](10-AI-DEVELOPMENT-WORKFLOW.md) | Pointer to the proven agent loop |
 | [`11-UE5-MIGRATION.md`](11-UE5-MIGRATION.md) | Portable sim; disposable engine layer |
 | [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible building/item defs |
-| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech (hybrid), character record schema, creator lighting, apply→capsule |
+| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech (hybrid), character record schema v1/v2, creator lighting, assembler, apply→capsule |
 | [`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md) | Statemachine + Orchestrator; local workers; tool decode; no cloud dispatcher |
 
 ## Also in `docs/`

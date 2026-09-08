@@ -159,10 +159,11 @@ First pump target: **log cabin set**, aiming at **20 approved buildings** before
 
 When working on appearance, NPCs, or companions:
 
-1. Treat the creator catalog + schema v1 as the **only** legal look vocabulary ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).
+1. Treat the creator catalog + versioned schema as the **only** legal look vocabulary ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)). Slice is v1; destination is v2 (pack 07).
 2. Open the creator scene in Summer to verify parts and lighting.
 3. Apply generated `CharacterRecord`s to the preview applier — if it cannot load, the record is illegal.
-4. Never invent one-off character meshes for a story beat; add the part to the creator first.
+4. Never invent one-off character meshes for a story beat; add the part to the creator catalog first (approval loop in [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) for destination rows).
+5. Do not serialize bone names or blendshape names into the save; those belong in apply maps.
 
 ## Do not go back to
 

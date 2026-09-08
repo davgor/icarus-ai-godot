@@ -41,9 +41,9 @@ The game must open as a game, not as a graybox drop-in.
 
 ## 2. Character creation — Now / Next
 
-Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-10). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
+Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-10, **Playable** vertical slice). Destination: [`epics/07-character-creator-complete.md`](epics/07-character-creator-complete.md) (CX-1…CX-10). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
 
-Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
+Code Vein-class depth is the **target**. Pack 02 is the slice (New → customize → confirm). Pack 07 is the assembler + catalog + morph depth.
 
 | ID | Feature | Notes |
 | --- | --- | --- |
@@ -53,21 +53,41 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | 2.3 | Race as preset | Selecting a race applies defaults; player can override everything |
 | 2.4 | Race as tag | Stored on the character for later story / world reactions |
 | 2.5 | Height and weight | Height = tall/short; **weight = frame mass** (not fatness) |
-| 2.6 | Proportions | Body region morphs; expand over time |
+| 2.6 | Proportions | Slice: head/torso/arms/legs. Destination: 14 named regions (2.23) |
 | 2.7 | Muscle ↔ fat bar | **Composition** + jiggle driver; not overall size |
 | 2.8 | Jiggle / soft-body | Driven by the muscle–fat bar only |
-| 2.9 | Face / hair / eyes | Named starter morphs + anime kit; grow the catalog |
+| 2.9 | Face / hair / eyes | Named starter morphs + anime kit; destination volume in 2.24–2.26 |
 | 2.10 | Demi-human features | **Ears**, **horns**, **tails** (incl. lizard/dragon); **optional**; **in vertical slice** |
 | 2.11 | Starting cosmetics | Outfit distinct from later combat gear |
 | 2.12 | Confirm → spawn | Writes the character, then loads the empty hub |
 | 2.13 | Creator on controller | Sliders, race, camera, lighting, reset/random, confirm without a mouse |
 | 2.14 | Preview lighting | **Full / Dawn / Dusk** (preview-only) |
-| 2.15 | Skin color | First-class; ≥6 swatches in slice |
-| 2.16 | Scars / markings | Thin starter (≥1 each + none); deepen later |
+| 2.15 | Skin color | First-class; ≥6 swatches in slice; undertone in 2.15 destination (CX-6) |
+| 2.16 | Scars / markings | Thin starter (≥1 each + none); decal layers in 2.27 |
 | 2.17 | Reset / randomize | Reset all/category; randomize all/category (crude OK) |
 | 2.18 | Appearance authority | Every in-game character is creator-legal; tooling can load any valid record into the creator |
 
-All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md). Explicitly not: unique NPC faces the player cannot rebuild in the creator.
+### Later — creator complete (pack 07)
+
+Do not skip the Sanctum to only polish this. May run in parallel after pack 02 is Playable. Contract: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) destination engine.
+
+| ID | Feature | Notes |
+| --- | --- | --- |
+| 2.20 | Appearance assembler | Staged apply: bones → morphs → slots/occlusion → materials → decals. Hot vs cold |
+| 2.21 | Appearance catalog as data | Approved rows under `content/catalog/appearance/`; generators sample ids only |
+| 2.22 | Schema v2 + migration | Semantic record; v1 loads; no raw bone/morph save blob |
+| 2.23 | Body region complete | 14 named proportions; group sliders optional; bust is not a jiggle toggle |
+| 2.24 | Face morph complete | Fine named keys (brows through human ears) + ≥3 face shape ids |
+| 2.25 | Makeup | Eyeshadow, liner, lipstick, blush; unlocked; none-able |
+| 2.26 | Hair highlight + heterochromia | Optional; hair ≥12, eyes ≥8 |
+| 2.27 | Decal compositor | Scars / markings / tattoos as layers + region + coarse UV; pad-usable |
+| 2.28 | Demi catalog complete | Volume ears/horns/tails; conflict/occlusion data; wings/scales stay deferred |
+| 2.29 | Outfit occlusion + pieces | Fit to morphs; hide body under clothes; colors; still not loadout |
+| 2.30 | Framing, pose, compare, undo | Atelier studio; pad-first |
+| 2.31 | Creator draft save | Explicit draft; does not overwrite a confirmed character |
+| 2.32 | Generator sampling + apply performance | Legal v2 only; hot sliders stay interactive with the grown catalog |
+
+All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md). Explicitly not: unique NPC faces the player cannot rebuild in the creator; a C# engine-agnostic DTO as the save; a third `genderPreset` body kit.
 
 ---
 
@@ -251,7 +271,7 @@ Smallest thing that feels like *this* game rather than a walker:
 4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
 5. Portal → one graybox “random world” (still climbable) → return still wearing a test item
 
-Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** (farm / build / design collectibles), and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
+Character morph depth (pack 07), Fable combat, **companion roster**, **Sanctum cozy sim** (farm / build / design collectibles), and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
 
 ---
 

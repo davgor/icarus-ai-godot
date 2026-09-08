@@ -135,7 +135,7 @@ World directors and NPC agents propose **catalog ids + morph values**, not freeh
 
 The player has full control of:
 
-- proportions (head, torso, limbs, etc.)
+- proportions (head, torso, limbs, **and** destination regions — neck, shoulders, chest, bust, waist, abdomen, hips, upper arms, forearms, hands, thighs, calves, feet)
 - height
 - weight
 - a **muscle ↔ fat** bar
@@ -150,9 +150,27 @@ The player has full control of:
 
 **Soft-body / jiggle** is driven by the muscle–fat bar only: higher fat increases motion, higher muscle reduces it. Not a separate toggle maze.
 
-**Skin color** is a first-class creator control (swatches / color), stored on the character, applied to the body material.
+**Skin color** is a first-class creator control (swatches / color), stored on the character, applied to the body material. Destination adds a cool↔warm **undertone** without replacing the swatch.
 
-Technical contract (hybrid morphs, record schema, apply→capsule, UX tools): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+Technical contract (hybrid morphs, record schema v1 slice / v2 destination, assembler, apply→capsule, UX tools): [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md).
+
+### Creator destination (Code Vein-class)
+
+Pack 02 is a playable **slice**. The destination creator ([`epics/07-character-creator-complete.md`](epics/07-character-creator-complete.md)) is still this same atelier, not a second app:
+
+| Layer | Player sees |
+| --- | --- |
+| Face | Named fine morphs (brows, eyes, nose, cheeks, jaw, mouth, chin, human ears) plus face-shape presets |
+| Hair / eyes | Large unlocked kits; hair color + optional highlight; optional heterochromia |
+| Makeup | Eyeshadow, liner, lipstick, blush — all optional, all unlocked |
+| Marks | Scars, markings, tattoos as placeable stamps on body regions (pad-coarse, not a photo editor) |
+| Features | Volume ears / horns / tails (incl. several lizard/dragon options); still optional |
+| Outfit | Wardrobe that **fits** the body and hides the underwear where clothes cover; tintable; never loadout |
+| Studio | Face/body framing, a few poses, compare, undo, optional draft save |
+
+Save data stays **semantic** (what the player chose). The engine maps that onto bones, blendshapes, sockets, and materials. Do not ask the player to edit bone names.
+
+Outside “customization engine” drafts that use a third gender preset, raw morph dictionaries as the save, or multiplayer payload caps are **not** this game.
 
 ### Creator UX tools
 
@@ -199,9 +217,10 @@ Demi-human cosmetics for the first shippable creator:
 
 Anime style. Combinations should include:
 
-- **Named** face morphs (starter set locked in the appearance contract; deepen later)
-- eyes, hair, **skin color**
-- **scars** and **markings** (thin starter in the creator slice; deepen later)
+- **Named** face morphs (starter set locked in the appearance contract; destination fine keys in the same contract)
+- eyes, hair, **skin color** (destination: undertone, highlight, heterochromia)
+- **scars** and **markings** (thin starter in the creator slice; destination tattoos/decals)
+- **makeup** (destination; unlocked)
 - demi-human **ears**, **horns**, and **tails** (including lizard tails; optional; see above)
 - clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
 
@@ -643,7 +662,7 @@ Trust, romance, and jealousy are engine-owned flags and scores. LLM may color th
 | [`art-style.md`](art-style.md) | How it looks; generator lock |
 | [`feature-list.md`](feature-list.md) | What to build, in order |
 | [`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md) | Generate → approve → place → collect; flexible defs |
-| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech, character record, creator lighting, apply→capsule |
+| [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md) | Morph tech, character record v1/v2, assembler, creator lighting, apply→capsule |
 | [`14-AGENT-RUNTIME.md`](14-AGENT-RUNTIME.md) | Statemachine + Orchestrator (cognition runtime, not a second sim) |
 | [`agent-operating-loop.md`](agent-operating-loop.md) | How agents implement without breaking the loop |
 
@@ -662,7 +681,7 @@ Recorded so we do not silently invent them during implementation:
 - Dual-wield rules and two-handed weapons as a distinct slot vs two occupied hands.
 - Whether combat shares the traversal stamina meter or stays animation-recovery only.
 - Glider, grapple, and swim (not required for the first parkour slice).
-- Broader demi-human kits beyond ears / horns / tails (wings, full scales body, etc.).
+- Broader demi-human kits beyond ears / horns / tails (wings, full scales body, etc.) — [`DEF-018`](backlog/deferred/DEF-018-demi-wings-scales.md).
 - Settings extras beyond graphics / audio / controls (accessibility). AI / worker inventory is pack 06 ([`epics/06-agent-runtime.md`](epics/06-agent-runtime.md) AR-5).
 - Exact Sanctum XP weights (materials vs designs vs companions vs harvests).
 - Whether the freestanding portal arch stays fixed, becomes swappable cosmetics, or both.

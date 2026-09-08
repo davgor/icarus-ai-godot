@@ -31,7 +31,7 @@ Regenerate from seed, then apply mutation history. Meaningful mutations should h
 
 From [`game-design.md`](game-design.md):
 
-- Character body, race tag, path XP, **loadout**, **outfit** persist across quit/relaunch and hub ↔ world.
+- Character body, race tag, path XP, **loadout**, **outfit** persist across quit/relaunch and hub ↔ world. Appearance schema is v1 in the pack 02 slice and **v2** after [`epics/07-character-creator-complete.md`](epics/07-character-creator-complete.md); migrate, do not fork a second character JSON.
 - Worn loadout travels through the portal both ways. Sanctum storage is later (materials + unequipped finds).
 - Hub / Sanctum save is distinct from world saves.
 - Sanctum level, farm plots, placed buildings, and the **home-design catalog** (player unlocks of `catalog_id`s) persist on the hub save.
