@@ -248,10 +248,12 @@ Copy/UI string is code, not baked into the illustration.
 
 ### Acceptance
 
-- [ ] Load shows empty state when no saves
-- [ ] Does not crash if save exists but is not yet supported (message or ignore with log)
-- [ ] Art under `game/art/ui/`
-- [ ] Tests + diagnostics gates as above
+- [x] Load shows empty state when no saves
+- [x] Does not crash if save exists but is not yet supported (message or ignore with log)
+- [x] Art under `game/art/ui/`
+- [x] Tests + diagnostics gates as above
+
+**Deferred review:** Open tickets checked. None roped in — slot browser stays [`DEF-004`](../backlog/deferred/DEF-004-load-browser-polish.md); Millbrook migration stays [`DEF-005`](../backlog/deferred/DEF-005-millbrook-save-migration.md). Existing town saves are refused with a message, not loaded.
 
 ---
 
