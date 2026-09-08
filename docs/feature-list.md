@@ -41,7 +41,7 @@ The game must open as a game, not as a graybox drop-in.
 
 ## 2. Character creation — Now / Next
 
-Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-9). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
+Epics: [`epics/02-character-creation.md`](epics/02-character-creation.md) (CC-1…CC-10). Index: [`epics/README.md`](epics/README.md). Summer-first: scene build, generate/import, play, diagnostics.
 
 Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 
@@ -49,6 +49,7 @@ Code Vein-class depth. Ship a vertical slice first, then deepen morphs.
 | --- | --- | --- |
 | 2.1 | Creator screen | Dedicated flow after New, before hub spawn |
 | 2.2 | Race select | Human, elf, dwarf, gnome, halfling, demi-human |
+| 2.19 | Male / female body | First-class Male and Female base kits; morphs and outfits apply to both; not a lock |
 | 2.3 | Race as preset | Selecting a race applies defaults; player can override everything |
 | 2.4 | Race as tag | Stored on the character for later story / world reactions |
 | 2.5 | Height and weight | Height = tall/short; **weight = frame mass** (not fatness) |
@@ -245,7 +246,7 @@ Architecture notes: [`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md), [`01-GAMEPLA
 Smallest thing that feels like *this* game rather than a walker:
 
 1. Loading screen → title (New / Load / Settings / Quit), **on a controller**
-2. New → race + a few body sliders → confirm, **on a controller**
+2. New → race + **male/female** + a few body sliders → confirm, **on a controller**
 3. Empty Sanctum (floating rock, dusk-void, freestanding portal arch), same camera language
 4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
 5. Portal → one graybox “random world” (still climbable) → return still wearing a test item

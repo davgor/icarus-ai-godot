@@ -109,6 +109,7 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
   "display_name": "Player",
   "race": "human",
   "body": {
+    "sex": "male",
     "height": 0.5,
     "weight": 0.5,
     "muscle_fat": 0.5,
@@ -159,6 +160,7 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
 | Field | Rules |
 | --- | --- |
 | `race` | One of `human`, `elf`, `dwarf`, `gnome`, `halfling`, `demi_human`. Preset + story tag; never locks other fields. |
+| `body.sex` | One of `male`, `female`. Swaps the underwear base kit. Does not lock morphs, race, hair, features, or outfit. |
 | `body.height` / `weight` / `muscle_fat` | Floats 0–1. See table above. `muscle_fat`: 0 = full muscle, 1 = full fat. |
 | `body.skin_color` | Hex or engine Color string. Required. Starter ships a **swatch row** (≥6 tones); free picker optional later. |
 | `proportions` | Slice minimum: head, torso, arms, legs. More keys later ([`DEF-014`](backlog/deferred/DEF-014-body-proportion-deepen.md)). |
@@ -175,6 +177,7 @@ CharacterRecord
      │
      ▼
 AppearanceApplier.apply(record, skeleton_mesh_root)
+     │  swap underwear base kit ← body.sex
      │  bone scales ← height / weight / proportions
      │  body blendshapes ← muscle_fat
      │  skin tint ← skin_color
@@ -228,6 +231,7 @@ Rules:
 
 | Kind | Minimum |
 | --- | --- |
+| Base body kits | **Male** and **Female** underwear bases |
 | Skin swatches | ≥6 |
 | Named face morphs | 7 listed above (all wired) |
 | Hair styles | ≥3 + colors |

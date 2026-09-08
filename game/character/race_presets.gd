@@ -2,6 +2,33 @@ extends Object
 
 ## Race is a preset + story tag. Morphs stay overrideable after apply.
 
+const LABELS := {
+	"human": "Human",
+	"elf": "Elf",
+	"dwarf": "Dwarf",
+	"gnome": "Gnome",
+	"halfling": "Halfling",
+	"demi_human": "Demi-human",
+}
+
+const CARD_PATHS := {
+	"human": "res://game/art/characters/race_human.png",
+	"elf": "res://game/art/characters/race_elf.png",
+	"dwarf": "res://game/art/characters/race_dwarf.png",
+	"gnome": "res://game/art/characters/race_gnome.png",
+	"halfling": "res://game/art/characters/race_halfling.png",
+	"demi_human": "res://game/art/characters/race_demi.png",
+}
+
+
+static func label_for(race_id: String) -> String:
+	return str(LABELS.get(race_id, race_id.capitalize()))
+
+
+static func card_path(race_id: String) -> String:
+	return str(CARD_PATHS.get(race_id, CARD_PATHS["human"]))
+
+
 const PRESETS := {
 	"human": {
 		"height": 0.5,

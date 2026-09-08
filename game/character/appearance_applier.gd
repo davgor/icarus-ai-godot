@@ -9,11 +9,15 @@ static func apply(record, preview_root: Node3D) -> void:
 	if preview_root == null or record == null:
 		return
 	var body: Dictionary = record.body
+	var scales: Vector3 = CapsuleBuilderScript.preview_scale(body)
+	var kit := preview_root.get_node_or_null("Preview/BodyKit") as Node3D
 	var mannequin := preview_root.get_node_or_null("Preview/Mannequin") as MeshInstance3D
 	if mannequin == null:
 		mannequin = preview_root.get_node_or_null("Mannequin") as MeshInstance3D
+	if kit:
+		var base: Vector3 = kit.get_meta("base_scale", Vector3.ONE)
+		kit.scale = Vector3(base.x * scales.x, base.y * scales.y, base.z * scales.z)
 	if mannequin:
-		var scales: Vector3 = CapsuleBuilderScript.preview_scale(body)
 		mannequin.scale = scales
 		var mat := mannequin.material_override as StandardMaterial3D
 		if mat == null:

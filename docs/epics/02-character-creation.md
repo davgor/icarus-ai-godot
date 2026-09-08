@@ -10,8 +10,8 @@
 
 Code Vein-class depth is the **target**. This pack ships a **vertical slice** first (playable New → customize → confirm → hub handoff), then deepens morphs and catalogs inside the same epic IDs. Replace the OS-5 creator **stub body**; keep the Title → New route from pack 01.
 
-Suggested ship order: **CC-1 → CC-2 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-7 → CC-4 → CC-8 → CC-9**.  
-**Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, thin CC-7, CC-8, CC-9. CC-4 can land immediately after the cut without waiting for pack 03.
+Suggested ship order: **CC-1 → CC-2 → CC-10 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-7 → CC-4 → CC-8 → CC-9**.  
+**Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, **CC-10 (Male / Female base kits — required)**, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, thin CC-7, CC-8, CC-9. CC-4 can land immediately after the cut without waiting for pack 03.
 
 **Do not invent morph tech mid-pack.** Follow [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): bone scales for height/weight/proportions, blend shapes for face + muscle↔fat, bone-spring jiggle from muscle↔fat only, socketed demi parts, one `AppearanceApplier` for preview and gameplay.
 
@@ -30,6 +30,7 @@ Suggested ship order: **CC-1 → CC-2 → CC-3 → CC-5 / CC-6 (parallel after r
 - Creator preview lighting: **Full / Dawn / Dusk** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)). Preview-only; default Full.
 - **Reset** (all + category) and **Randomize** (all + category) are in the vertical slice.
 - **CC-6 demi features are in the vertical-slice cut** — demi-human must not ship as tag-only.
+- **CC-10 Male / Female is in the vertical-slice cut** — two underwear base kits; sex does not lock cosmetics.
 - **Appearance authority:** every generated character is creator-legal; tooling exposes the creator for preview/apply of any valid record ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)).
 - Headless tests: `tests/run_tests.gd` (`extends SceneTree`), gate on `TEST_RESULT: PASS`.
 - Canonical commands: `.\scripts\test.ps1` → Summer play/diagnostics when scene work lands → `.\scripts\build.ps1` / `.\scripts\play.ps1` when the slice should be playable.
@@ -97,14 +98,15 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 
 1. Title → **New** → creator atelier (not Millbrook name overlay, not hub).
 2. Pick each race once; confirm preset snap + free override.
-3. Move height / weight / muscle–fat / skin; preview updates live (weight ≠ fatness).
-4. Cycle preview lighting **Full / Dawn / Dusk**; shading visibly changes.
-5. Change named face morphs, hair/eyes, scars/markings; optionally ears, horns, tails (**CC-6 in slice**).
-6. Use **Reset** and **Randomize** at least once (all or category).
-7. Change starting outfit; confirm loadout slots are **not** required.
-8. Orbit / frame the preview on pad (CC-9) or mouse.
-9. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
-10. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
+3. Pick **Male** and **Female** once; preview swaps the underwear base; morphs/outfit stay overrideable.
+4. Move height / weight / muscle–fat / skin; preview updates live (weight ≠ fatness).
+5. Cycle preview lighting **Full / Dawn / Dusk**; shading visibly changes.
+6. Change named face morphs, hair/eyes, scars/markings; optionally ears, horns, tails (**CC-6 in slice**).
+7. Use **Reset** and **Randomize** at least once (all or category).
+8. Change starting outfit; confirm loadout slots are **not** required.
+9. Orbit / frame the preview on pad (CC-9) or mouse.
+10. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
+11. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
 
 After each smoke: `summer_get_diagnostics`. Fix before declaring the epic playable.
 
@@ -246,12 +248,79 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 ### Acceptance
 
-- [ ] All six races selectable
-- [ ] Preset visibly updates preview
-- [ ] Tag stored on character-in-progress
-- [ ] Player can override preset fields
-- [ ] Race art/meshes under `game/art/characters/`
-- [ ] Summer play flip through races + diagnostics clean
+- [x] All six races selectable
+- [x] Preset visibly updates preview
+- [x] Tag stored on character-in-progress
+- [x] Player can override preset fields
+- [x] Race art/meshes under `game/art/characters/`
+- [x] Summer play flip through races + diagnostics clean
+- [ ] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — story reactions stay [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md); demi catalog deepen stays [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md). Re-selecting race reapplies the preset with no dirty-confirm (v0).
+
+---
+
+## CC-10 — Male / Female base kits
+
+### Outcome
+
+Player picks **Male** or **Female**. The preview swaps to that sex’s **underwear base** (not a clothed hero). Race, morphs, hair, features, and starting outfit stay overrideable on both kits. Sex is not a race and not a cosmetics lock.
+
+### Maps to
+
+| ID | Feature |
+| --- | --- |
+| 2.19 | Male / female body |
+
+### In scope
+
+- First-class Male / Female control (Body panel first row, or a Type toggle next to Race — pick one; pad-reachable)
+- Schema v1 field `body.sex`: `male` | `female` ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
+- Two underwear base meshes with the same socket layout (head / ears / horns / tail) so CC-5–CC-7 share one applier
+- Switching sex swaps the base kit live; current morphs and outfit ids remain unless a part is illegal (then snap to a legal default)
+- Race presets may bias defaults (e.g. height) but do **not** force sex
+- Reset category / Reset all re-apply the **current** sex’s defaults, not a forced Male
+- Underwear only on the base — CC-7 outfits layer on top; do not bake traveler armor into the body kit
+
+### Out of scope
+
+- Extra body types beyond Male / Female
+- Locking hair, outfit, or features by sex
+- Voice / TTS by sex (later systems)
+- Full nude or adult-only body variants — simple underwear is the base
+
+### Dependencies
+
+- CC-1 preview rig + CC-2 race tag
+- [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
+- Land **before** CC-3 sliders and CC-7 outfits so both kits receive morphs and clothes
+
+### Work
+
+- Catalog ids → `body_base_male` / `body_base_female` (or equivalent) underwear GLBs
+- `AppearanceApplier` swaps the kit from `body.sex`
+- UI: two focusable choices; selected state visible
+- Tests: both sexes set `body.sex`; preview mesh id changes; override morph after swap sticks; outfit id not cleared by sex change
+- **Summer:** generate Male and Female underwear concepts (A/T pose, identical framing) → image-to-3d → drop on Preview; play both sexes; diagnostics
+
+### Asset generation
+
+| Asset | Dest | Generate when | Prompt intent (after lock prefix) |
+| --- | --- | --- | --- |
+| Male underwear base concept | `game/art/characters/body_base_male.png` | Start of CC-10 | Full-body A/T pose; adult male; simple underwear only; no armor, no traveler kit, no weapons; dark jewel void; creator idle |
+| Female underwear base concept | `game/art/characters/body_base_female.png` | With male | Same camera, lighting, and pose as the male still; adult female; simple underwear only; no armor |
+| Male / Female base meshes | `game/art/characters/body_base_{male,female}.glb` | After concepts pass `Read` | `summer_generate_3d` image-to-3d; `assetIntent: "character"`; clean topology; shared socket language; PBR; no studio base |
+
+**Set discipline:** same camera height and lighting across the two body stills. Replace any clothed CC-2 placeholder body as the live preview kit.
+
+### Acceptance
+
+- [ ] Male and Female both selectable
+- [ ] Preview swaps to the matching underwear base
+- [ ] `body.sex` serializes on the in-progress character
+- [ ] Sex does not lock race, morphs, features, or outfit
+- [ ] Assets under `game/art/characters/`
+- [ ] Summer play both sexes + diagnostics clean
 - [ ] `TEST_RESULT: PASS`
 
 ---
@@ -292,6 +361,7 @@ Body category exposes **height**, **weight**, a **muscle ↔ fat** bar, and a fi
 ### Dependencies
 
 - CC-1; CC-2 presets should feed default body values + default skin
+- CC-10 Male / Female underwear bases live on the preview
 - [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
 
 ### Work
@@ -532,6 +602,7 @@ Player picks a **starting outfit** (clothes / appearance). It is stored as **out
 ### Dependencies
 
 - CC-1; body proportions from CC-3 should not explode outfit meshes (LOD/fit best-effort)
+- CC-10 Male / Female underwear bases — outfits layer on both kits
 
 ### Work
 
@@ -658,7 +729,7 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 - InputMap joypad bindings for creator-specific orbit/slider actions
 - Focus ring on all adjustable controls including lighting
 - Tests: actions present; focus graph has no traps on the main path
-- Manual / **Summer play:** pad-only New → race → body sliders → lighting cycle → face → outfit → confirm → hub stub → (Alt) back-out paths
+- Manual / **Summer play:** pad-only New → race → **Male/Female** → body sliders → lighting cycle → face → outfit → confirm → hub stub → (Alt) back-out paths
 - Diagnostics after pad smoke
 
 ### Asset generation
@@ -684,7 +755,7 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 This pack is **Playable** (vertical slice) when:
 
 1. Title **New** opens the atelier creator (OS-5 stub body gone) with Full/Dawn/Dusk lighting and Reset/Randomize.
-2. Player can set race (preset + tag), body core (height/weight/muscle↔fat/skin), named face morphs, scars/markings, demi features (CC-6), starting outfit.
+2. Player can set race (preset + tag), **Male / Female**, body core (height/weight/muscle↔fat/skin), named face morphs, scars/markings, demi features (CC-6), starting outfit.
 3. Confirm writes schema v1 engine-owned character; spawn uses shared applier + capsule scale into hub (or hub stub).
 4. Outfit is distinct from loadout in data and UI.
 5. Gamepad path works per CC-9 (including lighting, reset/randomize).

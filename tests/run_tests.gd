@@ -38,6 +38,7 @@ func _run_suite() -> int:
 	failed += _ok("creator_atelier_shell", await _test_creator_atelier_shell())
 	failed += _ok("creator_lighting_presets", _test_creator_lighting_presets())
 	failed += _ok("creator_reset_randomize", _test_creator_reset_randomize())
+	failed += _ok("creator_race_select", _test_creator_race_select())
 	failed += _ok("character_record_schema_v1", _test_character_record_schema_v1())
 	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
@@ -315,6 +316,8 @@ func _test_creator_atelier_shell() -> bool:
 		and creator != null
 		and creator.find_child("NameEdit", true, false) != null
 		and creator.find_child("Mannequin", true, false) != null
+		and creator.find_child("RaceGrid", true, false) != null
+		and creator.find_child("HumanRace", true, false) != null
 		and creator.find_child("KeyLight", true, false) != null
 		and creator.find_child("Room", true, false) != null
 		and creator.find_child("Chamber", true, false) != null
@@ -371,11 +374,14 @@ func _test_creator_reset_randomize() -> bool:
 		return false
 	creator.randomize_all()
 	var randomized: Dictionary = creator.draft.to_dict()
+	var kept_race := str(randomized.get("race", "human"))
 	creator.reset_all()
 	var reset: Dictionary = creator.draft.to_dict()
+	var PresetsScript := load("res://game/character/race_presets.gd")
+	var expected_height := float((PresetsScript.PRESETS[kept_race] as Dictionary).get("height", 0.5))
 	var ok: bool = (
-		float(reset["body"]["height"]) == 0.5
-		and str(reset["race"]) == "human"
+		str(reset["race"]) == kept_race
+		and is_equal_approx(float(reset["body"]["height"]), expected_height)
 		and str(reset["outfit"]["id"]) == "outfit_starter_01"
 		and (reset as Dictionary).has("loadout")
 		and randomized != reset
@@ -384,6 +390,76 @@ func _test_creator_reset_randomize() -> bool:
 		push_error("Reset/randomize did not mutate then restore the draft")
 	flow.hide_flow()
 	return ok
+
+
+func _test_creator_race_select() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("select_race"):
+		push_error("Creator race select missing")
+		flow.hide_flow()
+		return false
+	if not flow.creator_race_art_ready():
+		push_error("Race cards / underwear body missing")
+		flow.hide_flow()
+		return false
+	if not ResourceLoader.exists("res://game/art/characters/body_base_underwear.glb"):
+		push_error("Underwear base mesh missing")
+		flow.hide_flow()
+		return false
+	var RecordScript := load("res://game/character/character_record.gd")
+	var PresetsScript := load("res://game/character/race_presets.gd")
+	var mannequin := creator.find_child("Mannequin", true, false) as MeshInstance3D
+	var heights := {}
+	for race_id in RecordScript.RACES:
+		creator.select_race(race_id)
+		if str(creator.draft.race) != race_id:
+			push_error("Race tag not stored for %s" % race_id)
+			flow.hide_flow()
+			return false
+		if creator.find_child("%sRace" % race_id.capitalize(), true, false) == null:
+			push_error("Race card button missing for %s" % race_id)
+			flow.hide_flow()
+			return false
+		var preset: Dictionary = PresetsScript.PRESETS[race_id]
+		var height := float(creator.draft.body.get("height", -1.0))
+		heights[race_id] = height
+		if not is_equal_approx(height, float(preset.get("height", -2.0))):
+			push_error("Preset height not applied for %s" % race_id)
+			flow.hide_flow()
+			return false
+	if is_equal_approx(float(heights["human"]), float(heights["dwarf"])):
+		push_error("Race presets must change a measurable morph")
+		flow.hide_flow()
+		return false
+	if mannequin:
+		creator.select_race("human")
+		var human_scale: Vector3 = mannequin.scale
+		creator.select_race("dwarf")
+		if mannequin.scale.is_equal_approx(human_scale):
+			push_error("Preview scale should change with race preset")
+			flow.hide_flow()
+			return false
+	creator.select_race("dwarf")
+	creator.override_body_field("height", 0.92)
+	if str(creator.draft.race) != "dwarf" or not is_equal_approx(float(creator.draft.body.height), 0.92):
+		push_error("Override after preset should stick")
+		flow.hide_flow()
+		return false
+	creator.select_race("elf")
+	if str(creator.draft.race) != "elf":
+		push_error("Re-selecting race should retag")
+		flow.hide_flow()
+		return false
+	if not is_equal_approx(float(creator.draft.body.height), float(PresetsScript.PRESETS["elf"]["height"])):
+		push_error("Re-selecting race should reapply preset")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
 
 
 func _test_character_record_schema_v1() -> bool:

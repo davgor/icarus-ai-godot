@@ -255,6 +255,32 @@ func creator_set_category(category: String) -> void:
 		_creator.set_category(category)
 
 
+func creator_select_race(race_id: String) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("select_race"):
+		_creator.select_race(race_id)
+
+
+func creator_selected_race() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("selected_race"):
+		return str(_creator.selected_race())
+	return ""
+
+
+func creator_override_body_field(key: String, value: float) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("override_body_field"):
+		_creator.override_body_field(key, value)
+
+
+func creator_race_art_ready() -> bool:
+	ensure_ui()
+	if _creator and _creator.has_method("race_art_ready"):
+		return bool(_creator.race_art_ready())
+	return false
+
+
 func creator_has_reset_randomize() -> bool:
 	ensure_ui()
 	if _creator == null:

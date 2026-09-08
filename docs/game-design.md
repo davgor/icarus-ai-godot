@@ -114,6 +114,10 @@ Race does **not** lock customization. Race does:
 
 The player can then override the preset freely.
 
+### Male / Female
+
+Creator ships **Male** and **Female** as first-class **base body kits** (underwear bases; outfits layer on top). Same morphs, race presets, hair, features, and starting outfits apply to both. Sex is not a lock on cosmetics and not a separate race.
+
 ### Creator is the appearance authority
 
 **Every character the game can show** — player, companion, NPC, story recruit, compiler-spawned face — must be expressible as a **creator-legal** appearance record ([`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md)).

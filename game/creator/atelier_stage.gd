@@ -5,6 +5,8 @@ extends Node3D
 signal lighting_changed(preset: String)
 
 const ROOM_MESH := "res://game/art/characters/creator_atelier_chamber.glb"
+const BODY_MESH := "res://game/art/characters/body_base_underwear.glb"
+const BODY_MESH_FALLBACK := "res://game/art/characters/body_base_human.glb"
 const BACKDROP := "res://game/art/characters/creator_atelier_bg.png"
 const PRESETS: PackedStringArray = ["full", "dawn", "dusk"]
 const ORBIT_SENS := 0.006
@@ -36,6 +38,7 @@ var _yaw := 0.28
 var _pitch := 0.08
 var _zoom := DEFAULT_ZOOM
 var _orbiting := false
+var _cached_dais_y := -1.0
 
 
 func _ready() -> void:
@@ -83,6 +86,7 @@ func zoom_by(amount: float) -> void:
 func apply_record(record) -> void:
 	_ensure_stage()
 	AppearanceApplierScript.apply(record, self)
+	_plant_preview_on_dais()
 
 
 func apply_lighting(preset: String) -> void:
@@ -165,6 +169,7 @@ func _ensure_stage() -> void:
 	_rim.shadow_enabled = false
 
 	_place_room()
+	_place_preview_body()
 
 	_shaft = SpotLight3D.new()
 	_shaft.name = "WindowShaft"
@@ -187,19 +192,25 @@ func _ensure_stage() -> void:
 
 	_add_motes()
 
-	var preview := Node3D.new()
-	preview.name = "Preview"
-	add_child(preview)
+	var preview := get_node_or_null("Preview") as Node3D
+	if preview == null:
+		preview = Node3D.new()
+		preview.name = "Preview"
+		add_child(preview)
 
-	_mannequin = MeshInstance3D.new()
-	_mannequin.name = "Mannequin"
-	var capsule := CapsuleMesh.new()
-	capsule.radius = 0.32
-	capsule.height = 1.7
-	_mannequin.mesh = capsule
-	_mannequin.position = Vector3(0, 1.02, 0.12)
-	_mannequin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-	preview.add_child(_mannequin)
+	if _mannequin == null:
+		_mannequin = MeshInstance3D.new()
+		_mannequin.name = "Mannequin"
+		var capsule := CapsuleMesh.new()
+		capsule.radius = 0.32
+		capsule.height = 1.7
+		_mannequin.mesh = capsule
+		_mannequin.position = Vector3(0, _dais_surface_y() + 0.87, 0.12)
+		_mannequin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		preview.add_child(_mannequin)
+
+	if preview.get_node_or_null("BodyKit") and _mannequin:
+		_mannequin.visible = false
 
 	for socket_name in ["Head", "Ears", "Horns", "Tail"]:
 		var socket := Marker3D.new()
@@ -221,6 +232,138 @@ func _ensure_stage() -> void:
 	_camera.far = 80.0
 	_pivot.add_child(_camera)
 	_refresh_camera()
+	_disable_stage_picking()
+
+
+func _place_preview_body() -> void:
+	var preview := get_node_or_null("Preview") as Node3D
+	if preview == null:
+		preview = Node3D.new()
+		preview.name = "Preview"
+		add_child(preview)
+	var kit := preview.get_node_or_null("BodyKit") as Node3D
+	var mesh_path := BODY_MESH if ResourceLoader.exists(BODY_MESH) else BODY_MESH_FALLBACK
+	if kit == null and ResourceLoader.exists(mesh_path):
+		var packed := load(mesh_path) as PackedScene
+		if packed:
+			kit = packed.instantiate() as Node3D
+			if kit:
+				kit.name = "BodyKit"
+				preview.add_child(kit)
+				_hide_kit_helpers(kit)
+				_fit_preview_body(kit)
+	if kit:
+		if _mannequin:
+			_mannequin.visible = false
+		return
+	if _mannequin == null:
+		_mannequin = MeshInstance3D.new()
+		_mannequin.name = "Mannequin"
+		var capsule := CapsuleMesh.new()
+		capsule.radius = 0.32
+		capsule.height = 1.7
+		_mannequin.mesh = capsule
+		_mannequin.position = Vector3(0, _dais_surface_y() + 0.87, 0.12)
+		_mannequin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		preview.add_child(_mannequin)
+
+
+func _fit_preview_body(kit: Node3D) -> void:
+	var aabb := _visual_aabb(kit)
+	if aabb.size.length() < 0.01:
+		kit.position = Vector3(0, _dais_surface_y() + 0.02, 0.12)
+		kit.set_meta("base_scale", kit.scale)
+		return
+	var target_height := 1.7
+	var kit_scale := target_height / maxf(aabb.size.y, 0.01)
+	kit.scale = Vector3.ONE * kit_scale
+	aabb = _visual_aabb(kit)
+	kit.position -= Vector3(aabb.get_center().x, aabb.position.y, aabb.get_center().z - 0.12)
+	kit.set_meta("base_scale", kit.scale)
+	_plant_preview_on_dais()
+
+
+func _plant_preview_on_dais() -> void:
+	var kit := get_node_or_null("Preview/BodyKit") as Node3D
+	var dais_y := _dais_surface_y() + 0.02
+	if kit:
+		var aabb := _visual_aabb(kit)
+		if aabb.size.length() < 0.01:
+			kit.position.y = dais_y
+			return
+		kit.position.y += dais_y - aabb.position.y
+		return
+	if _mannequin:
+		_mannequin.position.y = dais_y + 0.85
+
+
+func _dais_surface_y() -> float:
+	if _cached_dais_y > 0.0:
+		return _cached_dais_y
+	var room := get_node_or_null("Room")
+	if room == null:
+		_cached_dais_y = 0.62
+		return _cached_dais_y
+	var best := 0.0
+	var stack: Array[Node] = [room]
+	while stack.size() > 0:
+		var node: Node = stack.pop_back()
+		for child in node.get_children():
+			stack.append(child)
+		if not (node is MeshInstance3D):
+			continue
+		var mi := node as MeshInstance3D
+		var mesh := mi.mesh
+		if mesh == null:
+			continue
+		var surface_count := mesh.get_surface_count()
+		for surface_i in surface_count:
+			var arrays: Array = []
+			if mesh.has_method("surface_get_arrays"):
+				arrays = mesh.surface_get_arrays(surface_i)
+			elif mesh.has_method("get_surface_arrays"):
+				arrays = mesh.get_surface_arrays(surface_i)
+			if arrays.is_empty() or arrays[Mesh.ARRAY_VERTEX] == null:
+				continue
+			var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			for vertex in verts:
+				var world := mi.global_transform * vertex
+				if Vector2(world.x, world.z - 0.12).length() > 0.62:
+					continue
+				if world.y < 0.18 or world.y > 1.25:
+					continue
+				best = maxf(best, world.y)
+	_cached_dais_y = best if best >= 0.2 else 0.62
+	return _cached_dais_y
+
+
+func _hide_kit_helpers(kit: Node3D) -> void:
+	var stack: Array[Node] = [kit]
+	while stack.size() > 0:
+		var node: Node = stack.pop_back()
+		for child in node.get_children():
+			stack.append(child)
+		if not (node is VisualInstance3D):
+			continue
+		var vi := node as VisualInstance3D
+		var box := vi.get_aabb()
+		if box.size.y < 0.2 and box.size.x > 2.0 and box.size.z > 2.0:
+			vi.visible = false
+
+
+func _disable_stage_picking() -> void:
+	var stack: Array[Node] = [self]
+	while stack.size() > 0:
+		var node: Node = stack.pop_back()
+		for child in node.get_children():
+			stack.append(child)
+		if node is CollisionObject3D:
+			var body := node as CollisionObject3D
+			body.input_ray_pickable = false
+			body.collision_layer = 0
+			body.collision_mask = 0
+		if node is CollisionShape3D:
+			(node as CollisionShape3D).disabled = true
 
 
 func _place_room() -> void:

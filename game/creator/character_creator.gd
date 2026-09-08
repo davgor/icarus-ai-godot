@@ -1,6 +1,6 @@
 extends Control
 
-## Dedicated character atelier (CC-1). Replaces the OS-5 stub body. DEF-006.
+## Dedicated character atelier (CC-1 + CC-2 race select). Replaces the OS-5 stub body.
 
 signal back_pressed
 
@@ -22,10 +22,12 @@ const SLIDER_FILL := "res://game/art/ui/creator_slider_fill.png"
 const SLIDER_THUMB := "res://game/art/ui/creator_slider_thumb.png"
 const BTN_CHROME := "res://game/art/ui/btn_primary.png"
 
+const RacePresetsScript := preload("res://game/character/race_presets.gd")
+
 const HEADLINE := "Character Creation"
 const BODY_COPY := "Atelier creator — race, body, face, and outfit. Not the town. Confirm writes a character later."
 const CATEGORY_COPY := {
-	"race": "Race is a preset and a story tag. Every morph stays overrideable. Cards land next.",
+	"race": "Race is a preset and a story tag. Pick a card to snap proportions; every morph stays overrideable.",
 	"body": "Height, weight, muscle ↔ fat, and skin. Weight is frame mass, not fatness.",
 	"face": "Named face morphs, hair, eyes, scars, and markings land here.",
 	"features": "Optional ears, horns, and tails — including a lizard tail. Unlocked from the start.",
@@ -50,6 +52,8 @@ var _wipe_tween: Tween
 var _category := "race"
 var _tab_buttons: Dictionary = {}
 var _light_buttons: Dictionary = {}
+var _race_buttons: Dictionary = {}
+var _race_grid: GridContainer
 var _panel_body: Label
 var _reset_all: Button
 var _reset_cat: Button
@@ -118,14 +122,41 @@ func uses_stub_backdrop() -> bool:
 
 
 func atelier_art_ready() -> bool:
-	return (
+	if not (
 		ResourceLoader.exists("res://game/art/characters/creator_atelier_chamber.glb")
 		and ResourceLoader.exists("res://game/art/characters/creator_atelier_bg.png")
 		and ResourceLoader.exists("res://game/art/ui/creator_light_full.png")
 		and ResourceLoader.exists("res://game/art/ui/creator_reset.png")
 		and ResourceLoader.exists("res://game/art/ui/creator_random.png")
 		and ResourceLoader.exists("res://game/art/ui/creator_tab.png")
+	):
+		return false
+	return race_art_ready()
+
+
+func race_art_ready() -> bool:
+	for race_id in CharacterRecordScript.RACES:
+		if not ResourceLoader.exists(RacePresetsScript.card_path(race_id)):
+			return false
+	return (
+		ResourceLoader.exists("res://game/art/characters/body_base_underwear.png")
+		and ResourceLoader.exists("res://game/art/characters/body_base_underwear.glb")
 	)
+
+
+func selected_race() -> String:
+	return str(draft.race)
+
+
+func select_race(race_id: String) -> void:
+	draft.apply_race_preset(race_id)
+	refresh_preview()
+	_sync_race_buttons()
+
+
+func override_body_field(key: String, value: float) -> void:
+	draft.body[key] = clampf(value, 0.0, 1.0)
+	refresh_preview()
 
 
 func grab_default_focus() -> void:
@@ -181,23 +212,29 @@ func set_category(category: String) -> void:
 	_category = category
 	if _panel_body:
 		_panel_body.text = str(CATEGORY_COPY.get(category, ""))
+	if _race_grid:
+		_race_grid.visible = category == "race"
 	for id in _tab_buttons:
 		var button := _tab_buttons[id] as Button
 		button.button_pressed = id == category
 	_sync_action_labels()
+	_sync_race_buttons()
 
 
 func reset_all() -> void:
 	var kept_name: String = str(draft.display_name)
+	var kept_race: String = str(draft.race)
 	draft.reset_to_defaults()
-	draft.apply_race_preset(draft.race)
+	draft.apply_race_preset(kept_race)
 	draft.display_name = kept_name
 	refresh_preview()
+	_sync_race_buttons()
 
 
 func reset_category() -> void:
 	draft.reset_category(_category)
 	refresh_preview()
+	_sync_race_buttons()
 
 
 func randomize_all() -> void:
@@ -205,11 +242,13 @@ func randomize_all() -> void:
 	draft.randomize_all(_rng)
 	draft.display_name = kept_name
 	refresh_preview()
+	_sync_race_buttons()
 
 
 func randomize_category() -> void:
 	draft.randomize_category(_category, _rng)
 	refresh_preview()
+	_sync_race_buttons()
 
 
 func refresh_preview() -> void:
@@ -221,6 +260,7 @@ func discard_draft() -> void:
 	draft = CharacterRecordScript.new()
 	if _name_edit:
 		_name_edit.text = ""
+	_sync_race_buttons()
 
 
 func _sync_stage_active() -> void:
@@ -251,13 +291,16 @@ func _build_stage() -> void:
 	_stage_host.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_stage_host.stretch = true
 	_stage_host.mouse_filter = Control.MOUSE_FILTER_STOP
+	_stage_host.focus_mode = Control.FOCUS_NONE
+	_stage_host.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	_stage_host.gui_input.connect(_on_stage_gui_input)
 	add_child(_stage_host)
 
 	_viewport = SubViewport.new()
 	_viewport.name = "StageView"
 	_viewport.own_world_3d = true
-	_viewport.handle_input_locally = true
+	_viewport.handle_input_locally = false
+	_viewport.physics_object_picking = false
 	_viewport.transparent_bg = false
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	_viewport.size = Vector2i(1280, 720)
@@ -313,10 +356,10 @@ func _build_chrome() -> void:
 	var panel := PanelContainer.new()
 	panel.name = "CategoryPanel"
 	panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-	panel.offset_left = -420
-	panel.offset_top = -210
-	panel.offset_right = -28
-	panel.offset_bottom = 90
+	panel.offset_left = -468
+	panel.offset_top = -268
+	panel.offset_right = -20
+	panel.offset_bottom = 132
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.03, 0.04, 0.08, 0.72)
@@ -338,6 +381,37 @@ func _build_chrome() -> void:
 	_panel_body.add_theme_font_size_override("font_size", 15)
 	_panel_body.add_theme_color_override("font_color", Color(0.82, 0.88, 0.96, 0.95))
 	panel_col.add_child(_panel_body)
+
+	_race_grid = GridContainer.new()
+	_race_grid.name = "RaceGrid"
+	_race_grid.columns = 2
+	_race_grid.add_theme_constant_override("h_separation", 8)
+	_race_grid.add_theme_constant_override("v_separation", 8)
+	var race_group := ButtonGroup.new()
+	race_group.allow_unpress = false
+	panel_col.add_child(_race_grid)
+	for race_id in CharacterRecordScript.RACES:
+		var card := Button.new()
+		card.name = "%sRace" % race_id.capitalize()
+		card.text = RacePresetsScript.label_for(race_id)
+		card.toggle_mode = true
+		card.button_group = race_group
+		card.focus_mode = Control.FOCUS_ALL
+		card.custom_minimum_size = Vector2(188, 88)
+		card.clip_text = false
+		card.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var portrait := load(RacePresetsScript.card_path(race_id)) as Texture2D
+		if portrait:
+			card.icon = portrait
+			card.expand_icon = true
+			card.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
+			card.add_theme_constant_override("icon_max_width", 56)
+		_apply_button_theme(card)
+		card.add_theme_font_size_override("font_size", 13)
+		card.pressed.connect(select_race.bind(race_id))
+		_race_grid.add_child(card)
+		_race_buttons[race_id] = card
+		_focusables.append(card)
 
 	var light_row := HBoxContainer.new()
 	light_row.name = "Lighting"
@@ -509,7 +583,19 @@ func _sync_action_labels() -> void:
 		_random_cat.text = "Randomize %s" % _category.capitalize()
 
 
+func _sync_race_buttons() -> void:
+	var current := selected_race()
+	for id in _race_buttons:
+		var button := _race_buttons[id] as Button
+		button.button_pressed = id == current
+
+
 func _on_stage_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse := event as InputEventMouseButton
+		if mouse.button_index == MOUSE_BUTTON_LEFT:
+			_stage_host.accept_event()
+			return
 	if _atelier and _atelier.has_method("handle_stage_input"):
 		_atelier.handle_stage_input(event)
 
