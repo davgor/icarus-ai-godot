@@ -44,6 +44,10 @@ func _run_suite() -> int:
 	failed += _ok("load_empty_state", _test_load_empty_state())
 	failed += _ok("load_unsupported_save", _test_load_unsupported_save())
 	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
+	failed += _ok("ui_menu_actions_bound", _test_ui_menu_actions_bound())
+	failed += _ok("title_focus_loop", _test_title_focus_loop())
+	failed += _ok("prompt_glyphs_and_cancel", _test_prompt_glyphs_and_cancel())
+	failed += _ok("millbrook_hud_cannot_steal_focus", await _test_millbrook_hud_cannot_steal_focus())
 	return failed
 
 
@@ -500,6 +504,107 @@ func _test_create_overlay_hidden_on_boot() -> bool:
 	var ok := create != null and not create.visible
 	if not ok:
 		push_error("Millbrook create overlay should stay hidden on boot")
+	scene.queue_free()
+	await process_frame
+	return ok
+
+
+func _test_ui_menu_actions_bound() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	var actions: PackedStringArray = flow.ui_menu_actions()
+	if actions != PackedStringArray(["ui_accept", "ui_cancel", "ui_up", "ui_down", "ui_left", "ui_right"]):
+		push_error("Unexpected UI menu actions: %s" % str(actions))
+		return false
+	for action in actions:
+		if not InputMap.has_action(action):
+			push_error("Missing action %s" % action)
+			return false
+		if not flow.action_has_keyboard(action):
+			push_error("%s missing keyboard binding" % action)
+			return false
+		if not flow.action_has_joypad(action):
+			push_error("%s missing joypad binding" % action)
+			return false
+	return true
+
+
+func _test_title_focus_loop() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_title()
+	var ok := bool(flow.title_focus_loop_ok())
+	if not ok:
+		push_error("Title buttons must have a vertical focus loop")
+	flow.hide_flow()
+	return ok
+
+
+func _test_prompt_glyphs_and_cancel() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	if not flow.glyph_paths_exist():
+		push_error("Missing OS-6 glyph or focus ring art")
+		return false
+	flow.show_title()
+	var title_hints: PackedStringArray = flow.prompt_hint_labels()
+	var title_ok: bool = (
+		flow.prompt_bar_visible()
+		and title_hints.has("Navigate")
+		and title_hints.has("Confirm")
+		and not title_hints.has("Back")
+	)
+	if not title_ok:
+		push_error("Title prompt should show Navigate/Confirm without Back; hints=%s" % str(title_hints))
+		flow.hide_flow()
+		return false
+	flow.show_settings()
+	var settings_hints: PackedStringArray = flow.prompt_hint_labels()
+	if not settings_hints.has("Back"):
+		push_error("Settings prompt should show Back")
+		flow.hide_flow()
+		return false
+	if not flow.try_cancel() or str(flow.screen_name()) != "title":
+		push_error("ui_cancel / try_cancel should return from settings to title")
+		flow.hide_flow()
+		return false
+	flow.show_load()
+	if not flow.try_cancel() or str(flow.screen_name()) != "title":
+		push_error("Cancel from load should return to title")
+		flow.hide_flow()
+		return false
+	flow.show_creator()
+	if not flow.try_cancel() or str(flow.screen_name()) != "title":
+		push_error("Cancel from creator should return to title")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_millbrook_hud_cannot_steal_focus() -> bool:
+	var packed := load("res://game/main.tscn")
+	if packed == null:
+		return false
+	var scene: Node = packed.instantiate()
+	root.add_child(scene)
+	await process_frame
+	var name_edit := scene.get_node_or_null("HUD/Create/Panel/VBox/NameEdit") as Control
+	var start := scene.get_node_or_null("HUD/Create/Panel/VBox/StartButton") as Control
+	var cont := scene.get_node_or_null("HUD/Create/Panel/VBox/ContinueButton") as Control
+	var ok := (
+		name_edit != null
+		and start != null
+		and cont != null
+		and name_edit.focus_mode == Control.FOCUS_NONE
+		and start.focus_mode == Control.FOCUS_NONE
+		and cont.focus_mode == Control.FOCUS_NONE
+	)
+	if not ok:
+		push_error("Millbrook create HUD must not be focusable during title flow")
 	scene.queue_free()
 	await process_frame
 	return ok

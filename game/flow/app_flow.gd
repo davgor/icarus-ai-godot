@@ -5,10 +5,12 @@ extends CanvasLayer
 ## Settings persistence / rebind: DEF-002 / DEF-003.
 ## Load slot browser / Millbrook migration: DEF-004 / DEF-005.
 ## Creator stub art retirement: DEF-006. Draft save: DEF-007.
+## OS-6 pad path: glyphs + focus ring; full rebind stays DEF-003.
 
 const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 const LoadShellScript := preload("res://game/flow/load_shell.gd")
 const CreatorStubScript := preload("res://game/flow/creator_stub.gd")
+const PromptBarScript := preload("res://game/flow/prompt_bar.gd")
 
 signal world_requested
 signal quit_requested
@@ -16,14 +18,19 @@ signal quit_requested
 enum Screen { NONE, BOOT, TITLE, CREATOR, SETTINGS, LOAD }
 
 const ACTION_LABELS: PackedStringArray = ["New", "Load", "Settings", "Quit"]
+const UI_MENU_ACTIONS: PackedStringArray = [
+	"ui_accept", "ui_cancel", "ui_up", "ui_down", "ui_left", "ui_right"
+]
 const BOOT_SECONDS := 1.35
 const DEBUG_SKIP_KEY := KEY_F10
+const FOCUS_RING_PAD := 10.0
 
 const BOOT_SPLASH := "res://game/art/ui/boot_splash.png"
 const TITLE_BG := "res://game/art/ui/title_bg.png"
 const LOGO := "res://game/art/ui/logo_icarus.png"
 const SPINNER := "res://game/art/ui/loading_spinner.png"
 const BTN_CHROME := "res://game/art/ui/btn_primary.png"
+const FOCUS_RING := "res://game/art/ui/focus_ring.png"
 
 var current_screen: Screen = Screen.NONE
 
@@ -41,11 +48,17 @@ var _settings_button: Button
 var _btn_normal: StyleBox
 var _btn_hover: StyleBox
 var _btn_focus: StyleBox
+var _prompt_bar: Control
+var _focus_ring: TextureRect
+var _focus_connected := false
 
 
 func _ready() -> void:
 	layer = 100
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	_ensure_ui_input_map()
+	if not Input.joy_connection_changed.is_connected(_on_joy_connection_changed):
+		Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	if DisplayServer.get_name() == "headless":
 		visible = false
 		current_screen = Screen.NONE
@@ -57,31 +70,40 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if _spinner and _spinner.visible:
 		_spinner.rotation += delta * 2.4
+	_update_focus_ring()
+	if _gamepad_connected():
+		_restore_flow_focus()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if DisplayServer.get_name() == "headless":
-		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode == DEBUG_SKIP_KEY:
-			request_debug_world()
+			if DisplayServer.get_name() != "headless":
+				request_debug_world()
+				get_viewport().set_input_as_handled()
+			return
+	if event.is_action_pressed("ui_cancel"):
+		if try_cancel():
 			get_viewport().set_input_as_handled()
 			return
-	if event.is_action_pressed("ui_cancel") and current_screen in [Screen.CREATOR, Screen.SETTINGS, Screen.LOAD]:
-		show_title()
-		get_viewport().set_input_as_handled()
+	if _is_menu_nav(event):
+		_restore_flow_focus()
 
 
 func ensure_ui() -> void:
 	if _built:
 		return
 	_built = true
+	_ensure_ui_input_map()
 	_build_styles()
 	_build_boot()
 	_build_title()
 	_build_settings()
 	_build_load()
 	_build_creator()
+	_build_focus_ring()
+	_build_prompt_bar()
+	_connect_focus_signal()
 	visible = true
 
 
@@ -122,6 +144,7 @@ func show_boot() -> void:
 	if _load:
 		_load.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	_sync_chrome(false)
 	var tree := get_tree()
 	if tree:
 		var timer := tree.create_timer(BOOT_SECONDS)
@@ -145,6 +168,7 @@ func show_title() -> void:
 		_load.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_set_menu_enabled(true)
+	_sync_chrome(false)
 	var focus_btn := _new_button
 	if restore_settings and _settings_button:
 		focus_btn = _settings_button
@@ -174,6 +198,7 @@ func show_creator() -> void:
 		_creator.play_enter()
 	if _creator.has_method("grab_default_focus"):
 		_creator.grab_default_focus()
+	_sync_chrome(true)
 
 
 func creator_headline() -> String:
@@ -208,6 +233,7 @@ func show_settings() -> void:
 		_settings.show_section("audio")
 	if _settings.has_method("grab_default_focus"):
 		_settings.grab_default_focus()
+	_sync_chrome(true)
 
 
 func settings_section_ids() -> PackedStringArray:
@@ -262,6 +288,7 @@ func show_load() -> void:
 	_set_menu_enabled(false)
 	if _load.has_method("grab_default_focus"):
 		_load.grab_default_focus()
+	_sync_chrome(true)
 
 
 func load_state() -> String:
@@ -306,6 +333,72 @@ func hide_flow() -> void:
 		_settings.visible = false
 	if _load:
 		_load.visible = false
+	_sync_chrome(false)
+
+
+func try_cancel() -> bool:
+	if current_screen in [Screen.CREATOR, Screen.SETTINGS, Screen.LOAD]:
+		show_title()
+		return true
+	return false
+
+
+func ui_menu_actions() -> PackedStringArray:
+	_ensure_ui_input_map()
+	return UI_MENU_ACTIONS
+
+
+func action_has_keyboard(action: String) -> bool:
+	_ensure_ui_input_map()
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey:
+			return true
+	return false
+
+
+func action_has_joypad(action: String) -> bool:
+	_ensure_ui_input_map()
+	for event in InputMap.action_get_events(action):
+		if event is InputEventJoypadButton or event is InputEventJoypadMotion:
+			return true
+	return false
+
+
+func title_focus_loop_ok() -> bool:
+	ensure_ui()
+	if _action_buttons.size() != ACTION_LABELS.size():
+		return false
+	for button in _action_buttons:
+		if str(button.focus_neighbor_top).is_empty() or str(button.focus_neighbor_bottom).is_empty():
+			return false
+		if button.focus_mode == Control.FOCUS_NONE:
+			return false
+	return true
+
+
+func prompt_hint_labels() -> PackedStringArray:
+	ensure_ui()
+	if _prompt_bar and _prompt_bar.has_method("hint_labels"):
+		return _prompt_bar.hint_labels()
+	return PackedStringArray()
+
+
+func prompt_bar_visible() -> bool:
+	return _prompt_bar != null and _prompt_bar.visible
+
+
+func glyph_paths_exist() -> bool:
+	return (
+		ResourceLoader.exists("res://game/art/ui/glyph_a.png")
+		and ResourceLoader.exists("res://game/art/ui/glyph_b.png")
+		and ResourceLoader.exists("res://game/art/ui/glyph_dpad.png")
+		and ResourceLoader.exists("res://game/art/ui/glyph_stick.png")
+		and ResourceLoader.exists(FOCUS_RING)
+	)
+
+
+func focus_ring_visible() -> bool:
+	return _focus_ring != null and _focus_ring.visible
 
 
 func request_quit() -> void:
@@ -340,6 +433,12 @@ func _build_styles() -> void:
 	if chrome:
 		_btn_normal = _make_texture_style(chrome, Color(0.92, 0.95, 1.0, 0.92))
 		_btn_hover = _make_texture_style(chrome, Color(1, 1, 1, 1))
+	var ring := _load_knockout(FOCUS_RING)
+	if ring:
+		var ring_style := _make_texture_style(ring, Color(1, 1, 1, 1))
+		ring_style.set_texture_margin_all(48)
+		ring_style.set_content_margin_all(16)
+		_btn_focus = ring_style
 
 
 func _make_button_style(fill: Color, rim: Color) -> StyleBoxFlat:
@@ -459,6 +558,8 @@ func _build_title() -> void:
 		var next := _action_buttons[i + 1 if i + 1 < _action_buttons.size() else 0]
 		button.focus_neighbor_top = button.get_path_to(prev)
 		button.focus_neighbor_bottom = button.get_path_to(next)
+		button.focus_neighbor_left = button.get_path_to(button)
+		button.focus_neighbor_right = button.get_path_to(button)
 		button.focus_previous = button.get_path_to(prev)
 		button.focus_next = button.get_path_to(next)
 
@@ -497,6 +598,182 @@ func _build_creator() -> void:
 	if _creator.has_method("fill_parent"):
 		_creator.fill_parent()
 	_creator.back_pressed.connect(show_title)
+
+
+func _build_focus_ring() -> void:
+	_focus_ring = TextureRect.new()
+	_focus_ring.name = "FocusRing"
+	_focus_ring.visible = false
+	_focus_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_focus_ring.texture = _load_knockout(FOCUS_RING)
+	_focus_ring.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_focus_ring.stretch_mode = TextureRect.STRETCH_SCALE
+	_focus_ring.z_index = 20
+	add_child(_focus_ring)
+
+
+func _build_prompt_bar() -> void:
+	_prompt_bar = PromptBarScript.new()
+	_prompt_bar.name = "PromptBar"
+	_prompt_bar.visible = false
+	_prompt_bar.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_prompt_bar.offset_left = -560
+	_prompt_bar.offset_top = -56
+	_prompt_bar.offset_right = -28
+	_prompt_bar.offset_bottom = -16
+	_prompt_bar.z_index = 21
+	add_child(_prompt_bar)
+
+
+func _sync_chrome(show_cancel: bool) -> void:
+	if _prompt_bar:
+		var show_bar := current_screen in [Screen.TITLE, Screen.CREATOR, Screen.SETTINGS, Screen.LOAD]
+		_prompt_bar.visible = show_bar
+		if _prompt_bar.has_method("configure"):
+			_prompt_bar.configure(show_cancel)
+	if _focus_ring and not show_cancel and current_screen in [Screen.NONE, Screen.BOOT]:
+		_focus_ring.visible = false
+	_update_focus_ring()
+
+
+func _connect_focus_signal() -> void:
+	if _focus_connected:
+		return
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	if not viewport.gui_focus_changed.is_connected(_on_gui_focus_changed):
+		viewport.gui_focus_changed.connect(_on_gui_focus_changed)
+	_focus_connected = true
+
+
+func _on_gui_focus_changed(_control: Control) -> void:
+	_update_focus_ring()
+
+
+func _on_joy_connection_changed(_device: int, connected: bool) -> void:
+	if connected:
+		_restore_flow_focus()
+
+
+func _gamepad_connected() -> bool:
+	return not Input.get_connected_joypads().is_empty()
+
+
+func _is_menu_nav(event: InputEvent) -> bool:
+	return (
+		event.is_action_pressed("ui_up")
+		or event.is_action_pressed("ui_down")
+		or event.is_action_pressed("ui_left")
+		or event.is_action_pressed("ui_right")
+		or event.is_action_pressed("ui_accept")
+		or event.is_action_pressed("ui_focus_next")
+		or event.is_action_pressed("ui_focus_prev")
+	)
+
+
+func _restore_flow_focus() -> void:
+	if current_screen in [Screen.NONE, Screen.BOOT]:
+		return
+	var focused := get_viewport().gui_get_focus_owner() if get_viewport() else null
+	if focused and _is_flow_control(focused):
+		return
+	match current_screen:
+		Screen.TITLE:
+			if _new_button:
+				_new_button.grab_focus()
+		Screen.SETTINGS:
+			if _settings and _settings.has_method("grab_default_focus"):
+				_settings.grab_default_focus()
+		Screen.LOAD:
+			if _load and _load.has_method("grab_default_focus"):
+				_load.grab_default_focus()
+		Screen.CREATOR:
+			if _creator and _creator.has_method("grab_default_focus"):
+				_creator.grab_default_focus()
+
+
+func _is_flow_control(control: Control) -> bool:
+	var node: Node = control
+	while node:
+		if node == self:
+			return true
+		node = node.get_parent()
+	return false
+
+
+func _update_focus_ring() -> void:
+	if _focus_ring == null:
+		return
+	if current_screen in [Screen.NONE, Screen.BOOT] or not visible:
+		_focus_ring.visible = false
+		return
+	var viewport := get_viewport()
+	var focused := viewport.gui_get_focus_owner() if viewport else null
+	if focused == null or not focused.visible or not _is_flow_control(focused):
+		_focus_ring.visible = false
+		return
+	var rect := focused.get_global_rect()
+	_focus_ring.visible = true
+	_focus_ring.global_position = rect.position - Vector2(FOCUS_RING_PAD, FOCUS_RING_PAD)
+	_focus_ring.size = rect.size + Vector2(FOCUS_RING_PAD, FOCUS_RING_PAD) * 2.0
+
+
+func _ensure_ui_input_map() -> void:
+	_ensure_key("ui_accept", KEY_ENTER)
+	_ensure_key("ui_accept", KEY_KP_ENTER)
+	_ensure_key("ui_accept", KEY_SPACE)
+	_ensure_joy_button("ui_accept", JOY_BUTTON_A)
+	_ensure_key("ui_cancel", KEY_ESCAPE)
+	_ensure_joy_button("ui_cancel", JOY_BUTTON_B)
+	_ensure_key("ui_up", KEY_UP)
+	_ensure_key("ui_down", KEY_DOWN)
+	_ensure_key("ui_left", KEY_LEFT)
+	_ensure_key("ui_right", KEY_RIGHT)
+	_ensure_joy_button("ui_up", JOY_BUTTON_DPAD_UP)
+	_ensure_joy_button("ui_down", JOY_BUTTON_DPAD_DOWN)
+	_ensure_joy_button("ui_left", JOY_BUTTON_DPAD_LEFT)
+	_ensure_joy_button("ui_right", JOY_BUTTON_DPAD_RIGHT)
+	_ensure_joy_axis("ui_left", JOY_AXIS_LEFT_X, -1.0)
+	_ensure_joy_axis("ui_right", JOY_AXIS_LEFT_X, 1.0)
+	_ensure_joy_axis("ui_up", JOY_AXIS_LEFT_Y, -1.0)
+	_ensure_joy_axis("ui_down", JOY_AXIS_LEFT_Y, 1.0)
+
+
+func _ensure_key(action: String, keycode: Key) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey and (event as InputEventKey).keycode == keycode:
+			return
+	var ev := InputEventKey.new()
+	ev.keycode = keycode
+	InputMap.action_add_event(action, ev)
+
+
+func _ensure_joy_button(action: String, button: JoyButton) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	for event in InputMap.action_get_events(action):
+		if event is InputEventJoypadButton and (event as InputEventJoypadButton).button_index == button:
+			return
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
+	InputMap.action_add_event(action, ev)
+
+
+func _ensure_joy_axis(action: String, axis: JoyAxis, axis_value: float) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	for event in InputMap.action_get_events(action):
+		if event is InputEventJoypadMotion:
+			var motion := event as InputEventJoypadMotion
+			if motion.axis == axis and signf(motion.axis_value) == signf(axis_value):
+				return
+	var ev := InputEventJoypadMotion.new()
+	ev.axis = axis
+	ev.axis_value = axis_value
+	InputMap.action_add_event(action, ev)
 
 
 func _on_action_pressed(action: String) -> void:

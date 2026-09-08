@@ -1,6 +1,6 @@
 # Epic pack 01 — Opening screen
 
-**Status:** In progress  
+**Status:** Playable  
 **Feature-list:** [`feature-list.md`](../feature-list.md) §1 Boot and title  
 **Design:** [`game-design.md`](../game-design.md) Session flow → Title menu  
 **Art:** [`art-style.md`](../art-style.md), [`art/prompt-lock.md`](../art/prompt-lock.md) — UI / title / loading suffix  
@@ -358,11 +358,13 @@ Title, Settings, Load, Quit, and the creator stub are fully usable on a gamepad 
 
 ### Acceptance
 
-- [ ] Pad-only: open title, enter settings, back, enter load, back, enter New stub, back, quit
-- [ ] Focus ring always visible on the focused control
-- [ ] No reliance on moving a mouse cursor with the stick
-- [ ] Glyph/focus art under `game/art/ui/`
-- [ ] Tests + pad smoke + diagnostics when MCP available
+- [x] Pad-only: open title, enter settings, back, enter load, back, enter New stub, back, quit
+- [x] Focus ring always visible on the focused control
+- [x] No reliance on moving a mouse cursor with the stick
+- [x] Glyph/focus art under `game/art/ui/`
+- [x] Tests + pad smoke + diagnostics when MCP available
+
+**Deferred review:** Open tickets checked. None roped in — full rebind stays [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md). Audio mix stays [`DEF-001`](../backlog/deferred/DEF-001-boot-title-audio.md).
 
 ---
 

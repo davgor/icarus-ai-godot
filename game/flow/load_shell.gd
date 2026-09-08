@@ -198,6 +198,10 @@ func _make_header() -> HBoxContainer:
 	_apply_button_theme(_back_button)
 	_back_button.pressed.connect(func() -> void: back_pressed.emit())
 	header.add_child(_back_button)
+	_back_button.focus_neighbor_top = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_bottom = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_left = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_right = _back_button.get_path_to(_back_button)
 	return header
 
 
