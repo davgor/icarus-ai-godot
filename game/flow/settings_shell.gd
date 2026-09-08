@@ -462,21 +462,19 @@ func _dim_texture(tex: Texture2D) -> Texture2D:
 
 func _load_frame_backdrop(path: String) -> Texture2D:
 	var img: Image = null
-	if ResourceLoader.exists(path):
+	var abs_path := ProjectSettings.globalize_path(path)
+	if FileAccess.file_exists(abs_path):
+		img = Image.load_from_file(abs_path)
+	if img == null and ResourceLoader.exists(path):
 		var tex := load(path) as Texture2D
 		if tex:
 			img = tex.get_image()
 	if img == null:
-		var abs_path := ProjectSettings.globalize_path(path)
-		if FileAccess.file_exists(abs_path):
-			img = Image.load_from_file(abs_path)
-	if img == null:
 		return null
 	img.convert(Image.FORMAT_RGBA8)
-	var corner: Color = img.get_pixel(0, 0)
-	if corner.a > 0.04:
-		_knockout_exterior_void(img)
-		_erode_dark_fringe(img)
+	_knockout_exterior_void(img)
+	_erode_dark_fringe(img)
+	_erode_dark_fringe(img)
 	img = _crop_opaque(img, 0)
 	return ImageTexture.create_from_image(img)
 
