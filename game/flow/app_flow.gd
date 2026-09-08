@@ -63,6 +63,11 @@ func _ready() -> void:
 		visible = false
 		current_screen = Screen.NONE
 		return
+	var played := get_tree().current_scene
+	if played and str(played.scene_file_path) == "res://game/creator/character_creator.tscn":
+		visible = false
+		current_screen = Screen.NONE
+		return
 	ensure_ui()
 	show_boot()
 
@@ -265,6 +270,19 @@ func creator_selected_race() -> String:
 	ensure_ui()
 	if _creator and _creator.has_method("selected_race"):
 		return str(_creator.selected_race())
+	return ""
+
+
+func creator_select_sex(sex_id: String) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("select_sex"):
+		_creator.select_sex(sex_id)
+
+
+func creator_selected_sex() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("selected_sex"):
+		return str(_creator.selected_sex())
 	return ""
 
 

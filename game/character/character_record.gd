@@ -6,6 +6,7 @@ const SCHEMA_VERSION := 1
 const RACES: PackedStringArray = [
 	"human", "elf", "dwarf", "gnome", "halfling", "demi_human"
 ]
+const SEXES: PackedStringArray = ["male", "female"]
 const CATEGORIES: PackedStringArray = ["race", "body", "face", "features", "outfit"]
 const FACE_MORPH_IDS: PackedStringArray = [
 	"brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"
@@ -37,6 +38,7 @@ func reset_to_defaults() -> void:
 		id = ""
 	race = "human"
 	body = {
+		"sex": "male",
 		"height": 0.5,
 		"weight": 0.5,
 		"muscle_fat": 0.5,
@@ -145,6 +147,8 @@ static func validate_dict(data: Dictionary) -> PackedStringArray:
 	var body_data: Dictionary = data.get("body", {})
 	if body_data.is_empty() or not body_data.has("skin_color"):
 		errors.append("skin_color")
+	if SEXES.find(str(body_data.get("sex", ""))) < 0:
+		errors.append("body.sex")
 	for key in ["height", "weight", "muscle_fat"]:
 		if not _is_unit(body_data.get(key, -1.0)):
 			errors.append("body.%s" % key)
@@ -165,6 +169,8 @@ func duplicate_record():
 
 
 func _ensure_shape() -> void:
+	if SEXES.find(str(body.get("sex", ""))) < 0:
+		body["sex"] = "male"
 	if not body.has("proportions"):
 		body["proportions"] = {}
 	var props: Dictionary = body["proportions"]
@@ -197,6 +203,7 @@ func _default_morphs() -> Dictionary:
 
 
 func _randomize_body(rng: RandomNumberGenerator) -> void:
+	body["sex"] = SEXES[rng.randi_range(0, SEXES.size() - 1)]
 	body["height"] = rng.randf()
 	body["weight"] = rng.randf()
 	body["muscle_fat"] = rng.randf()

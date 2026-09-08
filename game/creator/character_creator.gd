@@ -1,6 +1,6 @@
 extends Control
 
-## Dedicated character atelier (CC-1 + CC-2 race select). Replaces the OS-5 stub body.
+## Dedicated character atelier (CC-1 + CC-2 race + CC-10 male/female kits). Replaces the OS-5 stub body.
 
 signal back_pressed
 
@@ -28,7 +28,7 @@ const HEADLINE := "Character Creation"
 const BODY_COPY := "Atelier creator — race, body, face, and outfit. Not the town. Confirm writes a character later."
 const CATEGORY_COPY := {
 	"race": "Race is a preset and a story tag. Pick a card to snap proportions; every morph stays overrideable.",
-	"body": "Height, weight, muscle ↔ fat, and skin. Weight is frame mass, not fatness.",
+	"body": "Male or Female underwear base, then height, weight, muscle ↔ fat, and skin. Sex does not lock cosmetics. Weight is frame mass, not fatness.",
 	"face": "Named face morphs, hair, eyes, scars, and markings land here.",
 	"features": "Optional ears, horns, and tails — including a lizard tail. Unlocked from the start.",
 	"outfit": "Starting clothes are cosmetics only. Loadout (weapons/armor) is not required here.",
@@ -54,6 +54,9 @@ var _tab_buttons: Dictionary = {}
 var _light_buttons: Dictionary = {}
 var _race_buttons: Dictionary = {}
 var _race_grid: GridContainer
+var _sex_row: HBoxContainer
+var _sex_label: Label
+var _sex_buttons: Dictionary = {}
 var _panel_body: Label
 var _reset_all: Button
 var _reset_cat: Button
@@ -144,6 +147,15 @@ func race_art_ready() -> bool:
 	)
 
 
+func body_kit_art_ready() -> bool:
+	return (
+		ResourceLoader.exists("res://game/art/characters/body_base_male.png")
+		and ResourceLoader.exists("res://game/art/characters/body_base_female.png")
+		and ResourceLoader.exists("res://game/art/characters/body_base_male.glb")
+		and ResourceLoader.exists("res://game/art/characters/body_base_female.glb")
+	)
+
+
 func selected_race() -> String:
 	return str(draft.race)
 
@@ -152,6 +164,25 @@ func select_race(race_id: String) -> void:
 	draft.apply_race_preset(race_id)
 	refresh_preview()
 	_sync_race_buttons()
+	_sync_sex_buttons()
+
+
+func selected_sex() -> String:
+	return str(draft.body.get("sex", "male"))
+
+
+func select_sex(sex_id: String) -> void:
+	if CharacterRecordScript.SEXES.find(sex_id) < 0:
+		return
+	draft.body["sex"] = sex_id
+	refresh_preview()
+	_sync_sex_buttons()
+
+
+func preview_kit_id() -> String:
+	if _atelier and _atelier.has_method("current_kit_id"):
+		return str(_atelier.current_kit_id())
+	return ""
 
 
 func override_body_field(key: String, value: float) -> void:
@@ -214,27 +245,36 @@ func set_category(category: String) -> void:
 		_panel_body.text = str(CATEGORY_COPY.get(category, ""))
 	if _race_grid:
 		_race_grid.visible = category == "race"
+	if _sex_row:
+		_sex_row.visible = category == "body"
+	if _sex_label:
+		_sex_label.visible = category == "body"
 	for id in _tab_buttons:
 		var button := _tab_buttons[id] as Button
 		button.button_pressed = id == category
 	_sync_action_labels()
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func reset_all() -> void:
 	var kept_name: String = str(draft.display_name)
 	var kept_race: String = str(draft.race)
+	var kept_sex: String = str(draft.body.get("sex", "male"))
 	draft.reset_to_defaults()
 	draft.apply_race_preset(kept_race)
+	draft.body["sex"] = kept_sex
 	draft.display_name = kept_name
 	refresh_preview()
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func reset_category() -> void:
 	draft.reset_category(_category)
 	refresh_preview()
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func randomize_all() -> void:
@@ -243,12 +283,14 @@ func randomize_all() -> void:
 	draft.display_name = kept_name
 	refresh_preview()
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func randomize_category() -> void:
 	draft.randomize_category(_category, _rng)
 	refresh_preview()
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func refresh_preview() -> void:
@@ -261,6 +303,7 @@ func discard_draft() -> void:
 	if _name_edit:
 		_name_edit.text = ""
 	_sync_race_buttons()
+	_sync_sex_buttons()
 
 
 func _sync_stage_active() -> void:
@@ -412,6 +455,32 @@ func _build_chrome() -> void:
 		_race_grid.add_child(card)
 		_race_buttons[race_id] = card
 		_focusables.append(card)
+
+	_sex_label = Label.new()
+	_sex_label.name = "SexLabel"
+	_sex_label.text = "Underwear base"
+	_sex_label.add_theme_font_size_override("font_size", 13)
+	_sex_label.add_theme_color_override("font_color", Color(0.72, 0.8, 0.9, 0.9))
+	panel_col.add_child(_sex_label)
+	_sex_row = HBoxContainer.new()
+	_sex_row.name = "SexRow"
+	_sex_row.add_theme_constant_override("separation", 8)
+	panel_col.add_child(_sex_row)
+	var sex_group := ButtonGroup.new()
+	sex_group.allow_unpress = false
+	for sex_id in CharacterRecordScript.SEXES:
+		var button := Button.new()
+		button.name = "%sSex" % sex_id.capitalize()
+		button.text = sex_id.capitalize()
+		button.toggle_mode = true
+		button.button_group = sex_group
+		button.focus_mode = Control.FOCUS_ALL
+		button.custom_minimum_size = Vector2(188, 44)
+		_apply_button_theme(button)
+		button.pressed.connect(select_sex.bind(sex_id))
+		_sex_row.add_child(button)
+		_sex_buttons[sex_id] = button
+		_focusables.append(button)
 
 	var light_row := HBoxContainer.new()
 	light_row.name = "Lighting"
@@ -587,6 +656,13 @@ func _sync_race_buttons() -> void:
 	var current := selected_race()
 	for id in _race_buttons:
 		var button := _race_buttons[id] as Button
+		button.button_pressed = id == current
+
+
+func _sync_sex_buttons() -> void:
+	var current := selected_sex()
+	for id in _sex_buttons:
+		var button := _sex_buttons[id] as Button
 		button.button_pressed = id == current
 
 

@@ -39,6 +39,7 @@ func _run_suite() -> int:
 	failed += _ok("creator_lighting_presets", _test_creator_lighting_presets())
 	failed += _ok("creator_reset_randomize", _test_creator_reset_randomize())
 	failed += _ok("creator_race_select", _test_creator_race_select())
+	failed += _ok("creator_sex_select", _test_creator_sex_select())
 	failed += _ok("character_record_schema_v1", _test_character_record_schema_v1())
 	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
@@ -462,6 +463,81 @@ func _test_creator_race_select() -> bool:
 	return true
 
 
+func _test_creator_sex_select() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("select_sex"):
+		push_error("Creator sex select missing")
+		flow.hide_flow()
+		return false
+	if not creator.body_kit_art_ready():
+		push_error("Male/Female underwear kits missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("MaleSex", true, false) == null or creator.find_child("FemaleSex", true, false) == null:
+		push_error("Male/Female buttons missing")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("body")
+	if str(flow.creator_current_category()) != "body":
+		push_error("Body category should show sex controls")
+		flow.hide_flow()
+		return false
+	var sex_row := creator.find_child("SexRow", true, false) as Control
+	if sex_row == null or not sex_row.visible:
+		push_error("Sex row should be visible on Body")
+		flow.hide_flow()
+		return false
+	creator.select_race("dwarf")
+	creator.override_body_field("height", 0.92)
+	var outfit_id := str(creator.draft.outfit.get("id", ""))
+	if str(creator.draft.body.get("sex", "")) != "male":
+		push_error("Default sex should be male")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_kit_id()) != "male":
+		push_error("Preview kit should start male; got %s" % creator.preview_kit_id())
+		flow.hide_flow()
+		return false
+	creator.select_sex("female")
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("body.sex should serialize female")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_kit_id()) != "female":
+		push_error("Preview kit should swap to female; got %s" % creator.preview_kit_id())
+		flow.hide_flow()
+		return false
+	if str(creator.draft.race) != "dwarf" or not is_equal_approx(float(creator.draft.body.height), 0.92):
+		push_error("Sex swap should keep race and morph overrides")
+		flow.hide_flow()
+		return false
+	if str(creator.draft.outfit.get("id", "")) != outfit_id:
+		push_error("Sex swap should not clear outfit")
+		flow.hide_flow()
+		return false
+	creator.reset_category()
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("Reset category should keep current sex")
+		flow.hide_flow()
+		return false
+	creator.reset_all()
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("Reset all should keep current sex")
+		flow.hide_flow()
+		return false
+	creator.select_sex("male")
+	if str(creator.preview_kit_id()) != "male":
+		push_error("Preview kit should swap back to male")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
 func _test_character_record_schema_v1() -> bool:
 	var RecordScript := load("res://game/character/character_record.gd")
 	var record = RecordScript.new()
@@ -476,6 +552,9 @@ func _test_character_record_schema_v1() -> bool:
 	if not data["loadout"]["hands"].has("main"):
 		push_error("loadout must stay distinct from outfit")
 		return false
+	if str(data["body"].get("sex", "")) != "male":
+		push_error("Default body.sex should be male")
+		return false
 	var morphs: Dictionary = data["face"]["morphs"]
 	for key in ["brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"]:
 		if not morphs.has(key):
@@ -485,6 +564,12 @@ func _test_character_record_schema_v1() -> bool:
 	bad["race"] = "dragon"
 	if RecordScript.validate_dict(bad).is_empty():
 		push_error("Illegal race should fail validation")
+		return false
+	var bad_sex := data.duplicate(true)
+	bad_sex["body"] = (bad_sex["body"] as Dictionary).duplicate(true)
+	bad_sex["body"]["sex"] = "other"
+	if RecordScript.validate_dict(bad_sex).is_empty():
+		push_error("Illegal body.sex should fail validation")
 		return false
 	return true
 

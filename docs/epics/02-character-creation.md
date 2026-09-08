@@ -254,7 +254,7 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 - [x] Player can override preset fields
 - [x] Race art/meshes under `game/art/characters/`
 - [x] Summer play flip through races + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] `TEST_RESULT: PASS`
 
 **Deferred review:** Open tickets checked. None roped in — story reactions stay [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md); demi catalog deepen stays [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md). Re-selecting race reapplies the preset with no dirty-confirm (v0).
 
@@ -315,13 +315,15 @@ Player picks **Male** or **Female**. The preview swaps to that sex’s **underwe
 
 ### Acceptance
 
-- [ ] Male and Female both selectable
-- [ ] Preview swaps to the matching underwear base
-- [ ] `body.sex` serializes on the in-progress character
-- [ ] Sex does not lock race, morphs, features, or outfit
-- [ ] Assets under `game/art/characters/`
-- [ ] Summer play both sexes + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Male and Female both selectable
+- [x] Preview swaps to the matching underwear base
+- [x] `body.sex` serializes on the in-progress character
+- [x] Sex does not lock race, morphs, features, or outfit
+- [x] Assets under `game/art/characters/`
+- [x] Summer play both sexes + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — draft save stays [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md); story reactions stay [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md); morph deepen stays [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md).
 
 ---
 
