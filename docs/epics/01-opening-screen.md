@@ -302,11 +302,13 @@ Copy/UI string is code, not baked into the illustration.
 
 ### Acceptance
 
-- [ ] New → creator stub (not hub spawn, not Millbrook name create as the real path)
-- [ ] Back to title works
-- [ ] Debug skip (if present) is not a title button
-- [ ] Stub/transition art under `game/art/ui/` or `game/art/vfx/`
-- [ ] Tests + diagnostics gates as above
+- [x] New → creator stub (not hub spawn, not Millbrook name create as the real path)
+- [x] Back to title works
+- [x] Debug skip (if present) is not a title button
+- [x] Stub/transition art under `game/art/ui/` or `game/art/vfx/`
+- [x] Tests + diagnostics gates as above
+
+**Deferred review:** Open tickets checked. None roped in — stub-art retirement stays [`DEF-006`](../backlog/deferred/DEF-006-creator-stub-art-retirement.md) (CC-1); draft save stays [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md). Debug skip remains F10 (not a title or creator button).
 
 ---
 

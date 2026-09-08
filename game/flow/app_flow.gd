@@ -4,14 +4,16 @@ extends CanvasLayer
 ## Final boot/title audio: DEF-001.
 ## Settings persistence / rebind: DEF-002 / DEF-003.
 ## Load slot browser / Millbrook migration: DEF-004 / DEF-005.
+## Creator stub art retirement: DEF-006. Draft save: DEF-007.
 
 const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 const LoadShellScript := preload("res://game/flow/load_shell.gd")
+const CreatorStubScript := preload("res://game/flow/creator_stub.gd")
 
 signal world_requested
 signal quit_requested
 
-enum Screen { NONE, BOOT, TITLE, STUB, SETTINGS, LOAD }
+enum Screen { NONE, BOOT, TITLE, CREATOR, SETTINGS, LOAD }
 
 const ACTION_LABELS: PackedStringArray = ["New", "Load", "Settings", "Quit"]
 const BOOT_SECONDS := 1.35
@@ -23,25 +25,19 @@ const LOGO := "res://game/art/ui/logo_icarus.png"
 const SPINNER := "res://game/art/ui/loading_spinner.png"
 const BTN_CHROME := "res://game/art/ui/btn_primary.png"
 
-const STUB_COPY := {
-	"New": "Character creation is next.",
-}
-
 var current_screen: Screen = Screen.NONE
 
 var _built := false
 var _boot: Control
 var _title: Control
-var _stub: Control
+var _creator: Control
 var _settings: Control
 var _load: Control
 var _spinner: TextureRect
-var _stub_label: Label
 var _action_buttons: Array[Button] = []
 var _new_button: Button
 var _load_button: Button
 var _settings_button: Button
-var _back_button: Button
 var _btn_normal: StyleBox
 var _btn_hover: StyleBox
 var _btn_focus: StyleBox
@@ -71,7 +67,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			request_debug_world()
 			get_viewport().set_input_as_handled()
 			return
-	if event.is_action_pressed("ui_cancel") and current_screen in [Screen.STUB, Screen.SETTINGS, Screen.LOAD]:
+	if event.is_action_pressed("ui_cancel") and current_screen in [Screen.CREATOR, Screen.SETTINGS, Screen.LOAD]:
 		show_title()
 		get_viewport().set_input_as_handled()
 
@@ -85,6 +81,7 @@ func ensure_ui() -> void:
 	_build_title()
 	_build_settings()
 	_build_load()
+	_build_creator()
 	visible = true
 
 
@@ -94,8 +91,8 @@ func screen_name() -> String:
 			return "boot"
 		Screen.TITLE:
 			return "title"
-		Screen.STUB:
-			return "stub"
+		Screen.CREATOR:
+			return "creator"
 		Screen.SETTINGS:
 			return "settings"
 		Screen.LOAD:
@@ -118,6 +115,12 @@ func show_boot() -> void:
 	visible = true
 	_boot.visible = true
 	_title.visible = false
+	if _creator:
+		_creator.visible = false
+	if _settings:
+		_settings.visible = false
+	if _load:
+		_load.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	var tree := get_tree()
 	if tree:
@@ -129,11 +132,13 @@ func show_title() -> void:
 	ensure_ui()
 	var restore_settings := current_screen == Screen.SETTINGS
 	var restore_load := current_screen == Screen.LOAD
+	var restore_creator := current_screen == Screen.CREATOR
 	current_screen = Screen.TITLE
 	visible = true
 	_boot.visible = false
 	_title.visible = true
-	_stub.visible = false
+	if _creator:
+		_creator.visible = false
 	if _settings:
 		_settings.visible = false
 	if _load:
@@ -145,25 +150,44 @@ func show_title() -> void:
 		focus_btn = _settings_button
 	elif restore_load and _load_button:
 		focus_btn = _load_button
+	elif restore_creator and _new_button:
+		focus_btn = _new_button
 	if focus_btn:
 		focus_btn.call_deferred("grab_focus")
 
 
-func show_stub(action: String) -> void:
+func show_creator() -> void:
 	ensure_ui()
-	current_screen = Screen.STUB
+	current_screen = Screen.CREATOR
 	visible = true
 	_boot.visible = false
-	_title.visible = true
-	_stub.visible = true
+	_title.visible = false
 	if _settings:
 		_settings.visible = false
 	if _load:
 		_load.visible = false
-	_stub_label.text = str(STUB_COPY.get(action, "Coming soon."))
+	_creator.visible = true
+	if _creator.has_method("fill_parent"):
+		_creator.fill_parent()
 	_set_menu_enabled(false)
-	if _back_button:
-		_back_button.call_deferred("grab_focus")
+	if _creator.has_method("play_enter"):
+		_creator.play_enter()
+	if _creator.has_method("grab_default_focus"):
+		_creator.grab_default_focus()
+
+
+func creator_headline() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("headline"):
+		return str(_creator.headline())
+	return ""
+
+
+func creator_body() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("body_copy"):
+		return str(_creator.body_copy())
+	return ""
 
 
 func show_settings() -> void:
@@ -172,7 +196,8 @@ func show_settings() -> void:
 	visible = true
 	_boot.visible = false
 	_title.visible = true
-	_stub.visible = false
+	if _creator:
+		_creator.visible = false
 	if _load:
 		_load.visible = false
 	_settings.visible = true
@@ -225,7 +250,8 @@ func show_load() -> void:
 	visible = true
 	_boot.visible = false
 	_title.visible = true
-	_stub.visible = false
+	if _creator:
+		_creator.visible = false
 	if _settings:
 		_settings.visible = false
 	_load.visible = true
@@ -274,6 +300,8 @@ func hide_flow() -> void:
 		_boot.visible = false
 	if _title:
 		_title.visible = false
+	if _creator:
+		_creator.visible = false
 	if _settings:
 		_settings.visible = false
 	if _load:
@@ -434,56 +462,6 @@ func _build_title() -> void:
 		button.focus_previous = button.get_path_to(prev)
 		button.focus_next = button.get_path_to(next)
 
-	_stub = Control.new()
-	_stub.name = "StubOverlay"
-	_stub.visible = false
-	_stub.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_stub.mouse_filter = Control.MOUSE_FILTER_STOP
-	_title.add_child(_stub)
-
-	var dim := ColorRect.new()
-	dim.name = "Dim"
-	dim.color = Color(0.01, 0.02, 0.05, 0.62)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dim.mouse_filter = Control.MOUSE_FILTER_STOP
-	_stub.add_child(dim)
-
-	var panel := PanelContainer.new()
-	panel.name = "StubPanel"
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -260
-	panel.offset_top = -110
-	panel.offset_right = 260
-	panel.offset_bottom = 110
-	var stub_style := StyleBoxFlat.new()
-	stub_style.bg_color = Color(0.05, 0.07, 0.12, 0.97)
-	stub_style.border_color = Color(0.72, 0.86, 1.0, 0.85)
-	stub_style.set_border_width_all(2)
-	stub_style.set_corner_radius_all(6)
-	stub_style.set_content_margin_all(22)
-	panel.add_theme_stylebox_override("panel", stub_style)
-	_stub.add_child(panel)
-
-	var stub_box := VBoxContainer.new()
-	stub_box.add_theme_constant_override("separation", 16)
-	panel.add_child(stub_box)
-
-	_stub_label = Label.new()
-	_stub_label.name = "StubMessage"
-	_stub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_stub_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_stub_label.add_theme_font_size_override("font_size", 18)
-	_stub_label.add_theme_color_override("font_color", Color(0.9, 0.93, 0.98))
-	stub_box.add_child(_stub_label)
-
-	_back_button = Button.new()
-	_back_button.name = "BackButton"
-	_back_button.text = "Back"
-	_back_button.focus_mode = Control.FOCUS_ALL
-	_apply_button_theme(_back_button)
-	_back_button.pressed.connect(show_title)
-	stub_box.add_child(_back_button)
-
 
 func _build_settings() -> void:
 	_settings = SettingsShellScript.new()
@@ -509,6 +487,18 @@ func _build_load() -> void:
 	_load.back_pressed.connect(show_title)
 
 
+func _build_creator() -> void:
+	_creator = CreatorStubScript.new()
+	_creator.name = "CreatorScreen"
+	_creator.btn_normal = _btn_normal
+	_creator.btn_hover = _btn_hover
+	_creator.btn_focus = _btn_focus
+	add_child(_creator)
+	if _creator.has_method("fill_parent"):
+		_creator.fill_parent()
+	_creator.back_pressed.connect(show_title)
+
+
 func _on_action_pressed(action: String) -> void:
 	match action:
 		"Quit":
@@ -517,8 +507,8 @@ func _on_action_pressed(action: String) -> void:
 			show_settings()
 		"Load":
 			show_load()
-		_:
-			show_stub(action)
+		"New":
+			show_creator()
 
 
 func _apply_button_theme(button: Button) -> void:
