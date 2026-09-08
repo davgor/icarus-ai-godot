@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://geg3vjgevtdd"]
+
+[ext_resource type="Script" uid="uid://wgiiremvhdnm" path="res://game/creator/atelier_stage.gd" id="1_stage"]
+[ext_resource type="PackedScene" uid="uid://cgew8lnrjiymc" path="res://game/art/characters/creator_atelier_chamber.glb" id="2_chamber"]
+
+[node name="Atelier" type="Node3D" unique_id=1890364105]
+script = ExtResource("1_stage")
+
+[node name="Room" type="Node3D" parent="." unique_id=1743046945]
+
+[node name="Chamber" parent="Room" unique_id=319024321 instance=ExtResource("2_chamber")]
