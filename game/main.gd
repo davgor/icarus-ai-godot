@@ -71,6 +71,21 @@ func _bind_nodes() -> void:
 	_gate = get_node_or_null("Gate") as Node3D
 	if _player == null:
 		push_error("Millbrook missing Player node")
+	_lock_bootstrap_create_focus()
+
+
+func _lock_bootstrap_create_focus() -> void:
+	if _create:
+		_create.focus_mode = Control.FOCUS_NONE
+		_create.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if _name_edit:
+		_name_edit.focus_mode = Control.FOCUS_NONE
+		_name_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for button_name in ["StartButton", "ContinueButton"]:
+		var button := get_node_or_null("HUD/Create/Panel/VBox/%s" % button_name) as BaseButton
+		if button:
+			button.focus_mode = Control.FOCUS_NONE
+			button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -149,6 +149,10 @@ func _build() -> void:
 	_apply_button_theme(_back_button)
 	_back_button.pressed.connect(func() -> void: back_pressed.emit())
 	column.add_child(_back_button)
+	_back_button.focus_neighbor_top = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_bottom = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_left = _back_button.get_path_to(_back_button)
+	_back_button.focus_neighbor_right = _back_button.get_path_to(_back_button)
 
 	_wipe = TextureRect.new()
 	_wipe.name = "Wipe"
