@@ -33,7 +33,9 @@ func _run_suite() -> int:
 	failed += _ok("boot_skips_in_headless", _test_boot_skips_in_headless())
 	failed += _ok("boot_reaches_title", _test_boot_reaches_title())
 	failed += _ok("title_menu_actions", _test_title_menu_actions())
-	failed += _ok("title_stubs_return", _test_title_stubs_return())
+	failed += _ok("new_opens_creator", _test_new_opens_creator())
+	failed += _ok("creator_back_to_title", _test_creator_back_to_title())
+	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
 	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
 	failed += _ok("settings_sections", _test_settings_sections())
@@ -221,23 +223,85 @@ func _test_title_menu_actions() -> bool:
 	return ok
 
 
-func _test_title_stubs_return() -> bool:
+func _test_new_opens_creator() -> bool:
+	var flow := _flow()
+	if flow == null:
+		push_error("AppFlow autoload missing")
+		return false
+	flow.show_title()
+	var new_button := flow.get_node_or_null("TitleScreen/Menu/NewButton") as BaseButton
+	if new_button == null:
+		push_error("Title New button missing")
+		flow.hide_flow()
+		return false
+	new_button.pressed.emit()
+	var headline := str(flow.creator_headline()).to_lower()
+	var body := str(flow.creator_body()).to_lower()
+	var ok := (
+		str(flow.screen_name()) == "creator"
+		and headline.find("character") >= 0
+		and body.find("creator") >= 0
+		and body.find("town") >= 0
+		and ResourceLoader.exists("res://game/art/ui/creator_stub_bg.png")
+		and ResourceLoader.exists("res://game/art/vfx/title_to_creator_wipe.png")
+	)
+	if not ok:
+		push_error(
+			"New should land on creator stub; screen=%s headline=%s"
+			% [flow.screen_name(), flow.creator_headline()]
+		)
+	var creator := flow.get_node_or_null("CreatorScreen") as Control
+	var millbrook := root.get_node_or_null("HUD/Create") as Control
+	if creator == null or not creator.visible:
+		push_error("CreatorScreen should be visible after New")
+		ok = false
+	if millbrook and millbrook.visible:
+		push_error("Millbrook create overlay must stay hidden on the New path")
+		ok = false
+	flow.hide_flow()
+	return ok
+
+
+func _test_creator_back_to_title() -> bool:
 	var flow := _flow()
 	if flow == null:
 		return false
-	for action in ["New"]:
-		flow.show_stub(action)
-		if str(flow.screen_name()) != "stub":
-			push_error("Stub did not open for %s" % action)
-			flow.hide_flow()
-			return false
-		flow.show_title()
-		if str(flow.screen_name()) != "title":
-			push_error("Stub did not return to title from %s" % action)
-			flow.hide_flow()
-			return false
+	flow.show_creator()
+	if str(flow.screen_name()) != "creator":
+		push_error("Creator did not open")
+		flow.hide_flow()
+		return false
+	var back := flow.get_node_or_null("CreatorScreen/Chrome/Copy/BackButton") as BaseButton
+	if back == null:
+		push_error("Creator Back button missing")
+		flow.hide_flow()
+		return false
+	back.pressed.emit()
+	var ok := str(flow.screen_name()) == "title"
+	if not ok:
+		push_error("Creator Back did not return to title")
 	flow.hide_flow()
-	return true
+	return ok
+
+
+func _test_debug_skip_not_a_title_button() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_title()
+	var texts: PackedStringArray = flow.title_button_texts()
+	var joined := ",".join(texts).to_lower()
+	var ok := (
+		texts == PackedStringArray(["New", "Load", "Settings", "Quit"])
+		and joined.find("skip") < 0
+		and joined.find("debug") < 0
+		and flow.has_method("request_debug_world")
+		and int(flow.DEBUG_SKIP_KEY) == KEY_F10
+	)
+	if not ok:
+		push_error("Debug skip must stay off the title; actions=%s" % str(texts))
+	flow.hide_flow()
+	return ok
 
 
 func _test_quit_path_callable() -> bool:
