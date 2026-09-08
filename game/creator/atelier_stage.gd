@@ -37,6 +37,7 @@ var _pitch := 0.08
 var _zoom := DEFAULT_ZOOM
 var _orbiting := false
 var _cached_dais_y := -1.0
+var _turntable := 0.0
 
 
 func _ready() -> void:
@@ -54,6 +55,11 @@ func _process(delta: float) -> void:
 	)
 	if pad.length() > 0.12:
 		orbit(pad.x * PAD_ORBIT_SPEED * delta, pad.y * PAD_ORBIT_SPEED * delta)
+	_turntable += delta * 0.18
+	var preview := get_node_or_null("Preview") as Node3D
+	if preview:
+		preview.rotation.y = sin(_turntable) * 0.12
+	AppearanceApplierScript.tick_jiggle(self, delta)
 
 
 func handle_stage_input(event: InputEvent) -> void:
@@ -157,6 +163,10 @@ func jiggle_amplitude() -> float:
 	if has_meta("jiggle_amplitude"):
 		return float(get_meta("jiggle_amplitude"))
 	return 0.5
+
+
+func jiggle_sample() -> float:
+	return AppearanceApplierScript.jiggle_sample(self)
 
 
 func _ensure_stage() -> void:

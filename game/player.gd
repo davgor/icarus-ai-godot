@@ -6,16 +6,58 @@ const MOUSE_SENSITIVITY := 0.002
 const CAMERA_MIN_PITCH := deg_to_rad(-50.0)
 const CAMERA_MAX_PITCH := deg_to_rad(30.0)
 
+const AppearanceApplierScript := preload("res://game/character/appearance_applier.gd")
+const CapsuleBuilderScript := preload("res://game/character/capsule_builder.gd")
+
 ## Horizontal input used by headless tests. Gameplay uses WASD when this is Vector2.ZERO.
 var forced_move_input := Vector2.ZERO
 var ui_open := false
 
 @onready var _camera_pivot: Node3D = $CameraPivot
+@onready var _collision: CollisionShape3D = $CollisionShape3D
+@onready var _body_mesh: MeshInstance3D = $MeshInstance3D
 
 
 func _ready() -> void:
 	add_to_group("player")
 	_refresh_mouse()
+
+
+func apply_character_record(record) -> void:
+	if record == null:
+		return
+	AppearanceApplierScript.apply(record, self)
+	_apply_capsule(record.body)
+	if _body_mesh:
+		_body_mesh.visible = get_node_or_null("Preview/BodyKit") == null
+
+
+func _apply_capsule(body: Dictionary) -> void:
+	if _collision == null:
+		return
+	var shape := _collision.shape as CapsuleShape3D
+	if shape == null:
+		shape = CapsuleShape3D.new()
+		_collision.shape = shape
+	shape.height = CapsuleBuilderScript.capsule_height(body)
+	shape.radius = CapsuleBuilderScript.capsule_radius(body)
+	_collision.position.y = shape.height * 0.5
+	if _body_mesh:
+		_body_mesh.position.y = shape.height * 0.5
+	if _camera_pivot:
+		_camera_pivot.position.y = CapsuleBuilderScript.camera_pivot_height(body)
+
+
+func capsule_height() -> float:
+	if _collision and _collision.shape is CapsuleShape3D:
+		return (_collision.shape as CapsuleShape3D).height
+	return 1.8
+
+
+func camera_pivot_height() -> float:
+	if _camera_pivot:
+		return _camera_pivot.position.y
+	return 1.4
 
 
 func set_ui_open(open: bool) -> void:
@@ -48,6 +90,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _physics_process(delta: float) -> void:
+	AppearanceApplierScript.tick_jiggle(self, delta)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 

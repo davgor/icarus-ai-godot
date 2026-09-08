@@ -1,6 +1,6 @@
 # Epic pack 02 — Character creation
 
-**Status:** In progress  
+**Status:** Playable (vertical slice)  
 **Feature-list:** [`feature-list.md`](../feature-list.md) §2 Character creation  
 **Design:** [`game-design.md`](../game-design.md) Character creation + Gear and appearance (outfit ≠ loadout)  
 **Art:** [`art-style.md`](../art-style.md), [`art/prompt-lock.md`](../art/prompt-lock.md) — Character / creator / portrait suffix  
@@ -447,15 +447,15 @@ Preview (and later in-world) soft motion is driven by the **muscle ↔ fat** bar
 
 ### Acceptance
 
-- [ ] Single muscle↔fat driver controls soft motion
-- [ ] Muscle end calm; fat end visibly softer
-- [ ] No per-part toggle maze in UI
-- [ ] Summer play + diagnostics clean (no error spam from soft-body)
-- [ ] `TEST_RESULT: PASS`
+- [x] Single muscle↔fat driver controls soft motion
+- [x] Muscle end calm; fat end visibly softer
+- [x] No per-part toggle maze in UI
+- [x] Summer play + diagnostics clean (no error spam from soft-body)
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — cape cloth stays [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md). Starter outfits inherit jiggle at 0.55 damp.
 
 ---
-
-## CC-5 — Face / hair / eyes / scars kit
 
 ### Outcome
 
@@ -508,12 +508,14 @@ Vertical-slice minimum: **7 named morphs wired**, **≥3 hair**, **≥3 eyes**, 
 
 ### Acceptance
 
-- [ ] All seven named face morphs adjustable
-- [ ] Player can change eyes, hair, scar, marking
-- [ ] Options unlocked; live preview
-- [ ] Assets under `game/art/characters/`
-- [ ] Summer play through the starter grid + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] All seven named face morphs adjustable
+- [x] Player can change eyes, hair, scar, marking
+- [x] Options unlocked; live preview
+- [x] Assets under `game/art/characters/`
+- [x] Summer play through the starter grid + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — catalog deepen stays [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md).
 
 ---
 
@@ -568,17 +570,17 @@ Vertical-slice minimum: **one ears, one horns, one mammal-style tail, one lizard
 
 ### Acceptance
 
-- [ ] Ears, horns, and tails equippable; can create with none
-- [ ] At least one lizard/dragon tail option exists
-- [ ] Horns + lizard tail (+ optional ears) readable as dragon demi
-- [ ] Demi-human preset may auto-apply defaults; player can clear
-- [ ] Meshes socket correctly on preview
-- [ ] Summer combination smoke + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Ears, horns, and tails equippable; can create with none
+- [x] At least one lizard/dragon tail option exists
+- [x] Horns + lizard tail (+ optional ears) readable as dragon demi
+- [x] Demi-human preset may auto-apply defaults; player can clear
+- [x] Meshes socket correctly on preview
+- [x] Summer combination smoke + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — feature catalog deepen stays [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md).
 
 ---
-
-## CC-7 — Starting outfit cosmetics
 
 ### Outcome
 
@@ -626,15 +628,15 @@ Vertical-slice minimum: **≥3 outfits**.
 
 ### Acceptance
 
-- [ ] Outfit changes appearance only
-- [ ] Loadout remains empty / non-driving for creator completion
-- [ ] Assets under `game/art/characters/`
-- [ ] Summer dress-up smoke + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Outfit changes appearance only
+- [x] Loadout remains empty / non-driving for creator completion
+- [x] Assets under `game/art/characters/`
+- [x] Summer dress-up smoke + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — wardrobe deepen stays [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); cape cloth stays [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md).
 
 ---
-
-## CC-8 — Confirm → write character → hub spawn handoff
 
 ### Outcome
 
@@ -686,16 +688,16 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 
 ### Acceptance
 
-- [ ] Confirm writes schema v1 character and leaves creator
-- [ ] Spawn shows created appearance via shared applier
-- [ ] Capsule / camera pivot reflect body height (clamped)
-- [ ] Not Millbrook-as-home for the intended path
-- [ ] Summer full-flow smoke + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Confirm writes schema v1 character and leaves creator
+- [x] Spawn shows created appearance via shared applier
+- [x] Capsule / camera pivot reflect body height (clamped)
+- [x] Not Millbrook-as-home for the intended path
+- [x] Summer full-flow smoke + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — load/continue after creator stays [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md); draft save stays [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md). Pack 03 replaces the hub stub.
 
 ---
-
-## CC-9 — Creator on controller
 
 ### Outcome
 
@@ -745,16 +747,16 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 
 ### Acceptance
 
-- [ ] Pad-only complete creator → confirm
-- [ ] Pad-only back to title without mouse
-- [ ] Sliders and orbit usable on pad
-- [ ] Focus always visible
-- [ ] Summer pad smoke + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Pad-only complete creator → confirm
+- [x] Pad-only back to title without mouse
+- [x] Sliders and orbit usable on pad
+- [x] Focus always visible
+- [x] Summer pad smoke + diagnostics clean
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — full rebind stays [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md). Pad scheme: D-pad/left stick navigate, LB/RB nudge sliders, right stick orbit.
 
 ---
-
-## Pack-level definition of done
 
 This pack is **Playable** (vertical slice) when:
 

@@ -1,6 +1,8 @@
 extends Node3D
 
 const GameStateScript := preload("res://game/sim/game_state.gd")
+const HubStubPacked := preload("res://game/hub/hub_stub.tscn")
+const CharacterStoreScript := preload("res://game/character/character_store.gd")
 
 const SPOTS := {
 	"square": Vector3(0.0, 0.0, 4.0),
@@ -29,6 +31,8 @@ var _elara: Node3D
 var _tomas: Node3D
 var _brann: Node3D
 var _gate: Node3D
+var _hub: Node3D
+var _in_hub_stub := false
 
 
 func _ready() -> void:
@@ -46,6 +50,9 @@ func _ready() -> void:
 	if flow and flow.has_signal("world_requested"):
 		if not flow.world_requested.is_connected(_on_flow_world_requested):
 			flow.world_requested.connect(_on_flow_world_requested)
+	if flow and flow.has_signal("hub_requested"):
+		if not flow.hub_requested.is_connected(_on_flow_hub_requested):
+			flow.hub_requested.connect(_on_flow_hub_requested)
 	if DisplayServer.get_name() == "headless":
 		state.create_character("Tester")
 		_enter_world()
@@ -133,6 +140,51 @@ func _on_flow_world_requested() -> void:
 	if state.player_name.is_empty():
 		state.create_character("Ash")
 	_enter_world()
+
+
+func _on_flow_hub_requested() -> void:
+	_enter_hub_stub()
+
+
+func _enter_hub_stub() -> void:
+	var tree := get_tree()
+	if tree:
+		tree.paused = false
+	_in_hub_stub = true
+	if _create:
+		_create.visible = false
+	if _dialogue:
+		_dialogue.visible = false
+	for child in get_children():
+		if child == _player or child.name == "HUD" or child == _hub:
+			continue
+		if child is CanvasLayer:
+			continue
+		if child is CanvasItem or child is Node3D:
+			child.visible = false
+	if _hub == null:
+		_hub = HubStubPacked.instantiate()
+		_hub.name = "HubStub"
+		add_child(_hub)
+		_hub.position = Vector3(0, 80, 0)
+	_hub.visible = true
+	var record = CharacterStoreScript.read_record()
+	if record == null and _player:
+		record = null
+	var spawn := _hub.get_node_or_null("Spawn") as Node3D
+	if _player:
+		_player.set_ui_open(false)
+		if spawn:
+			_player.global_position = spawn.global_position
+		else:
+			_player.global_position = Vector3(0, 0.1, 2.4)
+		if record and _player.has_method("apply_character_record"):
+			_player.apply_character_record(record)
+	_set_world_hud_visible(true)
+	if _help:
+		_help.text = "Sanctum (stub)\nWASD move · mouse look · Esc releases cursor"
+	if _clock and record:
+		_clock.text = "%s\nSanctum stub" % record.display_name
 
 
 func _park_world() -> void:
@@ -306,6 +358,10 @@ func _refresh_hud() -> void:
 	if _clock == null:
 		return
 	_clock.text = "%s\n%s · %s" % [state.player_name, state.time_label(), state.period()]
+	if _in_hub_stub:
+		_help.text = "Sanctum (stub)\nWASD move · mouse look · Esc releases cursor"
+		_prompt.text = ""
+		return
 	_help.text = "Millbrook\nWASD move · mouse look · E talk/leave · F5 save · F9 load · F3 debug"
 	if _dialogue and _dialogue.visible:
 		_prompt.text = ""
