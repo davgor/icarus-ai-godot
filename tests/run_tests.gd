@@ -38,6 +38,9 @@ func _run_suite() -> int:
 	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
 	failed += _ok("settings_sections", _test_settings_sections())
 	failed += _ok("settings_panel_centered", await _test_settings_panel_centered())
+	failed += _ok("load_open_and_back", _test_load_open_and_back())
+	failed += _ok("load_empty_state", _test_load_empty_state())
+	failed += _ok("load_unsupported_save", _test_load_unsupported_save())
 	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
 	return failed
 
@@ -222,7 +225,7 @@ func _test_title_stubs_return() -> bool:
 	var flow := _flow()
 	if flow == null:
 		return false
-	for action in ["New", "Load"]:
+	for action in ["New"]:
 		flow.show_stub(action)
 		if str(flow.screen_name()) != "stub":
 			push_error("Stub did not open for %s" % action)
@@ -342,6 +345,83 @@ func _test_settings_panel_centered() -> bool:
 		)
 	host.queue_free()
 	await process_frame
+	return ok
+
+
+func _test_load_open_and_back() -> bool:
+	var flow := _flow()
+	if flow == null:
+		push_error("AppFlow autoload missing")
+		return false
+	flow.set_load_probe_path("user://os4_load_probe_missing.json")
+	flow.show_title()
+	flow.show_load()
+	if str(flow.screen_name()) != "load":
+		push_error("Load did not open from title")
+		flow.hide_flow()
+		return false
+	flow.show_title()
+	if str(flow.screen_name()) != "title":
+		push_error("Load did not return to title")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_load_empty_state() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	var path := "user://os4_load_probe_empty.json"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	flow.set_load_probe_path(path)
+	flow.show_load()
+	var state := str(flow.load_state())
+	var message := str(flow.load_message()).to_lower()
+	var ok := state == "empty" and message.find("no saves") >= 0
+	if not ok:
+		push_error("Expected empty load state, got %s / %s" % [state, flow.load_message()])
+	if not ResourceLoader.exists("res://game/art/ui/load_empty.png"):
+		push_error("Missing load_empty.png")
+		ok = false
+	if not ResourceLoader.exists("res://game/art/ui/save_slot_frame.png"):
+		push_error("Missing save_slot_frame.png")
+		ok = false
+	flow.hide_flow()
+	return ok
+
+
+func _test_load_unsupported_save() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	var path := "user://os4_load_probe_unsupported.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		push_error("Could not write probe save")
+		return false
+	file.store_string('{"save_version":1,"note":"millbrook-probe"}')
+	file.close()
+	flow.set_load_probe_path(path)
+	flow.show_load()
+	var state := str(flow.load_state())
+	var message := str(flow.load_message()).to_lower()
+	var detail := str(flow.load_detail()).to_lower()
+	var ok := (
+		state == "unsupported"
+		and message.find("supported") >= 0
+		and (detail.find("town") >= 0 or detail.find("prototype") >= 0)
+		and str(flow.screen_name()) == "load"
+	)
+	if not ok:
+		push_error(
+			"Unsupported save should stay on load with a message; state=%s screen=%s msg=%s"
+			% [state, flow.screen_name(), flow.load_message()]
+		)
+	flow.show_title()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	flow.hide_flow()
 	return ok
 
 
