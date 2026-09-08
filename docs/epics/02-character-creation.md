@@ -684,7 +684,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 | Confirm flourish / wipe | `game/art/vfx/creator_confirm_wipe.png` | Polish | Short mystical bloom/wipe; sparse; no text |
 | Hub stub skybox / ground (if needed) | `game/art/hub/hub_stub_*.png` | Only if pack 03 absent | Empty cozy dusk plaza; portal hint OK; not Millbrook graybox style |
 
-**Call-forward:** pack 03 replaces hub stub with the real empty Sanctum + portal (epic pack — not a `DEF` ticket).
+**Call-forward:** pack 03 ([`03-sanctum-hub.md`](03-sanctum-hub.md)) replaces hub stub with the real Sanctum (inhabit + Arrange).
 
 ### Acceptance
 

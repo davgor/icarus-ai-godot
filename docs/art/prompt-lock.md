@@ -84,13 +84,37 @@ Isolated or socketed anime demi-human feature for character creator: ears, horns
 **Hub — Sanctum**
 
 ```text
-Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple and blue nebula depth, sparse stars, floaty embers and stardust around the islet, lantern gold warm on stone against cool void, optional small farm plots and simple placed anime fantasy homes when built, empty except a bright mystical freestanding portal arch at the cliff overlook when new, lived-in but sparse, high depth fog, mystical 3D anime environment.
+Cozy floating stone sanctum rock in an infinite dusk-void sky, ethereal purple and blue nebula depth, sparse stars, floaty embers and stardust around the islet, lantern gold warm on stone against cool void, optional small farm plots and simple placed anime fantasy homes, furniture, lanterns, and stone paths when arranged, empty except a bright mystical freestanding portal arch at the cliff overlook when new, lived-in but sparse, high depth fog, mystical 3D anime environment.
 ```
 
 **Sanctum home design / building**
 
 ```text
 Placeable cozy home or structure for a floating sanctum, same mesh used in worlds when sanctum_buildable, game-ready exterior, readable silhouette, dark jewel materials with lantern gold accents, climbable roofs where natural, not a graybox blockhouse, mystical 3D anime dwelling.
+```
+
+**Sanctum furniture**
+
+```text
+Placeable outdoor or courtyard furniture for a floating sanctum (bench, table, crate stack, planter), game-ready prop, readable from top-down and third-person, dark jewel wood/stone with lantern gold accents, not Kenney, not graybox, not a full building.
+```
+
+**Sanctum light fixture**
+
+```text
+Placeable lantern, standing lamp, or stone light for a floating dusk-void sanctum, game-ready, real emissive warm gold, readable glow at night, isolated prop, mystical 3D anime, not a flashlight, not neon cyberpunk.
+```
+
+**Sanctum ground / path paint**
+
+```text
+Top-down ground texture or splat for a floating stone sanctum: worn stone path, packed dirt, moss, or cobble, tileable, dusk lantern-gold warm on cool jewel stone, game-ready albedo, not a heightmap sculpt, not photoreal dirt photography.
+```
+
+**Sanctum Arrange (top-down still)**
+
+```text
+Top-down orthographic or steep bird's-eye view of a small floating sanctum islet in dusk-void, readable layout of rock bowl, paths, lanterns, and a few placed homes, ethereal purple-blue sky around the edges, mystical 3D anime, not a strategy-game minimap, not a city builder screenshot.
 ```
 
 **World catalog building / item / prop**

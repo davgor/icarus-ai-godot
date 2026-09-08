@@ -9,7 +9,7 @@
 **Import root:** `game/art/ui/` (settings glyphs only)  
 **Operating loop:** [`agent-operating-loop.md`](../agent-operating-loop.md)
 
-**Do not skip first playable for this pack.** Opening, creator, Sanctum, parkour, and a thin portal round-trip stay packs 01–05. This pack is the cognition **island**: testable without a portal compiler, required before prompted worlds and NPC thought.
+**Do not skip first playable for this pack.** Opening, creator, Sanctum (inhabit + Arrange), parkour, and a thin portal round-trip stay packs 01–05. This pack is the cognition **island**: testable without a portal compiler, required before prompted worlds and NPC thought.
 
 Suggested ship order: **AR-1 → AR-2 → AR-3 → AR-4 / AR-5 (parallel after AR-3) → AR-6**.
 

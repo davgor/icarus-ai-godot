@@ -38,7 +38,7 @@ BOOT / LOADING
 
 **Continue** resumes materialized state. It does not re-run the compiler as a new genesis.
 
-Between portal trips the player **lives on the Sanctum**: farm, place unlocked home designs, bank materials, dwell with the roster. That cozy loop is first-class, not a menu between loads.
+Between portal trips the player **lives on the Sanctum**: inhabit in third person, **arrange** the island from top-down (buildings, furniture, lights, paths), farm, bank materials, dwell with the roster. That cozy loop is first-class, not a menu between loads.
 
 **New random** and **Prompt** go through the compiler. Prompted text is untrusted input that becomes a constitution and a seed ([`02-WORLD-COMPILER.md`](02-WORLD-COMPILER.md)).
 
@@ -69,7 +69,7 @@ Play is a normal third-person action-RPG: parkour, soulslike-weight combat (fair
 
 Do not skip this for a compiler demo:
 
-Title → thin creator → empty Sanctum + portal → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
+Title → thin creator → empty Sanctum + portal (inhabit **and** top-down Arrange with a starter kit) → climb / wall-run → one world in and out still wearing a test loadout. Controller from boot. [`feature-list.md`](feature-list.md).
 
 ---
 

@@ -18,7 +18,7 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | --- | --- | --- | --- | --- |
 | 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | Playable |
 | 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | In progress |
-| 3 | Empty **Sanctum** + portal | §3 | *TBD* | — |
+| 3 | **Sanctum hub** (inhabit + top-down Arrange) | §3 | [`03-sanctum-hub.md`](03-sanctum-hub.md) | Planned |
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
 
@@ -28,7 +28,7 @@ Later packs (after first playable). Do not skip the hub for a compiler demo. Pac
 | --- | --- | --- | --- | --- |
 | 6 | **Agent runtime** (Statemachine + Orchestrator) | Agent runtime (infra); dependency for §4.4 / §8.2 | [`06-agent-runtime.md`](06-agent-runtime.md) + [`../14-AGENT-RUNTIME.md`](../14-AGENT-RUNTIME.md) | Planned |
 | — | Combat / Fable XP | §6 | *TBD* | — |
-| — | Companions + Sanctum cozy sim | §7 | *TBD* | — |
+| — | Companions + Sanctum cozy sim | §7 | *TBD* (farm, residents, collected designs, interiors; **Arrange camera is pack 03**) | — |
 | — | Worlds / compiler depth + content catalog | §8 | *TBD* | — |
 
 ---

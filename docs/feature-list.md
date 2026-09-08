@@ -73,22 +73,34 @@ All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech +
 
 ## 3. Hub — Sanctum — Next
 
-Cozy floating home rock in a dusk-void sky. Empty except the portal.
+Epics: [`epics/03-sanctum-hub.md`](epics/03-sanctum-hub.md) (SH-1…SH-12). Index: [`epics/README.md`](epics/README.md).
+
+Cozy floating home rock in a dusk-void sky. Empty of people except the portal. Playable two ways: **Inhabit** (third-person) and **Arrange** (top-down island editor).
 
 | ID | Feature | Notes |
 | --- | --- | --- |
 | 3.1 | Sanctum scene | Floating space rock + ethereal purple/blue dusk-void skybox; mystical anime read (can start gray, must not stay gray) |
-| 3.2 | Empty-on-new | No residents, shops, or pre-authored neighbors on a new save |
+| 3.2 | Empty-on-new | No residents, shops, or pre-authored neighbors on a new save. No pre-placed houses. Starter kit is unlocked, not pre-placed. |
 | 3.3 | Portal present | Freestanding arch on the overlook; interactable. Form may change later / become player-swappable |
 | 3.4 | Player spawn | After creator, stand on the Sanctum, not in a dungeon |
 | 3.5 | Return point | Leaving a world always comes back here |
-| 3.6 | Cozy-sim foundation | Home bowl pads + farm plot hooks for later building / farming (hooks only in first Sanctum slice) |
-| 3.7 | Hub on controller | Walk, look, interact with the portal without a mouse |
+| 3.6 | Buildable surface + farm hooks | Home bowl / terraces are legal Arrange volume; farm plot **hooks** only (planting is later cozy-sim) |
+| 3.7 | Inhabit on controller | Walk, look, interact with the portal, toggle Arrange, without a mouse |
 | 3.8 | Parkour-legal hub | Rim cliffs, stacks, and the portal approach are climbable; no waist-high invisible walls |
 | 3.9 | Dusk-void + stardust | Always dusk-void sky; floaty embers / stardust around the rock |
-| 3.10 | Soft fall return | Fall off → free fall a few seconds → return to Sanctum center |
+| 3.10 | Soft fall return | Fall off (Inhabit) → free fall a few seconds → return to Sanctum center |
+| 3.11 | Inhabit / Arrange | Dual mode on the Sanctum only. Worlds stay third-person. |
+| 3.12 | Arrange camera | Flip to top-down (ortho or near-ortho); pan + zoom the islet |
+| 3.13 | Building placement | Place / rotate / move / remove unlocked home designs in Arrange. One active instance per building design. |
+| 3.14 | Furniture placement | Outdoor + footprint furniture; multiples allowed |
+| 3.15 | Light placement | Placeable lanterns / lamps that emit. Dusk-void makes them always read. |
+| 3.16 | Ground / path paints | Paint path, dirt, moss, stone on the rock. Texture/decal/splat — not terrain sculpt. |
+| 3.17 | Layout persistence | Arrange layout is hub-save state. Survives quit / relaunch / portal return. |
+| 3.18 | Arrange on controller | Catalog, ghost, rotate, place, move, remove, paint, exit — no mouse-cursor overlay |
+| 3.19 | Starter arrange kit | Camp/shelter + thin furniture, lights, path paints unlocked on New Game so Arrange is playable before world finds |
+| 3.20 | Exit Arrange | Restores Inhabit camera and pose; placed geometry is what you walk |
 
-The existing Living Town sim with a pre-seeded cast is **not** this hub. Replace or isolate it when this slice starts; do not grow the prototype town as if it were home.
+The existing Living Town sim with a pre-seeded cast is **not** this hub. Replace or isolate it when this slice starts; do not grow the prototype town as if it were home. Do not ship a voxel / stud-by-stud house editor.
 
 ---
 
@@ -167,7 +179,7 @@ Gear decides both moves and growth. Feel is soulslike; tuning is not.
 | 6.4 | Split XP | Two different tags (e.g. wand + shield) → 50% / 50% |
 | 6.5 | Same-tag pair | Both hands same path → 100% that path |
 | 6.6 | Combat loop | Playable fights in a world, not a stats sheet only |
-| 6.7 | Third-person camera | Follow / over-the-shoulder, combat and hub share the language |
+| 6.7 | Third-person camera | Follow / over-the-shoulder in **combat and Sanctum Inhabit**. Arrange is top-down (pack 03). Worlds never flip. |
 | 6.8 | Lock-on | Target lock from the controller stick / shoulder pattern |
 | 6.9 | Heavy commitment | Startup, recovery, readable swings — weight, not floaty hack-and-slash |
 | 6.10 | Fair difficulty | Telegraphs and recovery room; not Souls-grade punishment |
@@ -205,11 +217,11 @@ Mass Effect field slots, Arknights roster. Companions are full characters. The p
 | 7.16 | Shops | Trusted companions can open services in the Sanctum |
 | 7.17 | Sanctum level | Home progression separate from combat paths; XP from materials, harvests, designs, builds, companions housed |
 | 7.18 | Farming | Plots on the rock; plant → **real-time** grow → harvest materials; capacity gated by Sanctum level |
-| 7.19 | Simple building | Place unlocked designs with wood/metal/fiber on pads; **one instance per design**; no voxel editor |
+| 7.19 | Simple building | Place unlocked designs in **Arrange** (top-down) with wood/metal/fiber; **one instance per building design**; no voxel editor. Pack 03 ships the placer + starter camp; this pack spends materials and collected designs. |
 | 7.20 | Home design collectibles | Study building in world → unlock; Sanctum places **same catalog mesh** |
-| 7.21 | Starter camp design | Humble early unlock so building can start before rare story finds |
+| 7.21 | Starter camp design | Humble early unlock so building can start before rare story finds — **pack 03 already unlocks this on New Game**; this pack does not re-lock it behind a world return |
 | 7.22 | Materials bank | **Wood / metal / fiber** only (v0); world finds + farm → Sanctum storage → builds |
-| 7.23 | Cozy dwell | Live with roster, romance, decorate (decorate layers after structures) |
+| 7.23 | Cozy dwell | Live with roster, romance, decorate. Pack 03 already has outdoor furniture / lights / paths; this pack deepens interiors and collected sets |
 | 7.24 | Squad UI on controller | Pick/swap field slots without a mouse |
 
 Do not pre-place shop NPCs “for now” in the destination hub. Temporary debug spawns are fine if they cannot be invited without 100% trust. Do not ship a companion skill menu the player points at. Do not ship a freeform house editor.
@@ -247,11 +259,11 @@ Smallest thing that feels like *this* game rather than a walker:
 
 1. Loading screen → title (New / Load / Settings / Quit), **on a controller**
 2. New → race + **male/female** + a few body sliders → confirm, **on a controller**
-3. Empty Sanctum (floating rock, dusk-void, freestanding portal arch), same camera language
+3. Empty Sanctum (floating rock, dusk-void, freestanding portal arch): **Inhabit** in third person **and Arrange** top-down (starter kit: building, furniture, lights, paths)
 4. Sprint, jump, mantle, **climb a wall**, **wall-run a stretch**, all on a controller
 5. Portal → one graybox “random world” (still climbable) → return still wearing a test item
 
-Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** (farm / build / design collectibles), and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
+Character morph depth, Fable combat, **companion roster**, **Sanctum cozy sim** (farm / collected designs / Sanctum XP / interiors), and prompted story come after that loop is real. The first fight, when it lands, should already feel heavy and lock-on-based — not a placeholder twin-stick. Traversal should already feel like light WuWa / TotK / Genshin parkour, not a walker. The first companion slice is: recruit in a story, watch them grow from actions, hit 100% trust, bring them home, take them out again in a field slot. Combat should already support **downed + heal node** before permadeath fantasies creep in.
 
 ---
 

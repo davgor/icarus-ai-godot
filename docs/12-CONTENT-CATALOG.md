@@ -109,6 +109,7 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
   "collectible": {
     "learnable": true,
     "sanctum_buildable": true,
+    "sanctum_placeable": true,
     "learn_verb": "study"
   },
   "art": {
@@ -127,6 +128,7 @@ Buildings (and other kinds) use a **stable core** plus an open **`properties` ba
   "properties": {
     "footprint_m": { "x": 8, "z": 6 },
     "climbable": true,
+    "place_kind": "building",
     "material_cost": { "wood": 40, "metal": 5, "fiber": 10 },
     "slots": {}
   }
@@ -182,11 +184,24 @@ If `collectible.learnable` is true:
 1. Player encounters an instance in a world.
 2. Default learn beat: **Study** — interact with the building (or item, when applicable) to unlock it. Stories may add extra gates; Study is the baseline.
 3. Engine writes the catalog `id` into the player’s collection (hub save).
-4. If `sanctum_buildable`, the id appears in the Sanctum home-design catalog and uses **this same catalog mesh** when placed ([`game-design.md`](game-design.md)).
+4. If `sanctum_buildable` / `sanctum_placeable`, the id appears in the Sanctum Arrange catalog and uses **this same catalog mesh** (or paint material) when placed ([`game-design.md`](game-design.md)).
 
-Players do **not** receive the entire approved library on New Game. The library is large; **collection** is earned. Starter camp remains the early exception for building. **One active Sanctum instance per design** (lean).
+Players do **not** receive the entire approved library on New Game. The library is large; **collection** is earned. The **starter arrange kit** (camp/shelter + thin furniture, lights, and path paints) is the New Game exception. **One active Sanctum instance per building design** (lean). Furniture and lights may place multiples.
 
-Sanctum build costs use **wood / metal / fiber** only (v0). Put amounts in `properties.material_cost`.
+Sanctum build costs use **wood / metal / fiber** only (v0). Put amounts in `properties.material_cost`. Starter-kit rows may set cost to zero so Arrange is playable before the bank exists.
+
+### Sanctum `place_kind`
+
+Arrange reads `properties.place_kind` (unknown keys ignored elsewhere):
+
+| `place_kind` | Player action | Instance rule |
+| --- | --- | --- |
+| `building` | Place a home design | One active Sanctum instance per catalog id |
+| `furniture` | Place a prop | Multiples OK |
+| `light` | Place a fixture that emits | Multiples OK |
+| `ground_paint` | Paint a ground layer (path, dirt, moss, stone) | Brush / splat, not a mesh instance |
+
+`kind` stays `building` \| `item` \| `prop` for the stable core. Lights and furniture are `prop` (or `building` when they are also world architecture). Ground paints may be `prop` with a material path in `art` instead of a mesh. Do not invent a fourth Sanctum material; do not add voxel wall pieces as `place_kind`.
 
 ---
 

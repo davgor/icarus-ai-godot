@@ -42,4 +42,4 @@ Companion **action-driven growth** (healer vs mage from what they did in fights)
 
 ## Existing bootstrap
 
-`game/sim/game_state.gd` is a Living Town prototype with a pre-seeded cast. Destination hub is the empty Sanctum. Do not grow that prototype as if it were home. New sim should match this split and the Sanctum lock (farm, buildings, design catalog, Sanctum level are engine state).
+`game/sim/game_state.gd` is a Living Town prototype with a pre-seeded cast. Destination hub is the empty Sanctum. Do not grow that prototype as if it were home. New sim should match this split and the Sanctum lock (farm, **Arrange layout**, design catalog, Sanctum level are engine state).

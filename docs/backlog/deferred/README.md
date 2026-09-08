@@ -46,6 +46,12 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-015](DEF-015-load-continue-after-creator.md) | Title Load / Continue of creator-written saves | Open | [CC-8](../../epics/02-character-creation.md#cc-8--confirm--write-character--hub-spawn-handoff) |
 | [DEF-016](DEF-016-multiplayer-worker-routing.md) | Multiplayer worker advertisement + remote `complete()` | Open | [AR-2](../../epics/06-agent-runtime.md#ar-2--orchestrator) |
 | [DEF-017](DEF-017-player2-voice.md) | Player2 TTS / STT voice adapter | Open | [AR-4](../../epics/06-agent-runtime.md#ar-4--player2-worker) |
+| [DEF-018](DEF-018-sanctum-interior-rooms.md) | Sanctum interior rooms | Open | [SH-6](../../epics/03-sanctum-hub.md#sh-6--shared-placement-ghost-rotate-move-remove) / [SH-8](../../epics/03-sanctum-hub.md#sh-8--furniture-placement) |
+| [DEF-019](DEF-019-sanctum-terrain-sculpt.md) | Sanctum terrain sculpt | Open | [SH-6](../../epics/03-sanctum-hub.md#sh-6--shared-placement-ghost-rotate-move-remove) / [SH-10](../../epics/03-sanctum-hub.md#sh-10--ground-and-path-paints) |
+| [DEF-020](DEF-020-portal-relocate-cosmetic.md) | Portal relocate / cosmetic swap | Open | [SH-1](../../epics/03-sanctum-hub.md#sh-1--sanctum-rock-sky-and-portal) |
+| [DEF-021](DEF-021-arrange-material-spend.md) | Arrange material spend | Open | [SH-6](../../epics/03-sanctum-hub.md#sh-6--shared-placement-ghost-rotate-move-remove) / [SH-7](../../epics/03-sanctum-hub.md#sh-7--building-placement) |
+| [DEF-022](DEF-022-arrange-undo-redo.md) | Arrange undo / redo | Open | [SH-5](../../epics/03-sanctum-hub.md#sh-5--arrange-mode-flip-to-top-down) |
+| [DEF-023](DEF-023-sanctum-time-of-day.md) | Sanctum time of day | Open | [SH-9](../../epics/03-sanctum-hub.md#sh-9--light-placement) |
 
 ---
 

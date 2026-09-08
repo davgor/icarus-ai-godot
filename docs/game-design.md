@@ -17,7 +17,7 @@ The **Sanctum** is the cozy hub. The portal is the adventure. You farm and build
 ## Pillars
 
 1. **Mystical anime look** — stylized characters and spaces, deep shadows, bright lights, a world that feels otherworldly rather than naturalistic.
-2. **Home you grow** — the Sanctum starts almost empty and becomes a **cozy sim** through play: farming, simple building, collectible home designs from stories, and people you earned. Not a pre-authored town.
+2. **Home you grow** — the Sanctum starts almost empty. You **arrange** the island from top-down (buildings, furniture, lights, paths) and **inhabit** it in third person. Farming, collectible designs, and people you earned deepen it. Not a pre-authored town.
 3. **Worlds on your terms** — resume a world, roll a new one, or prompt the story you want.
 4. **Identity is yours** — Code Vein-class character creation; race is a tag and a preset, not a lock.
 5. **You are what you wield** — two hands, gear-defined combat, Fable-style use-based progression.
@@ -59,7 +59,7 @@ BOOT / LOADING SCREEN
  CHARACTER CREATION
         │
         ▼
- EMPTY SANCTUM  ◄────────────────────────────────┐
+ EMPTY SANCTUM  (inhabit 3rd / arrange top-down)
         │                                         │
         │ enter portal                            │ return through portal
         ▼                                         │
@@ -221,23 +221,37 @@ The **Sanctum** is the cozy home away from home: a **floating space rock** hangi
 | Mood | Intimate and safe underfoot; infinite and ethereal when you look out |
 | Scale | Small and fully materialized. One memorable home rock, not an open-world hub |
 
-Composition from first spawn: **spawn terrace** → sheltered **home bowl** (empty pads for later buildings) → **portal overlook** at the rim, silhouetted against the void.
+Composition from first spawn: **spawn terrace** → sheltered **home bowl** (buildable surface, empty of houses) → **portal overlook** at the rim, silhouetted against the void.
 
 ### First spawn
 
-- The Sanctum is **empty**.
+- The Sanctum is **empty of people and pre-placed houses**.
 - **Exception:** the **portal** is present from the start.
+- A humble **starter arrange kit** (camp/shelter + a few furniture, lights, and ground paints) is unlocked so the player can reorganize immediately. It is not pre-placed; the rock starts bare.
 - No pre-placed shopkeepers, neighbors, or quest givers living there yet.
 
 The current Living Town prototype (named NPCs already in a square) is a bootstrap experiment. The destination hub is the empty Sanctum until the player earns people.
 
+### Two ways to play
+
+The Sanctum is not a third-person lobby you walk through on the way to the portal. It has two first-class modes. Worlds never get this split — adventure spaces stay third-person.
+
+| Mode | Camera | What you do |
+| --- | --- | --- |
+| **Inhabit** | Third-person follow (same language as worlds) | Live on the rock: walk, parkour, farm, talk, use the portal |
+| **Arrange** | **Top-down** over the islet (orthographic or near-ortho, pan + zoom) | Reorganize the island: buildings, furniture, lights, ground/path textures |
+
+Toggle is a dedicated action on gamepad and keyboard/mouse. Exiting Arrange restores Inhabit at a sensible pose (last inhabit transform, or the home bowl if that is invalid).
+
+Arrange is how home-building is **played**. It is not a pause-menu list that snaps one house onto a numbered pad.
+
 ### Portal form
 
-v1 portal is a **freestanding arch** on the overlook. It may change later, and the player may eventually be allowed to change or decorate the portal — do not treat the arch mesh as permanent lore.
+v1 portal is a **freestanding arch** on the overlook. It may change later, and the player may eventually be allowed to change or decorate the portal — Deferred: [`DEF-020`](backlog/deferred/DEF-020-portal-relocate-cosmetic.md). Do not treat the arch mesh as permanent lore.
 
 ### Falling off
 
-There is no waist-high invisible rail at the cliff. If the player walks or falls off the rock:
+Inhabit only. There is no waist-high invisible rail at the cliff. If the player walks or falls off the rock:
 
 1. Free fall for a **few seconds** into the dusk-void.
 2. Softly return / warp back onto the **center of the Sanctum** (home bowl), not a hard death.
@@ -251,21 +265,23 @@ The Sanctum is not a lobby between adventures. It is a **cozy-sim home loop** th
 As the player adventures and returns, the Sanctum enables:
 
 - **farming** — plots, crops, materials grown at home
-- **simple building** — place unlocked home designs with materials (no complex construction UI)
+- **arrange the island** — flip to top-down; place buildings, furniture, lights, and paint paths
+- **simple building** — place unlocked home designs (catalog pieces, not a voxel editor)
 - **home design collectibles** — encounter architecture in stories → unlock the design → build it on the Sanctum
 - **Sanctum level** — a home progression track (separate from combat path XP), fed by materials, builds, harvests, designs unlocked, and companions brought home
 - residents (100% trust roster lives here)
 - helpers / labor (companions can assist farming and upkeep)
 - shops and services
-- decorate / dwell / romance on top of the built home
+- decorate / dwell / romance on the arranged home
 - squad select at the portal (who walks out with you next)
 
 ### Dual loop
 
 ```text
 SANCTUM (cozy sim)  ◄── materials, designs, people ──►  WORLDS (adventure)
-   farm / build / level home                              fight / recruit / explore
-   bank storage                                           bring designs + materials home
+   inhabit 3rd / arrange top-down                         fight / recruit / explore
+   farm / build / paint / level home                      bring designs + materials home
+   bank storage
 ```
 
 Neither loop is optional flavor. Adventure feeds the Sanctum; the Sanctum makes coming home matter.
@@ -282,7 +298,7 @@ Neither loop is optional flavor. Adventure feeds the Sanctum; the Sanctum makes 
 | Homes / structures placed | Building is progress |
 | Companions brought to 100% and housed | People are the biggest unlock |
 
-Sanctum level gates **capacity**, not combat power: more farm plots, more build pads, storage size, maybe rock terraces / expansions later. It does not raise attack damage.
+Sanctum level gates **capacity**, not combat power: more farm plots, more buildable area / terraces, storage size. It does not raise attack damage. It does not replace Arrange — it widens what Arrange can hold.
 
 Exact XP weights and level curve are tuning. The split (home level vs combat paths) is locked.
 
@@ -306,38 +322,47 @@ Simplified bank for building and farm loops. Three types only for now:
 
 Do not invent a fourth Sanctum material without updating this lock. World loot can still be richer; when spent on Sanctum builds it converts or maps into these three.
 
-### Building — keep it simple
+### Arrange — reorganize the island
 
-Building is **place unlocked designs**, not a freeform voxel / wall-piece editor.
+Home-building is played in **Arrange** (top-down). Inhabit never opens a construction minigame.
+
+Place catalog pieces and paint the ground. This is **not** a freeform voxel / wall-piece / stud-by-stud editor, and it is **not** sculpting a new island silhouette — Deferred: [`DEF-019`](backlog/deferred/DEF-019-sanctum-terrain-sculpt.md).
 
 | Rule | Meaning |
 | --- | --- |
-| Simple | Pick a design you own → spend materials → snap/place on a pad or clear site |
-| No construction minigame | No stud-by-stud framing, no blueprint puzzle |
-| Relocate / replace OK | Moving or swapping a placed home should stay easy |
-| Pads grow with Sanctum level | Empty rock first; more build sites as home level rises |
-| Parkour stays legal | Placed homes have climbable roofs / walls where it reads as architecture |
-| One instance | **One active placed instance per design** for now (lean). Unlock once; place once unless you relocate/replace |
+| Top-down | Whole islet readable; pan and zoom; ghost preview before commit |
+| Legal volume | Home bowl + terraces are the buildable surface. Engine may use pads/volumes under the hood; the player fantasy is “place it on my rock,” not numbered lots |
+| No construction minigame | No framing puzzle, no voxel walls |
+| Relocate / replace OK | Move, rotate, and remove must stay easy — that is the point of Arrange |
+| Buildings | Unlocked home designs; **one active instance per design**; spend materials when the bank exists |
+| Furniture | Benches, tables, outdoor kit, etc. **Multiples allowed** |
+| Lights | Lanterns, lamps, standing lights that **actually emit**. Dusk-void never goes daytime, so placed light always reads |
+| Ground / paths | Paint path, packed dirt, moss, stone on the rock surface (splat / decal / texture layers). Not terrain sculpt |
+| Starter kit is free | New Game can Arrange immediately. Wood / metal / fiber costs apply to later unlocks once the bank exists — Deferred: [`DEF-021`](backlog/deferred/DEF-021-arrange-material-spend.md) |
+| Parkour stays legal | Placed buildings have climbable roofs / walls where they read as architecture. Paints do not block traversal |
+| Portal stays put (v1) | Overlook arch is not a relocatable building in this loop |
 
-v1 decorate is optional furniture-light or none. **Structure placement first.** Deep interior decorating can layer later.
+Deep interior room editing (wall hangings, furniture on a second floor, roof-off rooms) layers later — Deferred: [`DEF-018`](backlog/deferred/DEF-018-sanctum-interior-rooms.md). From Arrange, furniture may sit on the island and on a building’s footprint; that is enough for the hub to feel rearrangeable.
 
 ### Home designs as collectibles
 
 Home designs are a **collection**, like gear catalogs — but for the Sanctum. Designs are **approved catalog buildings** flagged `sanctum_buildable` ([`12-CONTENT-CATALOG.md`](12-CONTENT-CATALOG.md)). Worlds place many catalog buildings; the player **learns** ones they encounter.
 
+Furniture, lights, and ground paints use the same catalog envelope with `properties.place_kind` (`building` \| `furniture` \| `light` \| `ground_paint`) and `collectible.sanctum_placeable`.
+
 **Same mesh:** the approved catalog building mesh is what appears in the world **and** what you place on the Sanctum when it is `sanctum_buildable`. No second polish mesh required for home builds.
 
 1. In a world, the player **encounters** a house, hall, cottage, ruin-turned-dwelling, etc. backed by a catalog id.
 2. Default learn beat: **Study** — an interaction with the building that unlocks that catalog id in the Sanctum design catalog. Stories may add extra gates later; Study is the baseline.
-3. Back home, if the player has the **materials** (wood / metal / fiber) and a **build site**, they can place that design (one active instance).
+3. Back home, in **Arrange**, if the player has the **materials** (wood / metal / fiber) and legal volume, they can place that design (one active instance).
 
 | Lock | Meaning |
 | --- | --- |
-| Designs come from play | Story encounters unlock builds. Do not dump the full approved library on New Game. |
-| Empty first | New Sanctum has **no** pre-placed houses (portal only). |
-| Starter design | A humble **starter camp / shelter** unlocks early (first return from a world, or first materials banked) so the cozy loop can start before rare finds. |
+| Designs come from play | Story encounters unlock the library. Do not dump the full approved catalog on New Game. |
+| Empty first | New Sanctum has **no** pre-placed houses (portal only). Starter kit is unlocked, not pre-placed. |
+| Starter kit | Humble **starter camp / shelter** plus a thin furniture, light, and path-paint set is unlocked on New Game so Arrange is playable before world finds. |
 | Rarity | Ordinary cabins/cottages common; striking story architecture rarer / signature. |
-| One instance | One active placed instance per unlocked design (lean). Relocate/replace OK. |
+| One instance (buildings) | One active placed instance per unlocked **building** design (lean). Relocate/replace OK. Furniture and lights may stack multiples. |
 | Flexible defs | Building data uses a stable core + open `properties` bag so we can add fields later without a hard rewrite. |
 | Shared art | World instance and Sanctum buildable share the catalog mesh. |
 
@@ -400,7 +425,7 @@ The player can **build storage** on the Sanctum (often as part of a placed home 
 
 Until storage exists, the practical rule is: **worn loadout** (hands, armor, accessories) is what you keep. Materials for Sanctum building may need a minimal early stash once farming / designs land.
 
-Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout. **Sanctum level**, farm state, placed buildings, and the home-design catalog persist on the hub save.
+Player body / identity persists across all worlds. Skills persist on the character, not on a given world. **Outfit / appearance** persists separately from loadout. **Sanctum level**, farm state, **Arrange layout** (buildings, furniture, lights, ground paints), and the home-design catalog persist on the hub save.
 
 **100% trust companions** persist on the hub roster with their own loadout, outfit, levels, and affinities. They travel through the portal when selected into a field slot. Story-only recruits stay in that world until the trust gate.
 
@@ -412,7 +437,7 @@ Player body / identity persists across all worlds. Skills persist on the charact
 
 Keyboard and mouse remain supported. Neither layout is a second-class afterthought: if a screen cannot be completed with a controller, it is not done.
 
-Default assumption: Xbox-layout gamepad (expand to other layouts as needed). Camera, movement, lock-on, parkour, **squad select**, and menus should feel native on stick + face buttons, not like a mouse UI with a cursor overlay.
+Default assumption: Xbox-layout gamepad (expand to other layouts as needed). Camera, movement, lock-on, parkour, **Sanctum Arrange**, **squad select**, and menus should feel native on stick + face buttons, not like a mouse UI with a cursor overlay.
 
 ---
 
@@ -446,7 +471,7 @@ Hub architecture should still be parkour-legal (rim cliffs, stacks, the portal a
 
 - **Light** means: easy to attach, easy to recover, wide climbable angles, stamina that is a budget not a punishment.
 - Not Mirror’s Edge timing trials. Not Mario precision jumps. Not Souls runbacks as the traversal fantasy.
-- Camera stays third-person follow; it should not fight the wall. Climb and wall-run keep the character readable.
+- Camera stays third-person follow in **Inhabit** and in worlds; it should not fight the wall. Climb and wall-run keep the character readable. **Arrange** is the only top-down exception (Sanctum only).
 - Body size from the creator scales the capsule and anims. It does **not** gate who can parkour. A gnome and a tall demi-human both climb; they do not use different move lists.
 
 ### Traversal stamina
@@ -481,7 +506,7 @@ Combat and camera should read **soulslike**:
 
 Difficulty should **not** be soulslike. Encounters can feel weighty without being a punishment gauntlet: generous reads, fair telegraphs, recoverable mistakes, no “git gud or stop playing” tuning. The toy is Souls. The difficulty curve is not.
 
-Traversal stays the light-parkour kit above even in combat spaces. The camera and controller language never swap. What changes in a fight is attack commitment, not the sudden loss of climb.
+Traversal stays the light-parkour kit above even in combat spaces. Worlds never swap out of third-person. **Sanctum Arrange** is the only camera swap in the game; leaving Arrange restores Inhabit. What changes in a fight is attack commitment, not the sudden loss of climb.
 
 ### Downed and heal nodes
 
