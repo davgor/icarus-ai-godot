@@ -39,6 +39,14 @@ func _run_suite() -> int:
 	failed += _ok("creator_lighting_presets", _test_creator_lighting_presets())
 	failed += _ok("creator_reset_randomize", _test_creator_reset_randomize())
 	failed += _ok("creator_race_select", _test_creator_race_select())
+	failed += _ok("creator_sex_select", _test_creator_sex_select())
+	failed += _ok("creator_body_core", _test_creator_body_core())
+	failed += _ok("creator_face_kit", _test_creator_face_kit())
+	failed += _ok("creator_demi_features", _test_creator_demi_features())
+	failed += _ok("creator_outfit_cosmetics", _test_creator_outfit_cosmetics())
+	failed += _ok("creator_jiggle_motion", _test_creator_jiggle_motion())
+	failed += _ok("creator_confirm_hub", await _test_creator_confirm_hub())
+	failed += _ok("creator_pad_path", _test_creator_pad_path())
 	failed += _ok("character_record_schema_v1", _test_character_record_schema_v1())
 	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
@@ -462,6 +470,499 @@ func _test_creator_race_select() -> bool:
 	return true
 
 
+func _test_creator_sex_select() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("select_sex"):
+		push_error("Creator sex select missing")
+		flow.hide_flow()
+		return false
+	if not creator.body_kit_art_ready():
+		push_error("Male/Female underwear kits missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("MaleSex", true, false) == null or creator.find_child("FemaleSex", true, false) == null:
+		push_error("Male/Female buttons missing")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("body")
+	if str(flow.creator_current_category()) != "body":
+		push_error("Body category should show sex controls")
+		flow.hide_flow()
+		return false
+	var sex_row := creator.find_child("SexRow", true, false) as Control
+	if sex_row == null or not sex_row.visible:
+		push_error("Sex row should be visible on Body")
+		flow.hide_flow()
+		return false
+	creator.select_race("dwarf")
+	creator.override_body_field("height", 0.92)
+	var outfit_id := str(creator.draft.outfit.get("id", ""))
+	if str(creator.draft.body.get("sex", "")) != "male":
+		push_error("Default sex should be male")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_kit_id()) != "male":
+		push_error("Preview kit should start male; got %s" % creator.preview_kit_id())
+		flow.hide_flow()
+		return false
+	creator.select_sex("female")
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("body.sex should serialize female")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_kit_id()) != "female":
+		push_error("Preview kit should swap to female; got %s" % creator.preview_kit_id())
+		flow.hide_flow()
+		return false
+	if str(creator.draft.race) != "dwarf" or not is_equal_approx(float(creator.draft.body.height), 0.92):
+		push_error("Sex swap should keep race and morph overrides")
+		flow.hide_flow()
+		return false
+	if str(creator.draft.outfit.get("id", "")) != outfit_id:
+		push_error("Sex swap should not clear outfit")
+		flow.hide_flow()
+		return false
+	creator.reset_category()
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("Reset category should keep current sex")
+		flow.hide_flow()
+		return false
+	creator.reset_all()
+	if str(creator.draft.body.get("sex", "")) != "female":
+		push_error("Reset all should keep current sex")
+		flow.hide_flow()
+		return false
+	creator.select_sex("male")
+	if str(creator.preview_kit_id()) != "male":
+		push_error("Preview kit should swap back to male")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_body_core() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("override_body_field"):
+		push_error("Creator body overrides missing")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("body")
+	if creator.find_child("HeightSlider", true, false) == null:
+		push_error("Height slider missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("WeightSlider", true, false) == null:
+		push_error("Weight slider missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("MuscleFatSlider", true, false) == null:
+		push_error("Muscle ↔ fat slider missing")
+		flow.hide_flow()
+		return false
+	for region in ["Head", "Torso", "Arms", "Legs"]:
+		if creator.find_child("%sSlider" % region, true, false) == null:
+			push_error("%s proportion slider missing" % region)
+			flow.hide_flow()
+			return false
+	if creator.find_child("SkinRow", true, false) == null:
+		push_error("Skin swatch row missing")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("height", 0.0)
+	var short_scale: Vector3 = creator.preview_kit_scale()
+	creator.override_body_field("height", 1.0)
+	var tall_scale: Vector3 = creator.preview_kit_scale()
+	if is_equal_approx(short_scale.y, tall_scale.y):
+		push_error("Height extremes should change preview Y scale")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("weight", 0.0)
+	var light_scale: Vector3 = creator.preview_kit_scale()
+	creator.override_body_field("weight", 1.0)
+	var heavy_scale: Vector3 = creator.preview_kit_scale()
+	if is_equal_approx(light_scale.x, heavy_scale.x):
+		push_error("Weight extremes should thicken frame XZ")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("muscle_fat", 0.0)
+	var muscle_jiggle: float = creator.jiggle_amplitude()
+	creator.override_body_field("muscle_fat", 1.0)
+	var fat_jiggle: float = creator.jiggle_amplitude()
+	if fat_jiggle <= muscle_jiggle:
+		push_error("Fat end should raise jiggle amplitude vs muscle end")
+		flow.hide_flow()
+		return false
+	var jiggle_before: float = creator.jiggle_amplitude()
+	creator.override_body_field("weight", 0.05)
+	if not is_equal_approx(creator.jiggle_amplitude(), jiggle_before):
+		push_error("Weight must not change jiggle metric")
+		flow.hide_flow()
+		return false
+	var RecordScript := load("res://game/character/character_record.gd")
+	for hex in RecordScript.SKIN_SWATCHES:
+		creator.select_skin(hex)
+		if str(creator.draft.body.get("skin_color", "")) != hex:
+			push_error("Skin swatch %s did not serialize" % hex)
+			flow.hide_flow()
+			return false
+	creator.override_proportion("head", 0.2)
+	creator.override_proportion("torso", 0.8)
+	creator.override_proportion("arms", 0.1)
+	creator.override_proportion("legs", 0.9)
+	var props: Dictionary = creator.draft.body.get("proportions", {})
+	if (
+		not is_equal_approx(float(props.get("head", -1.0)), 0.2)
+		or not is_equal_approx(float(props.get("torso", -1.0)), 0.8)
+		or not is_equal_approx(float(props.get("arms", -1.0)), 0.1)
+		or not is_equal_approx(float(props.get("legs", -1.0)), 0.9)
+	):
+		push_error("Proportion regions did not serialize")
+		flow.hide_flow()
+		return false
+	if not str(creator.draft.body.get("skin_color", "")).begins_with("#"):
+		push_error("skin_color missing on in-progress character")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_face_kit() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null:
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("face")
+	for morph_id in ["Brow", "EyeShape", "Nose", "Cheek", "Jaw", "Mouth", "Chin"]:
+		if creator.find_child("Face%sSlider" % morph_id, true, false) == null:
+			push_error("Face morph slider missing: %s" % morph_id)
+			flow.hide_flow()
+			return false
+	if creator.find_child("HairWave", true, false) == null:
+		push_error("Hair style grid missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("EyesSharp", true, false) == null:
+		push_error("Eye style grid missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("ScarNone", true, false) == null or creator.find_child("ScarCheek", true, false) == null:
+		push_error("Scar none + option missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("MarkingNone", true, false) == null or creator.find_child("MarkingRune", true, false) == null:
+		push_error("Marking none + option missing")
+		flow.hide_flow()
+		return false
+	creator.override_face_morph("jaw", 0.9)
+	creator.override_face_morph("chin", 0.2)
+	var morphs: Dictionary = creator.draft.face.get("morphs", {})
+	for key in ["brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"]:
+		if not morphs.has(key):
+			push_error("Named morph %s missing after face edit" % key)
+			flow.hide_flow()
+			return false
+	if not is_equal_approx(float(morphs.get("jaw", -1.0)), 0.9):
+		push_error("Jaw morph did not serialize")
+		flow.hide_flow()
+		return false
+	creator.select_hair("hair_wave")
+	creator.select_eyes("eyes_sharp")
+	creator.select_scar("scar_cheek")
+	creator.select_marking("marking_rune")
+	if str(creator.draft.face.get("hair_id", "")) != "hair_wave":
+		push_error("Hair id did not mutate")
+		flow.hide_flow()
+		return false
+	if str(creator.draft.face.get("eyes_id", "")) != "eyes_sharp":
+		push_error("Eyes id did not mutate")
+		flow.hide_flow()
+		return false
+	creator.select_scar("")
+	creator.select_marking("")
+	if creator.draft.face.get("scar_id", "x") != null or creator.draft.face.get("marking_id", "x") != null:
+		push_error("Scar/marking null should clear overlay")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_part_id("Hair")) != "hair_wave":
+		push_error("Hair preview part should follow selection")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_demi_features() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null:
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("features")
+	if creator.find_child("TailsLizard", true, false) == null:
+		push_error("Lizard tail option missing")
+		flow.hide_flow()
+		return false
+	creator.select_race("demi_human")
+	if (
+		creator.draft.features.get("ears_id", null) == null
+		or creator.draft.features.get("horns_id", null) == null
+		or creator.draft.features.get("tails_id", null) == null
+	):
+		push_error("Demi-human preset should apply feature defaults")
+		flow.hide_flow()
+		return false
+	creator.select_feature("ears_id", "")
+	creator.select_feature("horns_id", "")
+	creator.select_feature("tails_id", "")
+	if (
+		creator.draft.features.get("ears_id", "x") != null
+		or creator.draft.features.get("horns_id", "x") != null
+		or creator.draft.features.get("tails_id", "x") != null
+	):
+		push_error("Player should be able to unequip all demi features")
+		flow.hide_flow()
+		return false
+	creator.select_feature("horns_id", "horns_starter")
+	creator.select_feature("tails_id", "tails_lizard")
+	if str(creator.draft.features.get("horns_id", "")) != "horns_starter":
+		push_error("Horns did not equip")
+		flow.hide_flow()
+		return false
+	if str(creator.draft.features.get("tails_id", "")) != "tails_lizard":
+		push_error("Lizard tail did not equip")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_part_id("HornPart")) != "horns_starter":
+		push_error("Horns should socket on preview")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_part_id("TailPart")) != "tails_lizard":
+		push_error("Lizard tail should socket on preview")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_outfit_cosmetics() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null:
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("outfit")
+	if (
+		creator.find_child("OutfitStarter01", true, false) == null
+		or creator.find_child("OutfitStarter02", true, false) == null
+		or creator.find_child("OutfitStarter03", true, false) == null
+	):
+		push_error("Need at least three starting outfits")
+		flow.hide_flow()
+		return false
+	creator.select_outfit("outfit_starter_03")
+	if str(creator.draft.outfit.get("id", "")) != "outfit_starter_03":
+		push_error("Outfit id did not change")
+		flow.hide_flow()
+		return false
+	var loadout: Dictionary = creator.draft.loadout
+	if loadout.get("hands", {}).get("main", "x") != null:
+		push_error("Outfit must not fill weapon loadout")
+		flow.hide_flow()
+		return false
+	if not (loadout.get("armor", {}) as Dictionary).is_empty():
+		push_error("Outfit must not fill armor loadout")
+		flow.hide_flow()
+		return false
+	if str(creator.preview_part_id("Outfit")) != "outfit_starter_03":
+		push_error("Outfit preview should follow cosmetics pick")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_jiggle_motion() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("jiggle_sample"):
+		flow.hide_flow()
+		return false
+	var atelier: Node = creator.get_node_or_null("StageHost/StageView/Atelier")
+	if atelier == null:
+		atelier = creator.find_child("Atelier", true, false)
+	if atelier == null:
+		push_error("Atelier missing for jiggle sample")
+		flow.hide_flow()
+		return false
+	if atelier.find_child("SoftBody3D", true, false) != null:
+		push_error("SoftBody3D must not be the jiggle solution")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("muscle_fat", 0.0)
+	var muscle_peak := _peak_jiggle(atelier, creator, 0.45)
+	creator.override_body_field("muscle_fat", 1.0)
+	var fat_peak := _peak_jiggle(atelier, creator, 0.45)
+	if fat_peak <= muscle_peak:
+		push_error("Fat jiggle sample should exceed muscle; fat=%s muscle=%s" % [fat_peak, muscle_peak])
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _peak_jiggle(atelier: Node, creator: Node, seconds: float) -> float:
+	var Applier := load("res://game/character/appearance_applier.gd")
+	var peak := 0.0
+	var t := 0.0
+	while t < seconds:
+		Applier.tick_jiggle(atelier, 0.016)
+		peak = maxf(peak, float(creator.jiggle_sample()))
+		t += 0.016
+	return peak
+
+
+func _test_creator_confirm_hub() -> bool:
+	var Store := load("res://game/character/character_store.gd")
+	var path := str(Store.SAVE_PATH)
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var packed := load("res://game/main.tscn")
+	if packed == null:
+		return false
+	var scene: Node = packed.instantiate()
+	root.add_child(scene)
+	await process_frame
+	var flow := _flow()
+	if flow == null:
+		scene.queue_free()
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null:
+		scene.queue_free()
+		flow.hide_flow()
+		return false
+	if flow.confirm_creator():
+		push_error("Confirm without a name should fail")
+		scene.queue_free()
+		flow.hide_flow()
+		return false
+	if FileAccess.file_exists(path):
+		push_error("Failed confirm should not write a character")
+		scene.queue_free()
+		flow.hide_flow()
+		return false
+	creator.draft.display_name = "Nyx"
+	if creator.get("_name_edit"):
+		creator._name_edit.text = "Nyx"
+	creator.override_body_field("height", 1.0)
+	creator.select_outfit("outfit_starter_02")
+	if not flow.confirm_creator():
+		push_error("Named confirm should write the character")
+		scene.queue_free()
+		flow.hide_flow()
+		return false
+	if str(flow.screen_name()) != "hub":
+		push_error("Confirm should leave creator for hub; screen=%s" % flow.screen_name())
+		scene.queue_free()
+		return false
+	var record = Store.read_record(path)
+	if record == null or int(record.schema_version) != 1:
+		push_error("Confirm should write schema v1")
+		scene.queue_free()
+		return false
+	if str(record.outfit.get("id", "")) != "outfit_starter_02":
+		push_error("Saved outfit missing")
+		scene.queue_free()
+		return false
+	if record.loadout.get("hands", {}).get("main", "x") != null:
+		push_error("Saved loadout should stay empty")
+		scene.queue_free()
+		return false
+	var hub := scene.get_node_or_null("HubStub")
+	if hub == null:
+		push_error("Hub stub should spawn; not Millbrook-as-home")
+		scene.queue_free()
+		return false
+	var player := scene.get_node_or_null("Player")
+	if player == null or not player.has_method("capsule_height"):
+		push_error("Spawned player missing capsule hook")
+		scene.queue_free()
+		return false
+	var tall := float(player.capsule_height())
+	if tall <= 1.8:
+		push_error("Spawn capsule should reflect tall height; h=%s" % tall)
+		scene.queue_free()
+		return false
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	scene.queue_free()
+	await process_frame
+	return true
+
+
+func _test_creator_pad_path() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null:
+		flow.hide_flow()
+		return false
+	if creator.has_method("_ensure_input_map"):
+		creator._ensure_input_map()
+	for action in ["creator_orbit_left", "creator_orbit_right", "creator_slider_inc", "creator_slider_dec"]:
+		if not InputMap.has_action(action):
+			push_error("Missing pad action %s" % action)
+			flow.hide_flow()
+			return false
+	var confirm := creator.find_child("ConfirmButton", true, false) as Button
+	if confirm == null or confirm.disabled or confirm.focus_mode == Control.FOCUS_NONE:
+		push_error("Confirm must be pad-reachable")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("body")
+	var slider := creator.find_child("HeightSlider", true, false) as Control
+	if slider == null or slider.focus_mode == Control.FOCUS_NONE:
+		push_error("Body sliders must be focusable")
+		flow.hide_flow()
+		return false
+	if str(slider.focus_neighbor_bottom).is_empty() and str(slider.focus_next).is_empty():
+		push_error("Slider focus graph looks trapped")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("face")
+	if creator.find_child("FaceJawSlider", true, false) == null:
+		push_error("Face sliders should be in the pad graph")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
 func _test_character_record_schema_v1() -> bool:
 	var RecordScript := load("res://game/character/character_record.gd")
 	var record = RecordScript.new()
@@ -476,6 +977,9 @@ func _test_character_record_schema_v1() -> bool:
 	if not data["loadout"]["hands"].has("main"):
 		push_error("loadout must stay distinct from outfit")
 		return false
+	if str(data["body"].get("sex", "")) != "male":
+		push_error("Default body.sex should be male")
+		return false
 	var morphs: Dictionary = data["face"]["morphs"]
 	for key in ["brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"]:
 		if not morphs.has(key):
@@ -485,6 +989,18 @@ func _test_character_record_schema_v1() -> bool:
 	bad["race"] = "dragon"
 	if RecordScript.validate_dict(bad).is_empty():
 		push_error("Illegal race should fail validation")
+		return false
+	var bad_sex := data.duplicate(true)
+	bad_sex["body"] = (bad_sex["body"] as Dictionary).duplicate(true)
+	bad_sex["body"]["sex"] = "other"
+	if RecordScript.validate_dict(bad_sex).is_empty():
+		push_error("Illegal body.sex should fail validation")
+		return false
+	var bad_hair := data.duplicate(true)
+	bad_hair["face"] = (bad_hair["face"] as Dictionary).duplicate(true)
+	bad_hair["face"]["hair_id"] = "hair_from_the_void"
+	if RecordScript.validate_dict(bad_hair).is_empty():
+		push_error("Illegal catalog hair id should fail validation")
 		return false
 	return true
 

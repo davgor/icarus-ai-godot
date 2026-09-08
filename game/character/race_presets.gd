@@ -113,6 +113,10 @@ static func reset_category(record, category: String) -> void:
 			for morph_id in record.FACE_MORPH_IDS:
 				morphs[morph_id] = 0.5
 			record.face["morphs"] = morphs
+			record.face["hair_id"] = "hair_default"
+			record.face["eyes_id"] = "eyes_default"
+			record.face["hair_color"] = "#2a1a12"
+			record.face["eye_color"] = "#4a6fa5"
 			record.face["scar_id"] = null
 			record.face["marking_id"] = null
 		"features":

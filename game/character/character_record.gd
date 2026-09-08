@@ -6,6 +6,7 @@ const SCHEMA_VERSION := 1
 const RACES: PackedStringArray = [
 	"human", "elf", "dwarf", "gnome", "halfling", "demi_human"
 ]
+const SEXES: PackedStringArray = ["male", "female"]
 const CATEGORIES: PackedStringArray = ["race", "body", "face", "features", "outfit"]
 const FACE_MORPH_IDS: PackedStringArray = [
 	"brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"
@@ -37,6 +38,7 @@ func reset_to_defaults() -> void:
 		id = ""
 	race = "human"
 	body = {
+		"sex": "male",
 		"height": 0.5,
 		"weight": 0.5,
 		"muscle_fat": 0.5,
@@ -87,7 +89,8 @@ func randomize_all(rng: RandomNumberGenerator) -> void:
 	_randomize_body(rng)
 	_randomize_face(rng)
 	_randomize_features(rng)
-	outfit["id"] = "outfit_starter_01"
+	var Catalog := preload("res://game/character/appearance_catalog.gd")
+	outfit["id"] = Catalog.OUTFIT_IDS[rng.randi_range(0, Catalog.OUTFIT_IDS.size() - 1)]
 
 
 func randomize_category(category: String, rng: RandomNumberGenerator) -> void:
@@ -102,7 +105,8 @@ func randomize_category(category: String, rng: RandomNumberGenerator) -> void:
 		"features":
 			_randomize_features(rng)
 		"outfit":
-			outfit["id"] = "outfit_starter_01"
+			var Catalog := preload("res://game/character/appearance_catalog.gd")
+			outfit["id"] = Catalog.OUTFIT_IDS[rng.randi_range(0, Catalog.OUTFIT_IDS.size() - 1)]
 
 
 func to_dict() -> Dictionary:
@@ -145,6 +149,8 @@ static func validate_dict(data: Dictionary) -> PackedStringArray:
 	var body_data: Dictionary = data.get("body", {})
 	if body_data.is_empty() or not body_data.has("skin_color"):
 		errors.append("skin_color")
+	if SEXES.find(str(body_data.get("sex", ""))) < 0:
+		errors.append("body.sex")
 	for key in ["height", "weight", "muscle_fat"]:
 		if not _is_unit(body_data.get(key, -1.0)):
 			errors.append("body.%s" % key)
@@ -153,8 +159,30 @@ static func validate_dict(data: Dictionary) -> PackedStringArray:
 		if not morphs.has(morph_id):
 			errors.append("face.morphs.%s" % morph_id)
 	var outfit_data: Dictionary = data.get("outfit", {})
-	if str(outfit_data.get("id", "")).is_empty():
+	var Catalog := preload("res://game/character/appearance_catalog.gd")
+	if str(outfit_data.get("id", "")).is_empty() or Catalog.OUTFIT_IDS.find(str(outfit_data.get("id", ""))) < 0:
 		errors.append("outfit.id")
+	var face_data: Dictionary = data.get("face", {})
+	if Catalog.HAIR_IDS.find(str(face_data.get("hair_id", ""))) < 0:
+		errors.append("face.hair_id")
+	if Catalog.EYE_IDS.find(str(face_data.get("eyes_id", ""))) < 0:
+		errors.append("face.eyes_id")
+	var scar_id: Variant = face_data.get("scar_id", null)
+	if scar_id != null and str(scar_id) != "" and Catalog.SCAR_IDS.find(str(scar_id)) < 0:
+		errors.append("face.scar_id")
+	var marking_id: Variant = face_data.get("marking_id", null)
+	if marking_id != null and str(marking_id) != "" and Catalog.MARKING_IDS.find(str(marking_id)) < 0:
+		errors.append("face.marking_id")
+	var feat: Dictionary = data.get("features", {})
+	var ears_id: Variant = feat.get("ears_id", null)
+	if ears_id != null and str(ears_id) != "" and Catalog.EAR_IDS.find(str(ears_id)) < 0:
+		errors.append("features.ears_id")
+	var horns_id: Variant = feat.get("horns_id", null)
+	if horns_id != null and str(horns_id) != "" and Catalog.HORN_IDS.find(str(horns_id)) < 0:
+		errors.append("features.horns_id")
+	var tails_id: Variant = feat.get("tails_id", null)
+	if tails_id != null and str(tails_id) != "" and Catalog.TAIL_IDS.find(str(tails_id)) < 0:
+		errors.append("features.tails_id")
 	return errors
 
 
@@ -165,6 +193,8 @@ func duplicate_record():
 
 
 func _ensure_shape() -> void:
+	if SEXES.find(str(body.get("sex", ""))) < 0:
+		body["sex"] = "male"
 	if not body.has("proportions"):
 		body["proportions"] = {}
 	var props: Dictionary = body["proportions"]
@@ -197,6 +227,7 @@ func _default_morphs() -> Dictionary:
 
 
 func _randomize_body(rng: RandomNumberGenerator) -> void:
+	body["sex"] = SEXES[rng.randi_range(0, SEXES.size() - 1)]
 	body["height"] = rng.randf()
 	body["weight"] = rng.randf()
 	body["muscle_fat"] = rng.randf()
@@ -212,6 +243,19 @@ func _randomize_face(rng: RandomNumberGenerator) -> void:
 	for morph_id in FACE_MORPH_IDS:
 		morphs[morph_id] = rng.randf()
 	face["morphs"] = morphs
+	var Catalog := preload("res://game/character/appearance_catalog.gd")
+	face["hair_id"] = Catalog.HAIR_IDS[rng.randi_range(0, Catalog.HAIR_IDS.size() - 1)]
+	face["eyes_id"] = Catalog.EYE_IDS[rng.randi_range(0, Catalog.EYE_IDS.size() - 1)]
+	face["hair_color"] = Catalog.HAIR_COLORS[rng.randi_range(0, Catalog.HAIR_COLORS.size() - 1)]
+	face["eye_color"] = Catalog.EYE_COLORS[rng.randi_range(0, Catalog.EYE_COLORS.size() - 1)]
+	if rng.randf() > 0.65:
+		face["scar_id"] = Catalog.SCAR_IDS[0]
+	else:
+		face["scar_id"] = null
+	if rng.randf() > 0.7:
+		face["marking_id"] = Catalog.MARKING_IDS[0]
+	else:
+		face["marking_id"] = null
 
 
 func _randomize_features(rng: RandomNumberGenerator) -> void:

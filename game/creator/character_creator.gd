@@ -1,8 +1,9 @@
 extends Control
 
-## Dedicated character atelier (CC-1 + CC-2 race select). Replaces the OS-5 stub body.
+## Dedicated character atelier. Pad: D-pad/left stick navigate, LB/RB nudge sliders, right stick orbit.
 
 signal back_pressed
+signal confirm_pressed
 
 const CharacterRecordScript := preload("res://game/character/character_record.gd")
 const AtelierPacked := preload("res://game/creator/atelier_stage.tscn")
@@ -23,14 +24,15 @@ const SLIDER_THUMB := "res://game/art/ui/creator_slider_thumb.png"
 const BTN_CHROME := "res://game/art/ui/btn_primary.png"
 
 const RacePresetsScript := preload("res://game/character/race_presets.gd")
+const CatalogScript := preload("res://game/character/appearance_catalog.gd")
 
 const HEADLINE := "Character Creation"
-const BODY_COPY := "Atelier creator — race, body, face, and outfit. Not the town. Confirm writes a character later."
+const BODY_COPY := "Atelier creator — race, body, face, features, and outfit. Clothes are cosmetics, not loadout. Not the town. Confirm writes schema v1 and opens the hub stub."
 const CATEGORY_COPY := {
 	"race": "Race is a preset and a story tag. Pick a card to snap proportions; every morph stays overrideable.",
-	"body": "Height, weight, muscle ↔ fat, and skin. Weight is frame mass, not fatness.",
-	"face": "Named face morphs, hair, eyes, scars, and markings land here.",
-	"features": "Optional ears, horns, and tails — including a lizard tail. Unlocked from the start.",
+	"body": "Male or Female underwear base, then height, weight (frame mass), muscle ↔ fat, proportions, and skin. Weight is not fatness.",
+	"face": "Named face morphs, hair, eyes, scars, and markings. All starter options are unlocked.",
+	"features": "Optional ears, horns, and tails — including a lizard tail. Unequip any slot. Unlocked from the start.",
 	"outfit": "Starting clothes are cosmetics only. Loadout (weapons/armor) is not required here.",
 }
 
@@ -54,6 +56,20 @@ var _tab_buttons: Dictionary = {}
 var _light_buttons: Dictionary = {}
 var _race_buttons: Dictionary = {}
 var _race_grid: GridContainer
+var _sex_row: HBoxContainer
+var _sex_label: Label
+var _sex_buttons: Dictionary = {}
+var _body_sliders: Dictionary = {}
+var _skin_buttons: Dictionary = {}
+var _slider_col: VBoxContainer
+var _skin_label: Label
+var _skin_row: HBoxContainer
+var _face_box: ScrollContainer
+var _features_box: ScrollContainer
+var _outfit_box: ScrollContainer
+var _part_buttons: Dictionary = {}
+var _face_sliders: Dictionary = {}
+var _color_buttons: Dictionary = {}
 var _panel_body: Label
 var _reset_all: Button
 var _reset_cat: Button
@@ -74,11 +90,18 @@ func _ready() -> void:
 	if played_directly:
 		play_enter()
 	_sync_stage_active()
+	set_process(true)
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_VISIBILITY_CHANGED:
 		_sync_stage_active()
+
+
+func _process(_delta: float) -> void:
+	if not visible:
+		return
+	_nudge_focused_slider()
 
 
 func fill_parent() -> void:
@@ -144,6 +167,15 @@ func race_art_ready() -> bool:
 	)
 
 
+func body_kit_art_ready() -> bool:
+	return (
+		ResourceLoader.exists("res://game/art/characters/body_base_male.png")
+		and ResourceLoader.exists("res://game/art/characters/body_base_female.png")
+		and ResourceLoader.exists("res://game/art/characters/body_base_male.glb")
+		and ResourceLoader.exists("res://game/art/characters/body_base_female.glb")
+	)
+
+
 func selected_race() -> String:
 	return str(draft.race)
 
@@ -151,19 +183,194 @@ func selected_race() -> String:
 func select_race(race_id: String) -> void:
 	draft.apply_race_preset(race_id)
 	refresh_preview()
-	_sync_race_buttons()
+	_sync_all()
+
+
+func selected_sex() -> String:
+	return str(draft.body.get("sex", "male"))
+
+
+func select_sex(sex_id: String) -> void:
+	if CharacterRecordScript.SEXES.find(sex_id) < 0:
+		return
+	draft.body["sex"] = sex_id
+	refresh_preview()
+	_sync_all()
+
+
+func preview_kit_id() -> String:
+	if _atelier and _atelier.has_method("current_kit_id"):
+		return str(_atelier.current_kit_id())
+	return ""
 
 
 func override_body_field(key: String, value: float) -> void:
+	if key == "sex":
+		return
 	draft.body[key] = clampf(value, 0.0, 1.0)
 	refresh_preview()
+	_sync_body_sliders()
+
+
+func override_proportion(key: String, value: float) -> void:
+	if CharacterRecordScript.PROPORTION_IDS.find(key) < 0:
+		return
+	var props: Dictionary = draft.body.get("proportions", {})
+	props[key] = clampf(value, 0.0, 1.0)
+	draft.body["proportions"] = props
+	refresh_preview()
+	_sync_body_sliders()
+
+
+func select_skin(hex: String) -> void:
+	if CharacterRecordScript.SKIN_SWATCHES.find(hex) < 0:
+		return
+	draft.body["skin_color"] = hex
+	refresh_preview()
+	_sync_skin_buttons()
+
+
+func override_face_morph(morph_id: String, value: float) -> void:
+	if CharacterRecordScript.FACE_MORPH_IDS.find(morph_id) < 0:
+		return
+	var morphs: Dictionary = draft.face.get("morphs", {})
+	morphs[morph_id] = clampf(value, 0.0, 1.0)
+	draft.face["morphs"] = morphs
+	refresh_preview()
+	_sync_face_sliders()
+
+
+func select_hair(part_id: String) -> void:
+	draft.face["hair_id"] = CatalogScript.legal_or_default(part_id, CatalogScript.HAIR_IDS, "hair_default")
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func select_eyes(part_id: String) -> void:
+	draft.face["eyes_id"] = CatalogScript.legal_or_default(part_id, CatalogScript.EYE_IDS, "eyes_default")
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func select_hair_color(hex: String) -> void:
+	if CatalogScript.HAIR_COLORS.find(hex) < 0:
+		return
+	draft.face["hair_color"] = hex
+	refresh_preview()
+	_sync_color_buttons()
+
+
+func select_eye_color(hex: String) -> void:
+	if CatalogScript.EYE_COLORS.find(hex) < 0:
+		return
+	draft.face["eye_color"] = hex
+	refresh_preview()
+	_sync_color_buttons()
+
+
+func select_scar(part_id: String) -> void:
+	if part_id.is_empty():
+		draft.face["scar_id"] = null
+	else:
+		draft.face["scar_id"] = part_id
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func select_marking(part_id: String) -> void:
+	if part_id.is_empty():
+		draft.face["marking_id"] = null
+	else:
+		draft.face["marking_id"] = part_id
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func select_feature(slot: String, part_id: String) -> void:
+	var value: Variant = null
+	if not part_id.is_empty():
+		value = part_id
+	match slot:
+		"ears_id":
+			draft.features["ears_id"] = value
+		"horns_id":
+			draft.features["horns_id"] = value
+		"tails_id":
+			draft.features["tails_id"] = value
+		_:
+			return
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func select_outfit(part_id: String) -> void:
+	draft.outfit["id"] = CatalogScript.legal_or_default(part_id, CatalogScript.OUTFIT_IDS, "outfit_starter_01")
+	refresh_preview()
+	_sync_part_buttons()
+
+
+func apply_record_to_preview(record) -> bool:
+	if record == null:
+		return false
+	if not CharacterRecordScript.validate_dict(record.to_dict()).is_empty():
+		return false
+	draft = record.duplicate_record()
+	refresh_preview()
+	_sync_all()
+	return true
+
+
+func try_confirm() -> bool:
+	draft.display_name = str(draft.display_name).strip_edges()
+	if _name_edit:
+		_name_edit.text = draft.display_name
+	if draft.display_name.is_empty():
+		if _name_edit:
+			_name_edit.grab_focus()
+		return false
+	if not CharacterRecordScript.validate_dict(draft.to_dict()).is_empty():
+		return false
+	confirm_pressed.emit()
+	return true
+
+
+func preview_part_id(node_name: String) -> String:
+	if _atelier == null:
+		return ""
+	var part := _atelier.get_node_or_null("Preview/%s" % node_name)
+	if part == null:
+		return ""
+	return str(part.get_meta("part_id", ""))
+
+
+func jiggle_amplitude() -> float:
+	if _atelier and _atelier.has_method("jiggle_amplitude"):
+		return float(_atelier.jiggle_amplitude())
+	return 0.5
+
+
+func jiggle_sample() -> float:
+	if _atelier and _atelier.has_method("jiggle_sample"):
+		return float(_atelier.jiggle_sample())
+	return 0.0
+
+
+func preview_kit_scale() -> Vector3:
+	if _atelier == null:
+		return Vector3.ONE
+	var kit := _atelier.get_node_or_null("Preview/BodyKit") as Node3D
+	if kit:
+		return kit.scale
+	return Vector3.ONE
 
 
 func grab_default_focus() -> void:
-	var tab := _tab_buttons.get("race") as Control
-	if tab:
+	var tab := _tab_buttons.get(_category) as Control
+	if tab == null or not tab.is_visible_in_tree():
+		tab = _tab_buttons.get("race") as Control
+	if tab and tab.is_visible_in_tree() and tab.focus_mode != Control.FOCUS_NONE:
 		tab.call_deferred("grab_focus")
-	elif _back_button:
+	elif _back_button and _back_button.is_visible_in_tree():
 		_back_button.call_deferred("grab_focus")
 
 
@@ -214,27 +421,57 @@ func set_category(category: String) -> void:
 		_panel_body.text = str(CATEGORY_COPY.get(category, ""))
 	if _race_grid:
 		_race_grid.visible = category == "race"
+	if _sex_row:
+		_sex_row.visible = category == "body"
+	if _sex_label:
+		_sex_label.visible = category == "body"
+	if _slider_col:
+		_slider_col.visible = category == "body"
+	if _skin_row:
+		_skin_row.visible = category == "body"
+	if _skin_label:
+		_skin_label.visible = category == "body"
+	if _face_box:
+		_face_box.visible = category == "face"
+	if _features_box:
+		_features_box.visible = category == "features"
+	if _outfit_box:
+		_outfit_box.visible = category == "outfit"
 	for id in _tab_buttons:
 		var button := _tab_buttons[id] as Button
 		button.button_pressed = id == category
 	_sync_action_labels()
+	_sync_all()
+	_wire_focus()
+
+
+func _sync_all() -> void:
 	_sync_race_buttons()
+	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
+	_sync_face_sliders()
+	_sync_part_buttons()
+	_sync_color_buttons()
+	_sync_light_buttons()
 
 
 func reset_all() -> void:
 	var kept_name: String = str(draft.display_name)
 	var kept_race: String = str(draft.race)
+	var kept_sex: String = str(draft.body.get("sex", "male"))
 	draft.reset_to_defaults()
 	draft.apply_race_preset(kept_race)
+	draft.body["sex"] = kept_sex
 	draft.display_name = kept_name
 	refresh_preview()
-	_sync_race_buttons()
+	_sync_all()
 
 
 func reset_category() -> void:
 	draft.reset_category(_category)
 	refresh_preview()
-	_sync_race_buttons()
+	_sync_all()
 
 
 func randomize_all() -> void:
@@ -242,13 +479,13 @@ func randomize_all() -> void:
 	draft.randomize_all(_rng)
 	draft.display_name = kept_name
 	refresh_preview()
-	_sync_race_buttons()
+	_sync_all()
 
 
 func randomize_category() -> void:
 	draft.randomize_category(_category, _rng)
 	refresh_preview()
-	_sync_race_buttons()
+	_sync_all()
 
 
 func refresh_preview() -> void:
@@ -260,7 +497,7 @@ func discard_draft() -> void:
 	draft = CharacterRecordScript.new()
 	if _name_edit:
 		_name_edit.text = ""
-	_sync_race_buttons()
+	_sync_all()
 
 
 func _sync_stage_active() -> void:
@@ -357,9 +594,9 @@ func _build_chrome() -> void:
 	panel.name = "CategoryPanel"
 	panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
 	panel.offset_left = -468
-	panel.offset_top = -268
+	panel.offset_top = -340
 	panel.offset_right = -20
-	panel.offset_bottom = 132
+	panel.offset_bottom = 220
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.03, 0.04, 0.08, 0.72)
@@ -412,6 +649,108 @@ func _build_chrome() -> void:
 		_race_grid.add_child(card)
 		_race_buttons[race_id] = card
 		_focusables.append(card)
+
+	_sex_label = Label.new()
+	_sex_label.name = "SexLabel"
+	_sex_label.text = "Underwear base"
+	_sex_label.add_theme_font_size_override("font_size", 13)
+	_sex_label.add_theme_color_override("font_color", Color(0.72, 0.8, 0.9, 0.9))
+	panel_col.add_child(_sex_label)
+	_sex_row = HBoxContainer.new()
+	_sex_row.name = "SexRow"
+	_sex_row.add_theme_constant_override("separation", 8)
+	panel_col.add_child(_sex_row)
+	var sex_group := ButtonGroup.new()
+	sex_group.allow_unpress = false
+	for sex_id in CharacterRecordScript.SEXES:
+		var button := Button.new()
+		button.name = "%sSex" % sex_id.capitalize()
+		button.text = sex_id.capitalize()
+		button.toggle_mode = true
+		button.button_group = sex_group
+		button.focus_mode = Control.FOCUS_ALL
+		button.custom_minimum_size = Vector2(188, 44)
+		_apply_button_theme(button)
+		button.pressed.connect(select_sex.bind(sex_id))
+		_sex_row.add_child(button)
+		_sex_buttons[sex_id] = button
+		_focusables.append(button)
+
+	_slider_col = VBoxContainer.new()
+	_slider_col.name = "BodySliders"
+	_slider_col.add_theme_constant_override("separation", 6)
+	panel_col.add_child(_slider_col)
+	_add_body_slider("height", "Height")
+	_add_body_slider("weight", "Weight (frame)")
+	_add_body_slider("muscle_fat", "Muscle ↔ Fat")
+	for region in CharacterRecordScript.PROPORTION_IDS:
+		_add_body_slider("prop_%s" % region, "%s" % region.capitalize())
+
+	_skin_label = Label.new()
+	_skin_label.name = "SkinLabel"
+	_skin_label.text = "Skin"
+	_skin_label.add_theme_font_size_override("font_size", 13)
+	_skin_label.add_theme_color_override("font_color", Color(0.72, 0.8, 0.9, 0.9))
+	panel_col.add_child(_skin_label)
+	_skin_row = HBoxContainer.new()
+	_skin_row.name = "SkinRow"
+	_skin_row.add_theme_constant_override("separation", 6)
+	panel_col.add_child(_skin_row)
+	var swatch_i := 0
+	for hex in CharacterRecordScript.SKIN_SWATCHES:
+		var swatch := Button.new()
+		swatch.name = "Skin%d" % swatch_i
+		swatch.focus_mode = Control.FOCUS_ALL
+		swatch.custom_minimum_size = Vector2(36, 36)
+		swatch.tooltip_text = hex
+		var swatch_style := StyleBoxFlat.new()
+		swatch_style.bg_color = Color(hex)
+		swatch_style.set_corner_radius_all(4)
+		swatch_style.set_border_width_all(2)
+		swatch_style.border_color = Color(0.85, 0.9, 1.0, 0.35)
+		swatch.add_theme_stylebox_override("normal", swatch_style)
+		var hover := swatch_style.duplicate() as StyleBoxFlat
+		hover.border_color = Color(0.95, 0.82, 0.42, 1.0)
+		swatch.add_theme_stylebox_override("hover", hover)
+		swatch.add_theme_stylebox_override("pressed", hover)
+		swatch.add_theme_stylebox_override("focus", hover)
+		swatch.pressed.connect(select_skin.bind(hex))
+		_skin_row.add_child(swatch)
+		_skin_buttons[hex] = swatch
+		_focusables.append(swatch)
+		swatch_i += 1
+
+	_face_box = _make_category_box("FaceBox")
+	panel_col.add_child(_face_box)
+	var face_inner := _face_box.get_node("Inner") as VBoxContainer
+	for morph_id in CharacterRecordScript.FACE_MORPH_IDS:
+		_add_face_slider(face_inner, morph_id)
+	_add_section_label(face_inner, "Hair")
+	_add_part_row(face_inner, "hair", CatalogScript.HAIR_IDS, false, select_hair)
+	_add_color_row(face_inner, "HairColor", CatalogScript.HAIR_COLORS, select_hair_color)
+	_add_section_label(face_inner, "Eyes")
+	_add_part_row(face_inner, "eyes", CatalogScript.EYE_IDS, false, select_eyes)
+	_add_color_row(face_inner, "EyeColor", CatalogScript.EYE_COLORS, select_eye_color)
+	_add_section_label(face_inner, "Scar")
+	_add_part_row(face_inner, "scar", CatalogScript.SCAR_IDS, true, select_scar)
+	_add_section_label(face_inner, "Marking")
+	_add_part_row(face_inner, "marking", CatalogScript.MARKING_IDS, true, select_marking)
+
+	_features_box = _make_category_box("FeaturesBox")
+	panel_col.add_child(_features_box)
+	var feat_inner := _features_box.get_node("Inner") as VBoxContainer
+	_add_section_label(feat_inner, "Ears")
+	_add_part_row(feat_inner, "ears", CatalogScript.EAR_IDS, true, select_feature.bind("ears_id"))
+	_add_section_label(feat_inner, "Horns")
+	_add_part_row(feat_inner, "horns", CatalogScript.HORN_IDS, true, select_feature.bind("horns_id"))
+	_add_section_label(feat_inner, "Tails")
+	_add_part_row(feat_inner, "tails", CatalogScript.TAIL_IDS, true, select_feature.bind("tails_id"))
+
+	_outfit_box = _make_category_box("OutfitBox")
+	panel_col.add_child(_outfit_box)
+	var outfit_inner := _outfit_box.get_node("Inner") as VBoxContainer
+	_add_section_label(outfit_inner, "Clothes — not weapons or armor")
+	_add_part_row(outfit_inner, "outfit", CatalogScript.OUTFIT_IDS, false, select_outfit)
 
 	var light_row := HBoxContainer.new()
 	light_row.name = "Lighting"
@@ -527,7 +866,7 @@ func _build_chrome() -> void:
 	_confirm_button = Button.new()
 	_confirm_button.name = "ConfirmButton"
 	_confirm_button.text = "Confirm"
-	_confirm_button.disabled = true
+	_confirm_button.disabled = false
 	_confirm_button.focus_mode = Control.FOCUS_ALL
 	_confirm_button.custom_minimum_size = Vector2(180, 44)
 	_confirm_button.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -535,8 +874,9 @@ func _build_chrome() -> void:
 	_confirm_button.offset_top = -44
 	_confirm_button.offset_right = 0
 	_confirm_button.offset_bottom = 0
-	_confirm_button.tooltip_text = "Confirm writes the character in a later creator step."
+	_confirm_button.tooltip_text = "Writes schema v1 and opens the hub stub. Name is required."
 	_apply_button_theme(_confirm_button)
+	_confirm_button.pressed.connect(try_confirm)
 	footer.add_child(_confirm_button)
 	_focusables.append(_confirm_button)
 
@@ -552,6 +892,196 @@ func _build_wipe() -> void:
 	if ResourceLoader.exists(WIPE):
 		_wipe.texture = load(WIPE)
 	add_child(_wipe)
+
+
+func _make_category_box(node_name: String) -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.name = node_name
+	scroll.visible = false
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.custom_minimum_size = Vector2(0, 268)
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	var inner := VBoxContainer.new()
+	inner.name = "Inner"
+	inner.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inner.add_theme_constant_override("separation", 6)
+	scroll.add_child(inner)
+	return scroll
+
+
+func _add_section_label(parent: Control, text: String) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.72, 0.8, 0.9, 0.9))
+	parent.add_child(label)
+
+
+func _title_id(value: String) -> String:
+	var out := ""
+	for bit in value.split("_"):
+		out += bit.capitalize()
+	return out
+
+
+func _add_face_slider(parent: Control, morph_id: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = "Face%sRow" % _title_id(morph_id)
+	row.add_theme_constant_override("separation", 8)
+	var label := Label.new()
+	label.text = morph_id.capitalize().replace("_", " ")
+	label.custom_minimum_size = Vector2(96, 0)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.96, 0.95))
+	row.add_child(label)
+	var slider := HSlider.new()
+	slider.name = "Face%sSlider" % _title_id(morph_id)
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.01
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.custom_minimum_size = Vector2(0, 22)
+	slider.focus_mode = Control.FOCUS_ALL
+	slider.value_changed.connect(func(value: float) -> void:
+		override_face_morph(morph_id, value)
+	)
+	row.add_child(slider)
+	parent.add_child(row)
+	_face_sliders[morph_id] = slider
+	_focusables.append(slider)
+
+
+func _add_part_row(parent: Control, group: String, ids: PackedStringArray, include_none: bool, on_pick: Callable) -> void:
+	var row := HBoxContainer.new()
+	row.name = "%sRow" % _title_id(group)
+	row.add_theme_constant_override("separation", 6)
+	parent.add_child(row)
+	if include_none:
+		_add_choice_button(row, group, "", "None", on_pick)
+	for part_id in ids:
+		_add_choice_button(row, group, part_id, CatalogScript.label_for(part_id), on_pick)
+
+
+func _add_choice_button(row: Control, group: String, part_id: String, label: String, on_pick: Callable) -> void:
+	var button := Button.new()
+	if part_id.is_empty():
+		button.name = "%sNone" % _title_id(group)
+	else:
+		button.name = _title_id(part_id)
+	button.text = label
+	button.toggle_mode = true
+	button.focus_mode = Control.FOCUS_ALL
+	button.custom_minimum_size = Vector2(86, 40)
+	button.clip_text = true
+	var icon_path := CatalogScript.icon_path(part_id)
+	if not part_id.is_empty() and ResourceLoader.exists(icon_path):
+		var tex := load(icon_path) as Texture2D
+		if tex:
+			button.icon = tex
+			button.expand_icon = true
+			button.add_theme_constant_override("icon_max_width", 28)
+	_apply_button_theme(button)
+	button.add_theme_font_size_override("font_size", 12)
+	button.pressed.connect(func() -> void:
+		on_pick.call(part_id)
+	)
+	row.add_child(button)
+	_part_buttons["%s:%s" % [group, part_id]] = button
+	_focusables.append(button)
+
+
+func _add_color_row(parent: Control, group: String, colors: PackedStringArray, on_pick: Callable) -> void:
+	var row := HBoxContainer.new()
+	row.name = "%sRow" % group
+	row.add_theme_constant_override("separation", 4)
+	parent.add_child(row)
+	var i := 0
+	for hex in colors:
+		var swatch := Button.new()
+		swatch.name = "%s%d" % [group, i]
+		swatch.focus_mode = Control.FOCUS_ALL
+		swatch.custom_minimum_size = Vector2(28, 28)
+		swatch.tooltip_text = hex
+		var box := StyleBoxFlat.new()
+		box.bg_color = Color(hex)
+		box.set_corner_radius_all(4)
+		box.set_border_width_all(2)
+		box.border_color = Color(0.85, 0.9, 1.0, 0.35)
+		swatch.add_theme_stylebox_override("normal", box)
+		var hover := box.duplicate() as StyleBoxFlat
+		hover.border_color = Color(0.95, 0.82, 0.42, 1.0)
+		swatch.add_theme_stylebox_override("hover", hover)
+		swatch.add_theme_stylebox_override("pressed", hover)
+		swatch.add_theme_stylebox_override("focus", hover)
+		swatch.pressed.connect(on_pick.bind(hex))
+		row.add_child(swatch)
+		_color_buttons["%s:%s" % [group, hex]] = swatch
+		_focusables.append(swatch)
+		i += 1
+
+
+func _sync_face_sliders() -> void:
+	var morphs: Dictionary = draft.face.get("morphs", {})
+	for morph_id in _face_sliders:
+		var slider := _face_sliders[morph_id] as HSlider
+		if slider:
+			slider.set_value_no_signal(float(morphs.get(morph_id, 0.5)))
+
+
+func _sync_part_buttons() -> void:
+	var selected := {
+		"hair": str(draft.face.get("hair_id", "")),
+		"eyes": str(draft.face.get("eyes_id", "")),
+		"scar": "" if draft.face.get("scar_id", null) == null else str(draft.face.get("scar_id")),
+		"marking": "" if draft.face.get("marking_id", null) == null else str(draft.face.get("marking_id")),
+		"ears": "" if draft.features.get("ears_id", null) == null else str(draft.features.get("ears_id")),
+		"horns": "" if draft.features.get("horns_id", null) == null else str(draft.features.get("horns_id")),
+		"tails": "" if draft.features.get("tails_id", null) == null else str(draft.features.get("tails_id")),
+		"outfit": str(draft.outfit.get("id", "")),
+	}
+	for key in _part_buttons:
+		var button := _part_buttons[key] as Button
+		var parts := str(key).split(":", false, 1)
+		if parts.size() < 2:
+			continue
+		var group := parts[0]
+		var part_id := parts[1]
+		button.button_pressed = str(selected.get(group, "")) == part_id
+
+
+func _sync_color_buttons() -> void:
+	var selected := {
+		"HairColor": str(draft.face.get("hair_color", "")),
+		"EyeColor": str(draft.face.get("eye_color", "")),
+	}
+	for key in _color_buttons:
+		var button := _color_buttons[key] as Button
+		var parts := str(key).split(":", false, 1)
+		if parts.size() < 2:
+			continue
+		var box := button.get_theme_stylebox("normal") as StyleBoxFlat
+		if box:
+			box.border_color = (
+				Color(0.95, 0.82, 0.42, 1.0)
+				if str(selected.get(parts[0], "")) == parts[1]
+				else Color(0.85, 0.9, 1.0, 0.35)
+			)
+
+
+func _nudge_focused_slider() -> void:
+	var focused := get_viewport().gui_get_focus_owner() if get_viewport() else null
+	if not (focused is HSlider):
+		return
+	var delta := 0.0
+	if Input.is_action_just_pressed("creator_slider_inc"):
+		delta = 0.05
+	elif Input.is_action_just_pressed("creator_slider_dec"):
+		delta = -0.05
+	if is_zero_approx(delta):
+		return
+	var slider := focused as HSlider
+	slider.value = clampf(slider.value + delta, slider.min_value, slider.max_value)
 
 
 func _make_tool_button(node_name: String, label: String, icon_path: String) -> Button:
@@ -590,6 +1120,73 @@ func _sync_race_buttons() -> void:
 		button.button_pressed = id == current
 
 
+func _sync_sex_buttons() -> void:
+	var current := selected_sex()
+	for id in _sex_buttons:
+		var button := _sex_buttons[id] as Button
+		button.button_pressed = id == current
+
+
+func _add_body_slider(key: String, label_text: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = "%sRow" % key
+	row.add_theme_constant_override("separation", 8)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size = Vector2(118, 0)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.96, 0.95))
+	row.add_child(label)
+	var node_name := "MuscleFatSlider" if key == "muscle_fat" else "%sSlider" % key.trim_prefix("prop_").capitalize()
+	var slider := HSlider.new()
+	slider.name = node_name
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.01
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size = Vector2(0, 22)
+	slider.focus_mode = Control.FOCUS_ALL
+	var thumb := _load_knockout_scaled(SLIDER_THUMB, 16, 16)
+	if thumb:
+		slider.add_theme_icon_override("grabber", thumb)
+		slider.add_theme_icon_override("grabber_highlight", thumb)
+	slider.value_changed.connect(func(value: float) -> void:
+		if key.begins_with("prop_"):
+			override_proportion(key.substr(5), value)
+		else:
+			override_body_field(key, value)
+	)
+	row.add_child(slider)
+	_slider_col.add_child(row)
+	_body_sliders[key] = slider
+	_focusables.append(slider)
+
+
+func _sync_body_sliders() -> void:
+	for key in _body_sliders:
+		var slider := _body_sliders[key] as HSlider
+		if slider == null:
+			continue
+		var value := 0.5
+		if key.begins_with("prop_"):
+			var props: Dictionary = draft.body.get("proportions", {})
+			value = float(props.get(key.substr(5), 0.5))
+		else:
+			value = float(draft.body.get(key, 0.5))
+		slider.set_value_no_signal(value)
+
+
+func _sync_skin_buttons() -> void:
+	var current := str(draft.body.get("skin_color", ""))
+	for hex in _skin_buttons:
+		var button := _skin_buttons[hex] as Button
+		var box := button.get_theme_stylebox("normal") as StyleBoxFlat
+		if box:
+			box.border_color = Color(0.95, 0.82, 0.42, 1.0) if hex == current else Color(0.85, 0.9, 1.0, 0.35)
+
+
 func _on_stage_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mouse := event as InputEventMouseButton
@@ -601,18 +1198,29 @@ func _on_stage_gui_input(event: InputEvent) -> void:
 
 
 func _wire_focus() -> void:
-	if _focusables.is_empty():
+	var live: Array[Control] = []
+	for control in _focusables:
+		if control == null or not is_instance_valid(control):
+			continue
+		if control.focus_mode == Control.FOCUS_NONE:
+			continue
+		if not control.is_visible_in_tree():
+			continue
+		live.append(control)
+	if live.is_empty():
 		return
-	for i in _focusables.size():
-		var control := _focusables[i]
-		var prev := _focusables[i - 1 if i > 0 else _focusables.size() - 1]
-		var next := _focusables[i + 1 if i + 1 < _focusables.size() else 0]
+	for i in live.size():
+		var control := live[i]
+		var prev := live[i - 1 if i > 0 else live.size() - 1]
+		var next := live[i + 1 if i + 1 < live.size() else 0]
 		control.focus_neighbor_top = control.get_path_to(prev)
 		control.focus_neighbor_bottom = control.get_path_to(next)
 		control.focus_previous = control.get_path_to(prev)
 		control.focus_next = control.get_path_to(next)
-		control.focus_neighbor_left = control.get_path_to(control)
-		control.focus_neighbor_right = control.get_path_to(control)
+		var left := live[i - 1 if i > 0 else live.size() - 1]
+		var right := live[i + 1 if i + 1 < live.size() else 0]
+		control.focus_neighbor_left = control.get_path_to(left)
+		control.focus_neighbor_right = control.get_path_to(right)
 
 
 func _ensure_styles() -> void:
@@ -680,6 +1288,10 @@ func _ensure_input_map() -> void:
 	_ensure_joy_axis("creator_orbit_down", JOY_AXIS_RIGHT_Y, 1.0)
 	_ensure_key("creator_orbit_left", KEY_Q)
 	_ensure_key("creator_orbit_right", KEY_E)
+	_ensure_joy_button("creator_slider_dec", JOY_BUTTON_LEFT_SHOULDER)
+	_ensure_joy_button("creator_slider_inc", JOY_BUTTON_RIGHT_SHOULDER)
+	_ensure_key("creator_slider_dec", KEY_BRACKETLEFT)
+	_ensure_key("creator_slider_inc", KEY_BRACKETRIGHT)
 
 
 func _ensure_key(action: String, keycode: Key) -> void:
@@ -690,6 +1302,17 @@ func _ensure_key(action: String, keycode: Key) -> void:
 			return
 	var ev := InputEventKey.new()
 	ev.keycode = keycode
+	InputMap.action_add_event(action, ev)
+
+
+func _ensure_joy_button(action: String, button: JoyButton) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	for event in InputMap.action_get_events(action):
+		if event is InputEventJoypadButton and (event as InputEventJoypadButton).button_index == button:
+			return
+	var ev := InputEventJoypadButton.new()
+	ev.button_index = button
 	InputMap.action_add_event(action, ev)
 
 

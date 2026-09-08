@@ -5,8 +5,6 @@ extends Node3D
 signal lighting_changed(preset: String)
 
 const ROOM_MESH := "res://game/art/characters/creator_atelier_chamber.glb"
-const BODY_MESH := "res://game/art/characters/body_base_underwear.glb"
-const BODY_MESH_FALLBACK := "res://game/art/characters/body_base_human.glb"
 const BACKDROP := "res://game/art/characters/creator_atelier_bg.png"
 const PRESETS: PackedStringArray = ["full", "dawn", "dusk"]
 const ORBIT_SENS := 0.006
@@ -39,6 +37,7 @@ var _pitch := 0.08
 var _zoom := DEFAULT_ZOOM
 var _orbiting := false
 var _cached_dais_y := -1.0
+var _turntable := 0.0
 
 
 func _ready() -> void:
@@ -56,6 +55,11 @@ func _process(delta: float) -> void:
 	)
 	if pad.length() > 0.12:
 		orbit(pad.x * PAD_ORBIT_SPEED * delta, pad.y * PAD_ORBIT_SPEED * delta)
+	_turntable += delta * 0.18
+	var preview := get_node_or_null("Preview") as Node3D
+	if preview:
+		preview.rotation.y = sin(_turntable) * 0.12
+	AppearanceApplierScript.tick_jiggle(self, delta)
 
 
 func handle_stage_input(event: InputEvent) -> void:
@@ -87,6 +91,20 @@ func apply_record(record) -> void:
 	_ensure_stage()
 	AppearanceApplierScript.apply(record, self)
 	_plant_preview_on_dais()
+
+
+func current_kit_id() -> String:
+	var kit := get_node_or_null("Preview/BodyKit") as Node3D
+	if kit:
+		return str(kit.get_meta("kit_id", ""))
+	return ""
+
+
+func prepare_body_kit(kit: Node3D) -> void:
+	if kit == null:
+		return
+	_hide_kit_helpers(kit)
+	_fit_preview_body(kit)
 
 
 func apply_lighting(preset: String) -> void:
@@ -136,8 +154,19 @@ func cycle_lighting() -> String:
 	return lighting_preset
 
 
-func set_jiggle_from_muscle_fat(_amount: float) -> void:
-	pass
+func set_jiggle_from_muscle_fat(amount: float) -> void:
+	var amplitude := clampf(amount, 0.0, 1.0)
+	set_meta("jiggle_amplitude", amplitude)
+
+
+func jiggle_amplitude() -> float:
+	if has_meta("jiggle_amplitude"):
+		return float(get_meta("jiggle_amplitude"))
+	return 0.5
+
+
+func jiggle_sample() -> float:
+	return AppearanceApplierScript.jiggle_sample(self)
 
 
 func _ensure_stage() -> void:
@@ -241,17 +270,7 @@ func _place_preview_body() -> void:
 		preview = Node3D.new()
 		preview.name = "Preview"
 		add_child(preview)
-	var kit := preview.get_node_or_null("BodyKit") as Node3D
-	var mesh_path := BODY_MESH if ResourceLoader.exists(BODY_MESH) else BODY_MESH_FALLBACK
-	if kit == null and ResourceLoader.exists(mesh_path):
-		var packed := load(mesh_path) as PackedScene
-		if packed:
-			kit = packed.instantiate() as Node3D
-			if kit:
-				kit.name = "BodyKit"
-				preview.add_child(kit)
-				_hide_kit_helpers(kit)
-				_fit_preview_body(kit)
+	var kit := AppearanceApplierScript.ensure_body_kit(self, "male")
 	if kit:
 		if _mannequin:
 			_mannequin.visible = false

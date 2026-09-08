@@ -14,8 +14,11 @@ const PromptBarScript := preload("res://game/flow/prompt_bar.gd")
 
 signal world_requested
 signal quit_requested
+signal hub_requested
 
-enum Screen { NONE, BOOT, TITLE, CREATOR, SETTINGS, LOAD }
+enum Screen { NONE, BOOT, TITLE, CREATOR, SETTINGS, LOAD, HUB }
+
+const CharacterStoreScript := preload("res://game/character/character_store.gd")
 
 const ACTION_LABELS: PackedStringArray = ["New", "Load", "Settings", "Quit"]
 const UI_MENU_ACTIONS: PackedStringArray = [
@@ -51,6 +54,7 @@ var _btn_focus: StyleBox
 var _prompt_bar: Control
 var _focus_ring: TextureRect
 var _focus_connected := false
+var last_character_path: String = ""
 
 
 func _ready() -> void:
@@ -60,6 +64,11 @@ func _ready() -> void:
 	if not Input.joy_connection_changed.is_connected(_on_joy_connection_changed):
 		Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	if DisplayServer.get_name() == "headless":
+		visible = false
+		current_screen = Screen.NONE
+		return
+	var played := get_tree().current_scene
+	if played and str(played.scene_file_path) == "res://game/creator/character_creator.tscn":
 		visible = false
 		current_screen = Screen.NONE
 		return
@@ -119,6 +128,8 @@ func screen_name() -> String:
 			return "settings"
 		Screen.LOAD:
 			return "load"
+		Screen.HUB:
+			return "hub"
 		_:
 			return "none"
 
@@ -268,6 +279,19 @@ func creator_selected_race() -> String:
 	return ""
 
 
+func creator_select_sex(sex_id: String) -> void:
+	ensure_ui()
+	if _creator and _creator.has_method("select_sex"):
+		_creator.select_sex(sex_id)
+
+
+func creator_selected_sex() -> String:
+	ensure_ui()
+	if _creator and _creator.has_method("selected_sex"):
+		return str(_creator.selected_sex())
+	return ""
+
+
 func creator_override_body_field(key: String, value: float) -> void:
 	ensure_ui()
 	if _creator and _creator.has_method("override_body_field"):
@@ -310,6 +334,40 @@ func creator_uses_stub() -> bool:
 	if _creator and _creator.has_method("uses_stub_backdrop"):
 		return bool(_creator.uses_stub_backdrop())
 	return true
+
+
+func confirm_creator() -> bool:
+	ensure_ui()
+	if _creator == null or not _creator.has_method("try_confirm"):
+		return false
+	return bool(_creator.try_confirm())
+
+
+func show_hub() -> void:
+	ensure_ui()
+	current_screen = Screen.HUB
+	visible = false
+	if _boot:
+		_boot.visible = false
+	if _title:
+		_title.visible = false
+	if _creator:
+		_creator.visible = false
+	if _settings:
+		_settings.visible = false
+	if _load:
+		_load.visible = false
+	_sync_chrome(false)
+	hub_requested.emit()
+
+
+func _on_creator_confirmed() -> void:
+	if _creator == null:
+		return
+	last_character_path = CharacterStoreScript.SAVE_PATH
+	if not CharacterStoreScript.write_record(_creator.draft, last_character_path):
+		return
+	show_hub()
 
 
 func show_settings() -> void:
@@ -697,6 +755,8 @@ func _build_creator() -> void:
 	if _creator.has_method("fill_parent"):
 		_creator.fill_parent()
 	_creator.back_pressed.connect(show_title)
+	if _creator.has_signal("confirm_pressed"):
+		_creator.confirm_pressed.connect(_on_creator_confirmed)
 
 
 func _build_focus_ring() -> void:
@@ -730,7 +790,7 @@ func _sync_chrome(show_cancel: bool) -> void:
 		_prompt_bar.visible = show_bar
 		if _prompt_bar.has_method("configure"):
 			_prompt_bar.configure(show_cancel)
-	if _focus_ring and not show_cancel and current_screen in [Screen.NONE, Screen.BOOT]:
+	if _focus_ring and not show_cancel and current_screen in [Screen.NONE, Screen.BOOT, Screen.HUB]:
 		_focus_ring.visible = false
 	_update_focus_ring()
 
@@ -772,7 +832,7 @@ func _is_menu_nav(event: InputEvent) -> bool:
 
 
 func _restore_flow_focus() -> void:
-	if current_screen in [Screen.NONE, Screen.BOOT]:
+	if current_screen in [Screen.NONE, Screen.BOOT, Screen.HUB]:
 		return
 	var focused := get_viewport().gui_get_focus_owner() if get_viewport() else null
 	if focused and _is_flow_control(focused):
@@ -804,7 +864,7 @@ func _is_flow_control(control: Control) -> bool:
 func _update_focus_ring() -> void:
 	if _focus_ring == null:
 		return
-	if current_screen in [Screen.NONE, Screen.BOOT] or not visible:
+	if current_screen in [Screen.NONE, Screen.BOOT, Screen.HUB] or not visible:
 		_focus_ring.visible = false
 		return
 	var viewport := get_viewport()

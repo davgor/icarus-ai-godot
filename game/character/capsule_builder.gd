@@ -13,18 +13,34 @@ static func preview_scale(body: Dictionary) -> Vector3:
 	var weight := clampf(float(body.get("weight", 0.5)), 0.0, 1.0)
 	var props: Dictionary = body.get("proportions", {})
 	var torso := clampf(float(props.get("torso", 0.5)), 0.0, 1.0)
-	var y := lerpf(0.72, 1.28, height)
-	var xz := lerpf(0.82, 1.22, weight) * lerpf(0.94, 1.08, torso)
+	var arms := clampf(float(props.get("arms", 0.5)), 0.0, 1.0)
+	var legs := clampf(float(props.get("legs", 0.5)), 0.0, 1.0)
+	var y := lerpf(0.72, 1.28, height) * lerpf(0.94, 1.08, legs)
+	var xz := lerpf(0.82, 1.22, weight) * lerpf(0.94, 1.08, torso) * lerpf(0.96, 1.06, arms)
 	return Vector3(xz, y, xz)
 
 
+static func head_scale(body: Dictionary) -> float:
+	var props: Dictionary = body.get("proportions", {})
+	return lerpf(0.88, 1.16, clampf(float(props.get("head", 0.5)), 0.0, 1.0))
+
+
+static func jiggle_amplitude(body: Dictionary) -> float:
+	return clampf(float(body.get("muscle_fat", 0.5)), 0.0, 1.0)
+
+
 static func capsule_height(body: Dictionary) -> float:
-	return lerpf(MIN_HEIGHT, MAX_HEIGHT, clampf(float(body.get("height", 0.5)), 0.0, 1.0))
+	var props: Dictionary = body.get("proportions", {})
+	var legs := clampf(float(props.get("legs", 0.5)), 0.0, 1.0)
+	var height := clampf(float(body.get("height", 0.5)), 0.0, 1.0)
+	return lerpf(MIN_HEIGHT, MAX_HEIGHT, height) * lerpf(0.94, 1.08, legs)
 
 
 static func capsule_radius(body: Dictionary) -> float:
 	var weight := clampf(float(body.get("weight", 0.5)), 0.0, 1.0)
-	return lerpf(MIN_RADIUS, MAX_RADIUS, weight)
+	var props: Dictionary = body.get("proportions", {})
+	var torso := clampf(float(props.get("torso", 0.5)), 0.0, 1.0)
+	return lerpf(MIN_RADIUS, MAX_RADIUS, weight) * lerpf(0.94, 1.08, torso)
 
 
 static func camera_pivot_height(body: Dictionary) -> float:
