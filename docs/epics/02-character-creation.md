@@ -10,8 +10,8 @@
 
 Code Vein-class depth is the **target**. This pack ships a **vertical slice** (playable New → customize → confirm → hub handoff). Destination assembler, schema v2, and catalog depth are **pack 07** — [`07-character-creator-complete.md`](07-character-creator-complete.md) — not more work hidden inside these CC ids.
 
-Suggested ship order: **CC-1 → CC-2 → CC-10 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-7 → CC-4 → CC-8 → CC-9**.  
-**Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, **CC-10 (Male / Female base kits — required)**, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, thin CC-7, CC-8, CC-9. CC-4 can land immediately after the cut without waiting for pack 03.
+Suggested ship order: **CC-1 → CC-2 → CC-10 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-4 → CC-8 → CC-9**.  
+**Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, **CC-10 (Male / Female base kits — required)**, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, CC-8, CC-9. **No Outfit category** — clothes are pack 08 ([`08-outfit-engine.md`](08-outfit-engine.md)); [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md). CC-4 can land immediately after the cut without waiting for pack 03.
 
 **Do not invent morph tech mid-pack.** Follow [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md): bone scales for height/weight/proportions, blend shapes for face + muscle↔fat, bone-spring jiggle from muscle↔fat only, socketed demi parts, one `AppearanceApplier` for preview and gameplay.
 
@@ -22,7 +22,7 @@ Suggested ship order: **CC-1 → CC-2 → CC-10 → CC-3 → CC-5 / CC-6 (parall
 - New always enters **full** creator before hub spawn. No intended-path skip. Debug skip may exist; it is not a title or creator button.
 - All cosmetic options stay **unlocked**. Do not gate parts behind play, quests, or currency.
 - Race is a **preset + story tag**, never a lock on morphs or outfit.
-- **Outfit ≠ loadout.** Creator starting clothes are cosmetics only. Do not invent combat armor/weapons as the creator’s appearance layer.
+- **Outfit ≠ loadout.** Creator does **not** edit clothes. Confirm writes `outfit.id = "none"` (underwear only). Dress-up is pack 08 — [`08-outfit-engine.md`](08-outfit-engine.md). Do not invent combat armor/weapons as appearance.
 - Controller is first-class (CC-9 completes the pad path). Keyboard/mouse stays supported in parallel. No mouse-cursor-emulation gamepad path.
 - Visuals: lock v1, dark jewel atelier, bright sparse rims. Image `style` is **`"anime"`**. Prepend the prompt-lock prefix; pass `options.negative_prompt` from the lock. Prefer `game/art/_style/` refs when present. Never use Kenney / `game/art/town/` as style.
 - Character concepts and meshes live under `game/art/characters/`. Creator chrome under `game/art/ui/`. Do not park finals in `_style/`.
@@ -98,12 +98,12 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 
 1. Title → **New** → creator atelier (not Millbrook name overlay, not hub).
 2. Pick each race once; confirm preset snap + free override.
-3. Pick **Male** and **Female** once; preview swaps the underwear base; morphs/outfit stay overrideable.
+3. Pick **Male** and **Female** once; preview swaps the underwear base; morphs stay overrideable.
 4. Move height / weight / muscle–fat / skin; preview updates live (weight ≠ fatness).
 5. Cycle preview lighting **Full / Dawn / Dusk**; shading visibly changes.
 6. Change named face morphs, hair/eyes, scars/markings; optionally ears, horns, tails (**CC-6 in slice**).
 7. Use **Reset** and **Randomize** at least once (all or category).
-8. Change starting outfit; confirm loadout slots are **not** required.
+8. Confirm with underwear-only appearance (`outfit.id = "none"`); loadout slots are **not** required.
 9. Orbit / frame the preview on pad (CC-9) or mouse.
 10. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
 11. Back / cancel from creator returns to title without writing a character (optional draft save: pack 07 [CX-9](07-character-creator-complete.md#cx-9--atelier-studio-ux) — [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
@@ -133,7 +133,7 @@ New opens a dedicated **character atelier**: lit preview stage, **Full / Dawn / 
 - **Lighting presets:** Full / Dawn / Dusk (cycle or three options); preview-only; default **Full** — [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
 - **Reset all / Reset category** and **Randomize all / Randomize category** chrome (wire to real behavior as categories land; must work by vertical-slice DOD)
 - Orbit / zoom framing around the preview character
-- Category rail or tabs (Race, Body, Face, Features, Outfit) — empty panels OK until later CC epics fill them
+- Category rail or tabs (Race, Body, Face, Features) — empty panels OK until later CC epics fill them. **No Outfit tab** ([`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md)).
 - Name field (reuse / replace Millbrook name entry; name is not the whole creator)
 - Back to title without spawning
 - Summer-built control tree and lighting; GDScript owns state hooks
@@ -264,7 +264,7 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 ### Outcome
 
-Player picks **Male** or **Female**. The preview swaps to that sex’s **underwear base** (not a clothed hero). Race, morphs, hair, features, and starting outfit stay overrideable on both kits. Sex is not a race and not a cosmetics lock.
+Player picks **Male** or **Female**. The preview swaps to that sex’s **underwear base** (not a clothed hero). Race, morphs, hair, and features stay overrideable on both kits. Sex is not a race and not a cosmetics lock.
 
 ### Maps to
 
@@ -276,16 +276,16 @@ Player picks **Male** or **Female**. The preview swaps to that sex’s **underwe
 
 - First-class Male / Female control (Body panel first row, or a Type toggle next to Race — pick one; pad-reachable)
 - Schema v1 field `body.sex`: `male` | `female` ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
-- Two underwear base meshes with the same socket layout (head / ears / horns / tail) so CC-5–CC-7 share one applier
-- Switching sex swaps the base kit live; current morphs and outfit ids remain unless a part is illegal (then snap to a legal default)
+- Two underwear base meshes with the same socket layout (head / ears / horns / tail) so CC-5–CC-6 share one applier
+- Switching sex swaps the base kit live; current morphs remain unless a part is illegal (then snap to a legal default)
 - Race presets may bias defaults (e.g. height) but do **not** force sex
 - Reset category / Reset all re-apply the **current** sex’s defaults, not a forced Male
-- Underwear only on the base — CC-7 outfits layer on top; do not bake traveler armor into the body kit
+- Underwear only on the base — dress-up is pack 08; do not bake traveler armor into the body kit
 
 ### Out of scope
 
 - Extra body types beyond Male / Female
-- Locking hair, outfit, or features by sex
+- Locking hair, features, or morphs by sex
 - Voice / TTS by sex (later systems)
 - Full nude or adult-only body variants — simple underwear is the base
 
@@ -293,14 +293,14 @@ Player picks **Male** or **Female**. The preview swaps to that sex’s **underwe
 
 - CC-1 preview rig + CC-2 race tag
 - [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)
-- Land **before** CC-3 sliders and CC-7 outfits so both kits receive morphs and clothes
+- Land **before** CC-3 sliders so both kits receive morphs
 
 ### Work
 
 - Catalog ids → `body_base_male` / `body_base_female` (or equivalent) underwear GLBs
 - `AppearanceApplier` swaps the kit from `body.sex`
 - UI: two focusable choices; selected state visible
-- Tests: both sexes set `body.sex`; preview mesh id changes; override morph after swap sticks; outfit id not cleared by sex change
+- Tests: both sexes set `body.sex`; preview mesh id changes; override morph after swap sticks; `outfit.id` stays `none`
 - **Summer:** generate Male and Female underwear concepts (A/T pose, identical framing) → image-to-3d → drop on Preview; play both sexes; diagnostics
 
 ### Asset generation
@@ -318,7 +318,7 @@ Player picks **Male** or **Female**. The preview swaps to that sex’s **underwe
 - [x] Male and Female both selectable
 - [x] Preview swaps to the matching underwear base
 - [x] `body.sex` serializes on the in-progress character
-- [x] Sex does not lock race, morphs, features, or outfit
+- [x] Sex does not lock race, morphs, or features
 - [x] Assets under `game/art/characters/`
 - [x] Summer play both sexes + diagnostics clean
 - [x] `TEST_RESULT: PASS`
@@ -582,65 +582,31 @@ Vertical-slice minimum: **one ears, one horns, one mammal-style tail, one lizard
 
 ---
 
+## CC-7 — Starting outfit cosmetics (deferred)
+
 ### Outcome
 
-Player picks a **starting outfit** (clothes / appearance). It is stored as **outfit**, never as combat **loadout**. Armor/weapons are not required to finish creator.
+**Deferred.** Clothes are **not** part of the character atelier. Confirm leaves `outfit.id = "none"` (underwear base). Wardrobe, fit, occlusion, and dress-up UI ship in pack 08 — [`08-outfit-engine.md`](08-outfit-engine.md). Ticket: [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md). Wardrobe deepen: [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md). Cape cloth: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md).
 
 ### Maps to
 
 | ID | Feature |
 | --- | --- |
-| 2.11 | Starting cosmetics |
-
-### In scope
-
-- Outfit layer on the preview (replace or hide mannequin base clothes)
-- Small unlocked starter wardrobe (styles + colors)
-- Character record fields: `outfit` distinct from `loadout` (loadout empty or starter-null until gear systems)
-- Clear UI copy or structure so outfit ≠ gear
-
-### Out of scope
-
-- Full transmog wardrobe endgame — pack 07 [CX-8](07-character-creator-complete.md#cx-8--outfit-fit-occlusion-wardrobe); ticket [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md)
-- Cape cloth physics final (may stub; gear epic owns cape slot physics) — Deferred: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md)
-- Accessories as combat gear (necklace/rings/earrings are loadout later — optional cosmetic-only dupes only if they stay outfit-scoped and documented)
-
-### Dependencies
-
-- CC-1; body proportions from CC-3 should not explode outfit meshes (LOD/fit best-effort)
-- CC-10 Male / Female underwear bases — outfits layer on both kits
-
-### Work
-
-- Outfit resource ids; apply to preview mesh/materials
-- Ensure confirm path (CC-8) persists outfit separately from loadout
-- Tests: outfit change does not fill weapon/armor loadout slots
-- **Summer:** generate outfit flats → 3D/textures → dress preview; play; diagnostics
-
-### Asset generation
-
-| Asset | Dest | Generate when | Prompt intent (after lock prefix) |
-| --- | --- | --- | --- |
-| Starter outfit concepts (×N) | `game/art/characters/outfit_{id}.png` | Start of CC-7 | Full-body costume; material breakup; anime; creator quality; **no** weapons as the outfit identity |
-| Outfit meshes / textures | `game/art/characters/outfit_*.*` | After concepts | image-to-3d or texture sets; PBR cloth; fit to base body |
-
-Vertical-slice minimum: **≥3 outfits**.
+| *(moved)* | Former 2.11 → pack 08 / feature-list §5 |
 
 ### Acceptance
 
-- [x] Outfit changes appearance only
-- [x] Loadout remains empty / non-driving for creator completion
-- [x] Assets under `game/art/characters/`
-- [x] Summer dress-up smoke + diagnostics clean
-- [x] `TEST_RESULT: PASS`
-
-**Deferred review:** Open tickets checked. None roped in — wardrobe deepen stays [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); cape cloth stays [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md).
+- [x] Creator has no Outfit category
+- [x] Confirm writes `outfit.id = "none"`; loadout empty
+- [x] Pack 08 owns non-`none` outfits
 
 ---
 
+## CC-8 — Confirm → write character + hub spawn handoff
+
 ### Outcome
 
-Confirm commits the character (body, race tag, morphs, outfit, name) and leaves creator into the **hub spawn** path. Until pack 03, a **hub stub** (empty space + return marker / portal placeholder) is enough — do not dump the player into Millbrook as the real home.
+Confirm commits the character (body, race tag, morphs, features, name) with `outfit.id = "none"` and leaves creator into the **hub spawn** path. Until pack 03, a **hub stub** (empty space + return marker / portal placeholder) is enough — do not dump the player into Millbrook as the real home.
 
 ### Maps to
 
@@ -651,22 +617,22 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 ### In scope
 
 - Validate required fields (name non-empty after strip; race present; morph defaults filled)
-- Write engine-owned character record using **schema v1** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
+- Write engine-owned character record using **schema v1** ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md)); `outfit.id` is **`none`** until pack 08
 - Spawn uses the **same `AppearanceApplier`** + capsule builder as the preview (no second appearance path)
 - **Tooling hook:** apply any valid schema v1 record to creator preview (debug/autoload OK; used by Summer/agents to verify generated faces)
 - Transition: creator → hub scene/state
-- Hub stub if pack 03 not landed: empty level, player spawns as created appearance
+- Hub stub if pack 03 not landed: empty level, player spawns as created appearance (underwear base)
 - Journal/event hook optional (`character_created` already exists in Living Town — prefer a clean character/hub save, do not grow Millbrook as home)
 
 ### Out of scope
 
 - Full Sanctum hub art and portal modes (packs 03 / 05 — not deferred tickets)
-- Loadout persistence across worlds (pack 05) — only ensure outfit/body survive this handoff; loadout may be empty in the record
+- Outfit dress-up (pack 08) — only ensure `outfit` field exists as `none` and loadout stays empty
 - Continue / Load of that save from title (may smoke if trivial; OS-4 empty state can remain until persistence) — Deferred: [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md)
 
 ### Dependencies
 
-- Vertical slice of CC-1–CC-3, CC-5, CC-7 minimum; race tag from CC-2
+- Vertical slice of CC-1–CC-3, CC-5, CC-6, CC-10; race tag from CC-2
 - Appearance contract schema + applier
 - Pack 01 title route
 
@@ -674,7 +640,7 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 
 - Confirm button → serialize schema v1 → change flow state
 - Cancel/Back does not write (or discards draft)
-- Tests: confirm produces record with race + body + outfit; `schema_version == 1`; back does not; spawn capsule scales with height; spawn state ≠ creator
+- Tests: confirm produces record with race + body + `outfit.id == "none"`; `schema_version == 1`; back does not; spawn capsule scales with height; spawn state ≠ creator
 - **Summer:** full flow play Title → New → customize → Confirm → hub stub; diagnostics; screenshot spawned appearance
 
 ### Asset generation
@@ -695,9 +661,11 @@ Confirm commits the character (body, race tag, morphs, outfit, name) and leaves 
 - [x] Summer full-flow smoke + diagnostics clean
 - [x] `TEST_RESULT: PASS`
 
-**Deferred review:** Open tickets checked. None roped in — load/continue after creator stays [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md); draft save stays [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md). Pack 03 replaces the hub stub.
+**Deferred review:** Open tickets checked. Roped design change [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md). Load/continue stays [`DEF-015`](../backlog/deferred/DEF-015-load-continue-after-creator.md); draft save stays [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md). Pack 03 replaces the hub stub.
 
 ---
+
+## CC-9 — Creator on controller
 
 ### Outcome
 
@@ -735,7 +703,7 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 - InputMap joypad bindings for creator-specific orbit/slider actions
 - Focus ring on all adjustable controls including lighting
 - Tests: actions present; focus graph has no traps on the main path
-- Manual / **Summer play:** pad-only New → race → **Male/Female** → body sliders → lighting cycle → face → outfit → confirm → hub stub → (Alt) back-out paths
+- Manual / **Summer play:** pad-only New → race → **Male/Female** → body sliders → lighting cycle → face → features → confirm → hub stub → (Alt) back-out paths
 - Diagnostics after pad smoke
 
 ### Asset generation
@@ -761,9 +729,9 @@ Full creator is usable on a **gamepad**: race grid, sliders, part grids, **Full/
 This pack is **Playable** (vertical slice) when:
 
 1. Title **New** opens the atelier creator (OS-5 stub body gone) with Full/Dawn/Dusk lighting and Reset/Randomize.
-2. Player can set race (preset + tag), **Male / Female**, body core (height/weight/muscle↔fat/skin), named face morphs, scars/markings, demi features (CC-6), starting outfit.
-3. Confirm writes schema v1 engine-owned character; spawn uses shared applier + capsule scale into hub (or hub stub).
-4. Outfit is distinct from loadout in data and UI.
+2. Player can set race (preset + tag), **Male / Female**, body core (height/weight/muscle↔fat/skin), named face morphs, scars/markings, demi features (CC-6). **No Outfit tab.**
+3. Confirm writes schema v1 engine-owned character with `outfit.id = "none"`; spawn uses shared applier + capsule scale into hub (or hub stub) on the underwear base.
+4. Outfit field stays distinct from loadout (`none` vs empty combat slots); dress-up is pack 08.
 5. Gamepad path works per CC-9 (including lighting, reset/randomize).
 6. **Appearance authority:** shared applier can load any valid schema v1 record into creator preview (tooling/debug); illegal catalog ids rejected.
 7. Generated character/UI art lives under `game/art/characters/` and `game/art/ui/` (vfx/hub stub as listed), lock + `style: "anime"`.
@@ -771,9 +739,9 @@ This pack is **Playable** (vertical slice) when:
 9. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 10. Millbrook name-only create is not the intended New path.
 
-**Deepen is pack 07, not more CC-ids.** Destination work: [`07-character-creator-complete.md`](07-character-creator-complete.md). Promoted tickets: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md) → CX-3, [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) → CX-4/CX-5, [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) → CX-7, [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md) → CX-8, [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md) → CX-9. Jiggle polish stays under CC-4. Extreme anim retarget stays [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md).
+**Deepen is pack 07, not more CC-ids.** Destination work: [`07-character-creator-complete.md`](07-character-creator-complete.md). **Outfit engine:** [`08-outfit-engine.md`](08-outfit-engine.md). Promoted tickets: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md) → CX-3, [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) → CX-4/CX-5, [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) → CX-7, [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md) → CX-9. Outfit wardrobe [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md) → pack 08. Creator-no-outfit: [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md). Jiggle polish stays under CC-4. Extreme anim retarget stays [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md).
 
-**Not required for this pack:** real Sanctum content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
+**Not required for this pack:** real Sanctum content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator, outfit dress-up.
 
 ---
 

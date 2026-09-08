@@ -325,15 +325,19 @@ static func _apply_catalog(record, preview_root: Node3D) -> void:
 		Vector3.ZERO,
 		"tail"
 	)
-	_attach_or_proxy(
-		preview,
-		"Outfit",
-		str(outfit.get("id", "outfit_starter_01")),
-		preview,
-		_outfit_color(str(outfit.get("id", "outfit_starter_01"))),
-		Vector3(0, 0.72, 0.08),
-		"outfit"
-	)
+	var outfit_id := str(outfit.get("id", CatalogScript.OUTFIT_NONE))
+	if outfit_id == CatalogScript.OUTFIT_NONE or outfit_id.is_empty():
+		_free_named(preview, "Outfit")
+	else:
+		_attach_or_proxy(
+			preview,
+			"Outfit",
+			outfit_id,
+			preview,
+			_outfit_color(outfit_id),
+			Vector3(0, 0.72, 0.08),
+			"outfit"
+		)
 
 
 static func _outfit_color(outfit_id: String) -> Color:

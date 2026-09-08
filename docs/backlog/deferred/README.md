@@ -41,7 +41,7 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-010](DEF-010-cape-cloth-physics.md) | Cape / outfit cloth physics final | Open | [CC-4](../../epics/02-character-creation.md#cc-4--soft-body--jiggle-from-muscle--fat) / [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
 | [DEF-011](DEF-011-face-catalog-deepen.md) | Face / hair / eyes catalog + makeup deepen | Roped in | [CC-5](../../epics/02-character-creation.md#cc-5--face--hair--eyes--scars-kit) → [CX-4](../../epics/07-character-creator-complete.md#cx-4--face-morph-complete) / [CX-5](../../epics/07-character-creator-complete.md#cx-5--hair-eyes-makeup) |
 | [DEF-012](DEF-012-demi-feature-catalog-deepen.md) | Demi-human feature catalog deepen | Roped in | [CC-6](../../epics/02-character-creation.md#cc-6--demi-human-features) → [CX-7](../../epics/07-character-creator-complete.md#cx-7--demi-human-catalog-complete) |
-| [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Starting outfit wardrobe / transmog deepen | Roped in | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) → [CX-8](../../epics/07-character-creator-complete.md#cx-8--outfit-fit-occlusion-wardrobe) |
+| [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Outfit wardrobe / transmog deepen | Open | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics-deferred) → [`08-outfit-engine.md`](../../epics/08-outfit-engine.md) (was CX-8) |
 | [DEF-014](DEF-014-body-proportion-deepen.md) | Body proportion region deepen beyond vertical slice | Roped in | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) → [CX-3](../../epics/07-character-creator-complete.md#cx-3--body-regions-code-vein-class) |
 | [DEF-015](DEF-015-load-continue-after-creator.md) | Title Load / Continue of creator-written saves | Open | [CC-8](../../epics/02-character-creation.md#cc-8--confirm--write-character--hub-spawn-handoff) |
 | [DEF-016](DEF-016-multiplayer-worker-routing.md) | Multiplayer worker advertisement + remote `complete()` | Open | [AR-2](../../epics/06-agent-runtime.md#ar-2--orchestrator) |
@@ -49,6 +49,7 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-018](DEF-018-demi-wings-scales.md) | Demi-human wings and full-body scales | Open | [CX-7](../../epics/07-character-creator-complete.md#cx-7--demi-human-catalog-complete) |
 | [DEF-019](DEF-019-gameplay-face-anim.md) | Gameplay face animation (visemes / cinematic) | Open | [CX-4](../../epics/07-character-creator-complete.md#cx-4--face-morph-complete) |
 | [DEF-020](DEF-020-hair-cloth-secondary-motion.md) | Hair / cloth secondary motion | Open | [CX-5](../../epics/07-character-creator-complete.md#cx-5--hair-eyes-makeup) |
+| [DEF-021](DEF-021-creator-no-outfit.md) | Character creator has no outfit category | Open | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics-deferred) → [`08-outfit-engine.md`](../../epics/08-outfit-engine.md) |
 
 ---
 

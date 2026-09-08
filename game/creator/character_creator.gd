@@ -27,13 +27,12 @@ const RacePresetsScript := preload("res://game/character/race_presets.gd")
 const CatalogScript := preload("res://game/character/appearance_catalog.gd")
 
 const HEADLINE := "Character Creation"
-const BODY_COPY := "Atelier creator — race, body, face, features, and outfit. Clothes are cosmetics, not loadout. Not the town. Confirm writes schema v1 and opens the hub stub."
+const BODY_COPY := "Atelier creator — race, body, face, and features. Clothes are a separate outfit engine later. Not the town. Confirm writes schema v1 (underwear only) and opens the hub stub."
 const CATEGORY_COPY := {
 	"race": "Race is a preset and a story tag. Pick a card to snap proportions; every morph stays overrideable.",
 	"body": "Male or Female underwear base, then height, weight (frame mass), muscle ↔ fat, proportions, and skin. Weight is not fatness.",
 	"face": "Named face morphs, hair, eyes, scars, and markings. All starter options are unlocked.",
 	"features": "Optional ears, horns, and tails — including a lizard tail. Unequip any slot. Unlocked from the start.",
-	"outfit": "Starting clothes are cosmetics only. Loadout (weapons/armor) is not required here.",
 }
 
 var btn_normal: StyleBox
@@ -66,7 +65,6 @@ var _skin_label: Label
 var _skin_row: HBoxContainer
 var _face_box: ScrollContainer
 var _features_box: ScrollContainer
-var _outfit_box: ScrollContainer
 var _part_buttons: Dictionary = {}
 var _face_sliders: Dictionary = {}
 var _color_buttons: Dictionary = {}
@@ -303,12 +301,6 @@ func select_feature(slot: String, part_id: String) -> void:
 	_sync_part_buttons()
 
 
-func select_outfit(part_id: String) -> void:
-	draft.outfit["id"] = CatalogScript.legal_or_default(part_id, CatalogScript.OUTFIT_IDS, "outfit_starter_01")
-	refresh_preview()
-	_sync_part_buttons()
-
-
 func apply_record_to_preview(record) -> bool:
 	if record == null:
 		return false
@@ -322,6 +314,7 @@ func apply_record_to_preview(record) -> bool:
 
 func try_confirm() -> bool:
 	draft.display_name = str(draft.display_name).strip_edges()
+	draft.outfit["id"] = CharacterRecordScript.OUTFIT_NONE
 	if _name_edit:
 		_name_edit.text = draft.display_name
 	if draft.display_name.is_empty():
@@ -435,8 +428,6 @@ func set_category(category: String) -> void:
 		_face_box.visible = category == "face"
 	if _features_box:
 		_features_box.visible = category == "features"
-	if _outfit_box:
-		_outfit_box.visible = category == "outfit"
 	for id in _tab_buttons:
 		var button := _tab_buttons[id] as Button
 		button.button_pressed = id == category
@@ -745,12 +736,6 @@ func _build_chrome() -> void:
 	_add_part_row(feat_inner, "horns", CatalogScript.HORN_IDS, true, select_feature.bind("horns_id"))
 	_add_section_label(feat_inner, "Tails")
 	_add_part_row(feat_inner, "tails", CatalogScript.TAIL_IDS, true, select_feature.bind("tails_id"))
-
-	_outfit_box = _make_category_box("OutfitBox")
-	panel_col.add_child(_outfit_box)
-	var outfit_inner := _outfit_box.get_node("Inner") as VBoxContainer
-	_add_section_label(outfit_inner, "Clothes — not weapons or armor")
-	_add_part_row(outfit_inner, "outfit", CatalogScript.OUTFIT_IDS, false, select_outfit)
 
 	var light_row := HBoxContainer.new()
 	light_row.name = "Lighting"

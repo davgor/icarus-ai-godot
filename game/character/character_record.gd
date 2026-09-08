@@ -7,7 +7,8 @@ const RACES: PackedStringArray = [
 	"human", "elf", "dwarf", "gnome", "halfling", "demi_human"
 ]
 const SEXES: PackedStringArray = ["male", "female"]
-const CATEGORIES: PackedStringArray = ["race", "body", "face", "features", "outfit"]
+const CATEGORIES: PackedStringArray = ["race", "body", "face", "features"]
+const OUTFIT_NONE := "none"
 const FACE_MORPH_IDS: PackedStringArray = [
 	"brow", "eye_shape", "nose", "cheek", "jaw", "mouth", "chin"
 ]
@@ -65,7 +66,7 @@ func reset_to_defaults() -> void:
 		"horns_id": null,
 		"tails_id": null,
 	}
-	outfit = {"id": "outfit_starter_01"}
+	outfit = {"id": OUTFIT_NONE}
 	loadout = {
 		"hands": {"main": null, "off": null},
 		"armor": {},
@@ -89,8 +90,7 @@ func randomize_all(rng: RandomNumberGenerator) -> void:
 	_randomize_body(rng)
 	_randomize_face(rng)
 	_randomize_features(rng)
-	var Catalog := preload("res://game/character/appearance_catalog.gd")
-	outfit["id"] = Catalog.OUTFIT_IDS[rng.randi_range(0, Catalog.OUTFIT_IDS.size() - 1)]
+	outfit["id"] = OUTFIT_NONE
 
 
 func randomize_category(category: String, rng: RandomNumberGenerator) -> void:
@@ -104,9 +104,6 @@ func randomize_category(category: String, rng: RandomNumberGenerator) -> void:
 			_randomize_face(rng)
 		"features":
 			_randomize_features(rng)
-		"outfit":
-			var Catalog := preload("res://game/character/appearance_catalog.gd")
-			outfit["id"] = Catalog.OUTFIT_IDS[rng.randi_range(0, Catalog.OUTFIT_IDS.size() - 1)]
 
 
 func to_dict() -> Dictionary:
@@ -160,7 +157,7 @@ static func validate_dict(data: Dictionary) -> PackedStringArray:
 			errors.append("face.morphs.%s" % morph_id)
 	var outfit_data: Dictionary = data.get("outfit", {})
 	var Catalog := preload("res://game/character/appearance_catalog.gd")
-	if str(outfit_data.get("id", "")).is_empty() or Catalog.OUTFIT_IDS.find(str(outfit_data.get("id", ""))) < 0:
+	if not Catalog.is_legal_outfit_id(str(outfit_data.get("id", ""))):
 		errors.append("outfit.id")
 	var face_data: Dictionary = data.get("face", {})
 	if Catalog.HAIR_IDS.find(str(face_data.get("hair_id", ""))) < 0:
@@ -209,8 +206,8 @@ func _ensure_shape() -> void:
 	for morph_id in FACE_MORPH_IDS:
 		if not morphs.has(morph_id):
 			morphs[morph_id] = 0.5
-	if not outfit.has("id"):
-		outfit["id"] = "outfit_starter_01"
+	if not outfit.has("id") or str(outfit.get("id", "")).is_empty():
+		outfit["id"] = OUTFIT_NONE
 	if not loadout.has("hands"):
 		loadout = {
 			"hands": {"main": null, "off": null},

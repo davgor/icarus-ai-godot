@@ -58,14 +58,15 @@ Code Vein-class depth is the **target**. Pack 02 is the slice (New → customize
 | 2.8 | Jiggle / soft-body | Driven by the muscle–fat bar only |
 | 2.9 | Face / hair / eyes | Named starter morphs + anime kit; destination volume in 2.24–2.26 |
 | 2.10 | Demi-human features | **Ears**, **horns**, **tails** (incl. lizard/dragon); **optional**; **in vertical slice** |
-| 2.11 | Starting cosmetics | Outfit distinct from later combat gear |
-| 2.12 | Confirm → spawn | Writes the character, then loads the empty hub |
+| 2.12 | Confirm → spawn | Writes the character (outfit stays `none`), then loads the empty hub |
 | 2.13 | Creator on controller | Sliders, race, camera, lighting, reset/random, confirm without a mouse |
 | 2.14 | Preview lighting | **Full / Dawn / Dusk** (preview-only) |
 | 2.15 | Skin color | First-class; ≥6 swatches in slice; undertone in 2.15 destination (CX-6) |
 | 2.16 | Scars / markings | Thin starter (≥1 each + none); decal layers in 2.27 |
 | 2.17 | Reset / randomize | Reset all/category; randomize all/category (crude OK) |
 | 2.18 | Appearance authority | Every in-game character is creator-legal; tooling can load any valid record into the creator |
+
+**Outfit is not in the creator.** Starting clothes and wardrobe live in pack 08 — [`epics/08-outfit-engine.md`](epics/08-outfit-engine.md). Confirm writes `outfit.id = "none"` (underwear only). Deferred: [`DEF-021`](backlog/deferred/DEF-021-creator-no-outfit.md).
 
 ### Later — creator complete (pack 07)
 
@@ -82,12 +83,13 @@ Do not skip the Sanctum to only polish this. May run in parallel after pack 02 i
 | 2.26 | Hair highlight + heterochromia | Optional; hair ≥12, eyes ≥8 |
 | 2.27 | Decal compositor | Scars / markings / tattoos as layers + region + coarse UV; pad-usable |
 | 2.28 | Demi catalog complete | Volume ears/horns/tails; conflict/occlusion data; wings/scales stay deferred |
-| 2.29 | Outfit occlusion + pieces | Fit to morphs; hide body under clothes; colors; still not loadout |
 | 2.30 | Framing, pose, compare, undo | Atelier studio; pad-first |
 | 2.31 | Creator draft save | Explicit draft; does not overwrite a confirmed character |
 | 2.32 | Generator sampling + apply performance | Legal v2 only; hot sliders stay interactive with the grown catalog |
 
-All cosmetics stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md). Explicitly not: unique NPC faces the player cannot rebuild in the creator; a C# engine-agnostic DTO as the save; a third `genderPreset` body kit.
+All cosmetics in the **creator** stay unlocked. Do not gate creator parts behind play. Morph tech + character record: [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md). Explicitly not: unique NPC faces the player cannot rebuild in the creator; a C# engine-agnostic DTO as the save; a third `genderPreset` body kit; **outfit editing inside the creator** (pack 08).
+
+Former **2.11** (starting cosmetics) and **2.29** (outfit occlusion + pieces) moved to pack 08 / §5.
 
 ---
 
@@ -164,7 +166,7 @@ Worn **loadout** is the character’s through-line. Outfit is saved too, and is 
 | 5.2 | Armor slots | Helmet, torso, gloves, **cape**, legs, boots |
 | 5.3 | Cape physics | Cloth sim on the cape slot / visible outfit cape |
 | 5.4 | Accessory slots | Necklace, **2 rings**, **2 earrings**. Gear, not deferred flavor |
-| 5.5 | Outfit layer | Full cosmetic control. Armor ≠ appearance. Does not change playstyle |
+| 5.5 | Outfit layer | Full cosmetic control via **outfit engine** ([`epics/08-outfit-engine.md`](epics/08-outfit-engine.md)). Armor ≠ appearance. Not in the character creator |
 | 5.6 | Same slots on companions | Player can fully kit and dress them |
 | 5.7 | Equip in hub and worlds | Same character, same loadout + outfit |
 | 5.8 | Travel rule | Current loadout and outfit always come through the portal both ways |

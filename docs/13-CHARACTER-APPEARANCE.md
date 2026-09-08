@@ -152,7 +152,7 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
     "tails_id": null
   },
   "outfit": {
-    "id": "outfit_starter_01"
+    "id": "none"
   },
   "loadout": {
     "hands": { "main": null, "off": null },
@@ -167,14 +167,14 @@ Engine-owned. Versioned. Living Town JSON is not this schema.
 | Field | Rules |
 | --- | --- |
 | `race` | One of `human`, `elf`, `dwarf`, `gnome`, `halfling`, `demi_human`. Preset + story tag; never locks other fields. |
-| `body.sex` | One of `male`, `female`. Swaps the underwear base kit. Does not lock morphs, race, hair, features, or outfit. |
+| `body.sex` | One of `male`, `female`. Swaps the underwear base kit. Does not lock morphs, race, hair, or features. |
 | `body.height` / `weight` / `muscle_fat` | Floats 0–1. See table above. `muscle_fat`: 0 = full muscle, 1 = full fat. |
 | `body.skin_color` | Hex or engine Color string. Required. Starter ships a **swatch row** (≥6 tones); free picker optional later. |
 | `proportions` | Slice: head, torso, arms, legs. Destination 14 keys: pack 07 / [`DEF-014`](backlog/deferred/DEF-014-body-proportion-deepen.md). |
 | `face.morphs` | Slice: named starter set keys. Destination fine keys in schema v2. |
 | `face.scar_id` / `marking_id` | Slice convenience ids. Destination: `decals[]` (CX-6); v1 aliases migrate. |
 | `features.*_id` | Catalog part id or `null`. Optional. |
-| `outfit` | Cosmetic only. Never write combat gear into outfit. |
+| `outfit` | Cosmetic only. Creator / Confirm write **`id: "none"`** (underwear only). Non-`none` ids are written by the **outfit engine** ([`epics/08-outfit-engine.md`](epics/08-outfit-engine.md)). Never write combat gear into outfit. |
 | `loadout` | Creator leaves empty. Do not require loadout to Confirm. |
 
 ### Apply pipeline
@@ -246,7 +246,9 @@ Rules:
 | Scars | ≥1 + none |
 | Markings | ≥1 + none |
 | Ears / horns / tails | ≥1 each; tails include ≥1 lizard/dragon |
-| Starter outfits | ≥3 |
+| Outfit (creator) | **`none` only** — dress-up is pack 08 |
+
+Creator category rail: Race, Body, Face, Features. **No Outfit tab** ([`DEF-021`](backlog/deferred/DEF-021-creator-no-outfit.md)).
 
 ---
 
@@ -513,17 +515,18 @@ Slice `face.scar_id` / `marking_id` migrate to one decal layer each (or stay as 
 
 Pad path: pick a catalog stamp, pick a region, nudge offset/scale/rotation in coarse steps. Not freeform painting.
 
-### Outfit (destination)
+### Outfit (destination — pack 08)
 
 ```json
 "outfit": {
-  "id": "outfit_starter_01",
+  "id": "none",
   "pieces": { "top": null, "bottom": null, "shoes": null, "extra": null },
   "colors": { "primary": "#6a7a88", "secondary": "#2a3038", "accent": "#c4a46a" }
 }
 ```
 
-- `id` is a whole-look preset (still valid alone).
+- Creator / Confirm write **`id: "none"`** (underwear only). The **outfit engine** ([`epics/08-outfit-engine.md`](epics/08-outfit-engine.md)) writes wardrobe ids.
+- `id` may be a whole-look preset when dressed.
 - `pieces` override when non-null.
 - Colors tint; they are not loadout.
 - Loadout stays empty in creator Confirm.
@@ -616,7 +619,7 @@ Engine-owned. Versioned. v1 files load through a one-way migrate (fill fine keys
     "tails_id": null
   },
   "outfit": {
-    "id": "outfit_starter_01",
+    "id": "none",
     "pieces": { "top": null, "bottom": null, "shoes": null, "extra": null },
     "colors": { "primary": "#6a7a88", "secondary": "#2a3038", "accent": "#c4a46a" }
   },
@@ -645,7 +648,7 @@ Slice minimums in the table above still hold. Pack 07 does not ship until at lea
 | Makeup | ≥4 ids each channel + none |
 | Decals | ≥8 scars, ≥8 markings/tattoos across regions + none |
 | Ears / horns / tails | ≥6 / ≥6 / ≥8 (mammal + lizard/dragon each represented) |
-| Outfits | ≥8 whole looks **or** equivalent piece combinations; occlusion on closed garments |
+| Outfits | Pack 08 — ≥8 whole looks **or** equivalent piece combinations; occlusion on closed garments |
 | Apply maps | Height, weight, every proportion, every face key, muscle_fat |
 
 All unlocked. Race still does not lock the catalog.
@@ -660,7 +663,7 @@ Pack 07 adds:
 
 | Tool | Intent |
 | --- | --- |
-| **Category rail** | Race, Body, Face, Hair, Makeup, Marks, Features, Outfit |
+| **Category rail** | Race, Body, Face, Hair, Makeup, Marks, Features (**no Outfit** — pack 08) |
 | **Framing** | Full body / bust / face cameras; pad cycle |
 | **Pose** | Small list (idle, turntable, three face expressions) so morphs can be judged |
 | **Compare** | Hold or toggle previous snapshot vs live draft |
