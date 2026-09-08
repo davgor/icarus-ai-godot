@@ -194,10 +194,12 @@ Reuse OS-2 focus ring / button chrome where possible — do not invent a second 
 
 ### Acceptance
 
-- [ ] Settings reachable from title and dismissible to title
-- [ ] Audio / Graphics / Controls sections exist (placeholder content OK)
-- [ ] New UI art under `game/art/ui/`
-- [ ] Tests + diagnostics gates as above
+- [x] Settings reachable from title and dismissible to title
+- [x] Audio / Graphics / Controls sections exist (placeholder content OK)
+- [x] New UI art under `game/art/ui/`
+- [x] Tests + diagnostics gates as above
+
+**Deferred review:** Open tickets checked. None roped in — persistence stays [`DEF-002`](../backlog/deferred/DEF-002-settings-persistence.md); rebind stays [`DEF-003`](../backlog/deferred/DEF-003-controls-rebind.md).
 
 ---
 

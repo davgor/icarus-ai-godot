@@ -2,11 +2,14 @@ extends CanvasLayer
 
 ## Boot splash → title owner. Millbrook stays parked until New/Load (or debug skip).
 ## Final boot/title audio: DEF-001.
+## Settings persistence / rebind: DEF-002 / DEF-003.
+
+const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 
 signal world_requested
 signal quit_requested
 
-enum Screen { NONE, BOOT, TITLE, STUB }
+enum Screen { NONE, BOOT, TITLE, STUB, SETTINGS }
 
 const ACTION_LABELS: PackedStringArray = ["New", "Load", "Settings", "Quit"]
 const BOOT_SECONDS := 1.35
@@ -21,7 +24,6 @@ const BTN_CHROME := "res://game/art/ui/btn_primary.png"
 const STUB_COPY := {
 	"New": "Character creation is next.",
 	"Load": "No saves yet.",
-	"Settings": "Settings — coming soon.",
 }
 
 var current_screen: Screen = Screen.NONE
@@ -30,10 +32,12 @@ var _built := false
 var _boot: Control
 var _title: Control
 var _stub: Control
+var _settings: Control
 var _spinner: TextureRect
 var _stub_label: Label
 var _action_buttons: Array[Button] = []
 var _new_button: Button
+var _settings_button: Button
 var _back_button: Button
 var _btn_normal: StyleBox
 var _btn_hover: StyleBox
@@ -64,9 +68,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			request_debug_world()
 			get_viewport().set_input_as_handled()
 			return
-		if event.is_action("ui_cancel") and current_screen == Screen.STUB:
-			show_title()
-			get_viewport().set_input_as_handled()
+	if event.is_action_pressed("ui_cancel") and current_screen in [Screen.STUB, Screen.SETTINGS]:
+		show_title()
+		get_viewport().set_input_as_handled()
 
 
 func ensure_ui() -> void:
@@ -76,6 +80,7 @@ func ensure_ui() -> void:
 	_build_styles()
 	_build_boot()
 	_build_title()
+	_build_settings()
 	visible = true
 
 
@@ -87,6 +92,8 @@ func screen_name() -> String:
 			return "title"
 		Screen.STUB:
 			return "stub"
+		Screen.SETTINGS:
+			return "settings"
 		_:
 			return "none"
 
@@ -114,15 +121,19 @@ func show_boot() -> void:
 
 func show_title() -> void:
 	ensure_ui()
+	var restore_settings := current_screen == Screen.SETTINGS
 	current_screen = Screen.TITLE
 	visible = true
 	_boot.visible = false
 	_title.visible = true
 	_stub.visible = false
+	if _settings:
+		_settings.visible = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	_set_menu_enabled(true)
-	if _new_button:
-		_new_button.call_deferred("grab_focus")
+	var focus_btn := _settings_button if restore_settings and _settings_button else _new_button
+	if focus_btn:
+		focus_btn.call_deferred("grab_focus")
 
 
 func show_stub(action: String) -> void:
@@ -132,10 +143,63 @@ func show_stub(action: String) -> void:
 	_boot.visible = false
 	_title.visible = true
 	_stub.visible = true
+	if _settings:
+		_settings.visible = false
 	_stub_label.text = str(STUB_COPY.get(action, "Coming soon."))
 	_set_menu_enabled(false)
 	if _back_button:
 		_back_button.call_deferred("grab_focus")
+
+
+func show_settings() -> void:
+	ensure_ui()
+	current_screen = Screen.SETTINGS
+	visible = true
+	_boot.visible = false
+	_title.visible = true
+	_stub.visible = false
+	_settings.visible = true
+	if _settings.has_method("fill_parent"):
+		_settings.fill_parent()
+	_set_menu_enabled(false)
+	if _settings.has_method("show_section"):
+		_settings.show_section("audio")
+	if _settings.has_method("grab_default_focus"):
+		_settings.grab_default_focus()
+
+
+func settings_section_ids() -> PackedStringArray:
+	ensure_ui()
+	if _settings and _settings.has_method("section_ids"):
+		return _settings.section_ids()
+	return PackedStringArray()
+
+
+func settings_current_section() -> String:
+	if _settings and _settings.has_method("current_section"):
+		return str(_settings.current_section())
+	return ""
+
+
+func show_settings_section(id: String) -> void:
+	ensure_ui()
+	show_settings()
+	if _settings and _settings.has_method("show_section"):
+		_settings.show_section(id)
+
+
+func settings_placeholder_notice() -> String:
+	ensure_ui()
+	if _settings and _settings.has_method("placeholder_notice"):
+		return str(_settings.placeholder_notice())
+	return ""
+
+
+func settings_controls_blurb() -> String:
+	ensure_ui()
+	if _settings and _settings.has_method("controls_blurb"):
+		return str(_settings.controls_blurb())
+	return ""
 
 
 func hide_flow() -> void:
@@ -145,6 +209,8 @@ func hide_flow() -> void:
 		_boot.visible = false
 	if _title:
 		_title.visible = false
+	if _settings:
+		_settings.visible = false
 
 
 func request_quit() -> void:
@@ -287,6 +353,8 @@ func _build_title() -> void:
 		_action_buttons.append(button)
 		if label == "New":
 			_new_button = button
+		elif label == "Settings":
+			_settings_button = button
 
 	for i in _action_buttons.size():
 		var button := _action_buttons[i]
@@ -348,10 +416,24 @@ func _build_title() -> void:
 	stub_box.add_child(_back_button)
 
 
+func _build_settings() -> void:
+	_settings = SettingsShellScript.new()
+	_settings.name = "SettingsOverlay"
+	_settings.btn_normal = _btn_normal
+	_settings.btn_hover = _btn_hover
+	_settings.btn_focus = _btn_focus
+	_title.add_child(_settings)
+	if _settings.has_method("fill_parent"):
+		_settings.fill_parent()
+	_settings.back_pressed.connect(show_title)
+
+
 func _on_action_pressed(action: String) -> void:
 	match action:
 		"Quit":
 			request_quit()
+		"Settings":
+			show_settings()
 		_:
 			show_stub(action)
 

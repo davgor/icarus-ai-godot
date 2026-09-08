@@ -1,6 +1,7 @@
 extends SceneTree
 
 const GameStateScript := preload("res://game/sim/game_state.gd")
+const SettingsShellScript := preload("res://game/flow/settings_shell.gd")
 
 ## Headless validation suite.
 ## Entry: engine --headless --path . -s res://tests/run_tests.gd
@@ -34,6 +35,9 @@ func _run_suite() -> int:
 	failed += _ok("title_menu_actions", _test_title_menu_actions())
 	failed += _ok("title_stubs_return", _test_title_stubs_return())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
+	failed += _ok("settings_open_and_back", _test_settings_open_and_back())
+	failed += _ok("settings_sections", _test_settings_sections())
+	failed += _ok("settings_panel_centered", await _test_settings_panel_centered())
 	failed += _ok("create_overlay_hidden_on_boot", await _test_create_overlay_hidden_on_boot())
 	return failed
 
@@ -218,7 +222,7 @@ func _test_title_stubs_return() -> bool:
 	var flow := _flow()
 	if flow == null:
 		return false
-	for action in ["New", "Load", "Settings"]:
+	for action in ["New", "Load"]:
 		flow.show_stub(action)
 		if str(flow.screen_name()) != "stub":
 			push_error("Stub did not open for %s" % action)
@@ -236,6 +240,109 @@ func _test_title_stubs_return() -> bool:
 func _test_quit_path_callable() -> bool:
 	var flow := _flow()
 	return flow != null and flow.has_method("request_quit")
+
+
+func _test_settings_open_and_back() -> bool:
+	var flow := _flow()
+	if flow == null:
+		push_error("AppFlow autoload missing")
+		return false
+	flow.show_title()
+	flow.show_settings()
+	if str(flow.screen_name()) != "settings":
+		push_error("Settings did not open from title")
+		flow.hide_flow()
+		return false
+	flow.show_title()
+	if str(flow.screen_name()) != "title":
+		push_error("Settings did not return to title")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_settings_sections() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_settings()
+	var ids: PackedStringArray = flow.settings_section_ids()
+	if ids != PackedStringArray(["audio", "graphics", "controls"]):
+		push_error("Settings sections were %s" % str(ids))
+		flow.hide_flow()
+		return false
+	var notice := str(flow.settings_placeholder_notice())
+	if notice.find("not saved") < 0:
+		push_error("Settings missing placeholder persistence notice")
+		flow.hide_flow()
+		return false
+	flow.show_settings_section("controls")
+	if str(flow.settings_current_section()) != "controls":
+		push_error("Controls section did not become current")
+		flow.hide_flow()
+		return false
+	var blurb := str(flow.settings_controls_blurb()).to_lower()
+	if blurb.find("keyboard") < 0 or blurb.find("gamepad") < 0:
+		push_error("Controls section does not acknowledge KBM + gamepad")
+		flow.hide_flow()
+		return false
+	flow.show_title()
+	flow.hide_flow()
+	return true
+
+
+func _test_settings_panel_centered() -> bool:
+	var host := Control.new()
+	host.name = "SettingsLayoutHost"
+	host.size = Vector2(1280, 720)
+	root.add_child(host)
+	await process_frame
+	var shell: Control = SettingsShellScript.new()
+	host.add_child(shell)
+	if shell.has_method("fill_parent"):
+		shell.fill_parent()
+	shell.visible = true
+	await process_frame
+	await process_frame
+	var panel := shell.get_node_or_null("Center/Panel") as Control
+	if panel == null:
+		push_error("Settings panel missing at Center/Panel")
+		host.queue_free()
+		await process_frame
+		return false
+	var host_center := host.global_position + host.size * 0.5
+	var panel_center := panel.global_position + panel.size * 0.5
+	var distance := panel_center.distance_to(host_center)
+	var margin := shell.get_node_or_null("Center/Panel/Margin") as Control
+	var content := shell.get_node_or_null("Center/Panel/Margin/Root") as Control
+	var inset_left := 0.0
+	var inset_top := 0.0
+	var inset_right := 0.0
+	if margin:
+		inset_left = float(margin.get_theme_constant("margin_left"))
+		inset_top = float(margin.get_theme_constant("margin_top"))
+		inset_right = float(margin.get_theme_constant("margin_right"))
+	if content:
+		inset_left = maxf(inset_left, content.global_position.x - panel.global_position.x)
+		inset_top = maxf(inset_top, content.global_position.y - panel.global_position.y)
+	var landscape := panel.size.x > panel.size.y * 1.2
+	var ok := (
+		distance < 48.0
+		and panel.size.x >= 800.0
+		and landscape
+		and inset_left >= 80.0
+		and inset_top >= 72.0
+		and inset_right >= 180.0
+	)
+	if not ok:
+		push_error(
+			"Settings panel layout off; host=%s panel=%s size=%s dist=%s inset=(%s,%s,%s) landscape=%s"
+			% [host_center, panel_center, panel.size, distance, inset_left, inset_top, inset_right, landscape]
+		)
+	host.queue_free()
+	await process_frame
+	return ok
 
 
 func _test_create_overlay_hidden_on_boot() -> bool:
