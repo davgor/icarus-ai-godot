@@ -35,17 +35,20 @@ Status: **Open** → **Roped in** (linked from an active PR/epic) → **Done** (
 | [DEF-004](DEF-004-load-browser-polish.md) | Load shell multi-slot browser + previews | Open | [OS-4](../../epics/01-opening-screen.md#os-4--load-shell) |
 | [DEF-005](DEF-005-millbrook-save-migration.md) | Millbrook town save → hub/character save migration | Open | [OS-4](../../epics/01-opening-screen.md#os-4--load-shell) |
 | [DEF-006](DEF-006-creator-stub-art-retirement.md) | Retire OS-5 creator stub backdrop when atelier ships | Done | [OS-5](../../epics/01-opening-screen.md#os-5--new--creator-handoff) / [CC-1](../../epics/02-character-creation.md#cc-1--creator-atelier-shell) |
-| [DEF-007](DEF-007-creator-draft-save.md) | Optional creator draft save before confirm | Open | [CC pack](../../epics/02-character-creation.md#summer-play-acceptance-pack-level) |
+| [DEF-007](DEF-007-creator-draft-save.md) | Optional creator draft save before confirm | Roped in | [CC pack](../../epics/02-character-creation.md#summer-play-acceptance-pack-level) → [CX-9](../../epics/07-character-creator-complete.md#cx-9--atelier-studio-ux) |
 | [DEF-008](DEF-008-race-tag-story-reactions.md) | Story / dialogue reactions consume race tag | Open | [CC-2](../../epics/02-character-creation.md#cc-2--race-select-preset-and-tag) |
 | [DEF-009](DEF-009-extreme-morph-anim-retarget.md) | Animation retarget for extreme body morphs | Open | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) |
 | [DEF-010](DEF-010-cape-cloth-physics.md) | Cape / outfit cloth physics final | Open | [CC-4](../../epics/02-character-creation.md#cc-4--soft-body--jiggle-from-muscle--fat) / [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
-| [DEF-011](DEF-011-face-catalog-deepen.md) | Face / hair / eyes catalog + makeup deepen | Open | [CC-5](../../epics/02-character-creation.md#cc-5--face--hair--eyes--scars-kit) |
-| [DEF-012](DEF-012-demi-feature-catalog-deepen.md) | Demi-human feature catalog deepen | Open | [CC-6](../../epics/02-character-creation.md#cc-6--demi-human-features) |
-| [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Starting outfit wardrobe / transmog deepen | Open | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) |
-| [DEF-014](DEF-014-body-proportion-deepen.md) | Body proportion region deepen beyond vertical slice | Open | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) |
+| [DEF-011](DEF-011-face-catalog-deepen.md) | Face / hair / eyes catalog + makeup deepen | Roped in | [CC-5](../../epics/02-character-creation.md#cc-5--face--hair--eyes--scars-kit) → [CX-4](../../epics/07-character-creator-complete.md#cx-4--face-morph-complete) / [CX-5](../../epics/07-character-creator-complete.md#cx-5--hair-eyes-makeup) |
+| [DEF-012](DEF-012-demi-feature-catalog-deepen.md) | Demi-human feature catalog deepen | Roped in | [CC-6](../../epics/02-character-creation.md#cc-6--demi-human-features) → [CX-7](../../epics/07-character-creator-complete.md#cx-7--demi-human-catalog-complete) |
+| [DEF-013](DEF-013-outfit-wardrobe-deepen.md) | Starting outfit wardrobe / transmog deepen | Roped in | [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics) → [CX-8](../../epics/07-character-creator-complete.md#cx-8--outfit-fit-occlusion-wardrobe) |
+| [DEF-014](DEF-014-body-proportion-deepen.md) | Body proportion region deepen beyond vertical slice | Roped in | [CC-3](../../epics/02-character-creation.md#cc-3--body-core-height-weight-proportions-muscle--fat) → [CX-3](../../epics/07-character-creator-complete.md#cx-3--body-regions-code-vein-class) |
 | [DEF-015](DEF-015-load-continue-after-creator.md) | Title Load / Continue of creator-written saves | Open | [CC-8](../../epics/02-character-creation.md#cc-8--confirm--write-character--hub-spawn-handoff) |
 | [DEF-016](DEF-016-multiplayer-worker-routing.md) | Multiplayer worker advertisement + remote `complete()` | Open | [AR-2](../../epics/06-agent-runtime.md#ar-2--orchestrator) |
 | [DEF-017](DEF-017-player2-voice.md) | Player2 TTS / STT voice adapter | Open | [AR-4](../../epics/06-agent-runtime.md#ar-4--player2-worker) |
+| [DEF-018](DEF-018-demi-wings-scales.md) | Demi-human wings and full-body scales | Open | [CX-7](../../epics/07-character-creator-complete.md#cx-7--demi-human-catalog-complete) |
+| [DEF-019](DEF-019-gameplay-face-anim.md) | Gameplay face animation (visemes / cinematic) | Open | [CX-4](../../epics/07-character-creator-complete.md#cx-4--face-morph-complete) |
+| [DEF-020](DEF-020-hair-cloth-secondary-motion.md) | Hair / cloth secondary motion | Open | [CX-5](../../epics/07-character-creator-complete.md#cx-5--hair-eyes-makeup) |
 
 ---
 

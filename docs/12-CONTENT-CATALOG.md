@@ -79,6 +79,15 @@ content/catalog/
     <id>.json
   props/          # optional non-item world clutter
     <id>.json
+  appearance/     # character creator parts (pack 07). Runtime samples approved only.
+    bodies/
+    maps/
+    hair/
+    eyes/
+    makeup/
+    decals/
+    features/
+    outfits/
   _inbox/         # drafts + pending JSON (not sampled by runtime)
     ...
 
@@ -87,6 +96,8 @@ game/art/catalog/
   items/<id>/
   props/<id>/
   _inbox/<id>/    # pending previews / meshes until approved
+
+game/art/characters/   # appearance art (bodies, hair, outfits, features) — not Kenney town
 ```
 
 Exact folder names may tighten in implementation; the split **inbox vs approved** and **def JSON vs art** is locked.
@@ -207,6 +218,7 @@ Sanctum build costs use **wood / metal / fiber** only (v0). Put amounts in `prop
 - Worlds should feel like they drew from a culture’s architecture kit, not three prefab houses.
 - Approval rate can be low; generation rate should stay high.
 - After the log-cabin twenty, expand sets (shops, halls, ruins, etc.) the same way.
+- **Appearance** (hair, outfits, demi parts, decals) uses the same approve loop and `status` field. Player-facing creator ids live in [`13-CHARACTER-APPEARANCE.md`](13-CHARACTER-APPEARANCE.md); epics: [`epics/07-character-creator-complete.md`](epics/07-character-creator-complete.md). Do not put character parts in `buildings/`.
 
 ---
 

@@ -8,7 +8,7 @@
 **Import roots:** `game/art/characters/` (bodies, race kits, outfit cosmetics), `game/art/ui/` (creator chrome), `game/art/vfx/` (atelier light / transition only)  
 **Operating loop:** [`agent-operating-loop.md`](../agent-operating-loop.md) + [`.summer/AGENTS.md`](../../.summer/AGENTS.md)
 
-Code Vein-class depth is the **target**. This pack ships a **vertical slice** first (playable New → customize → confirm → hub handoff), then deepens morphs and catalogs inside the same epic IDs. Replace the OS-5 creator **stub body**; keep the Title → New route from pack 01.
+Code Vein-class depth is the **target**. This pack ships a **vertical slice** (playable New → customize → confirm → hub handoff). Destination assembler, schema v2, and catalog depth are **pack 07** — [`07-character-creator-complete.md`](07-character-creator-complete.md) — not more work hidden inside these CC ids.
 
 Suggested ship order: **CC-1 → CC-2 → CC-10 → CC-3 → CC-5 / CC-6 (parallel after race) → CC-7 → CC-4 → CC-8 → CC-9**.  
 **Vertical-slice cut** (minimum playable): CC-1 (lighting + reset/randomize chrome), CC-2, **CC-10 (Male / Female base kits — required)**, thin CC-3 (**incl. skin color**), thin CC-5 (**named morphs + scars/markings starter**), **CC-6 (required — not optional)**, thin CC-7, CC-8, CC-9. CC-4 can land immediately after the cut without waiting for pack 03.
@@ -106,7 +106,7 @@ Pad- or KBM-driven smoke when the vertical slice lands:
 8. Change starting outfit; confirm loadout slots are **not** required.
 9. Orbit / frame the preview on pad (CC-9) or mouse.
 10. Confirm → character written (schema v1) → hub handoff scene (empty hub when pack 03 exists; **hub stub** allowed until then).
-11. Back / cancel from creator returns to title without writing a character (optional draft save later — Deferred: [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
+11. Back / cancel from creator returns to title without writing a character (optional draft save: pack 07 [CX-9](07-character-creator-complete.md#cx-9--atelier-studio-ux) — [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md)).
 
 After each smoke: `summer_get_diagnostics`. Fix before declaring the epic playable.
 
@@ -222,7 +222,7 @@ Player picks **Human / Elf / Dwarf / Gnome / Halfling / Demi-human**. Selection 
 
 - Story dialogue reactions (later systems consume the tag) — Deferred: [`DEF-008`](../backlog/deferred/DEF-008-race-tag-story-reactions.md)
 - Locking options per race
-- Demi-human ear/horn/tail catalog deepen (wings/scales only if design expands) — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns ears+horns+tails (incl. lizard) optional minimum; demi-human race may enable the Features tab early
+- Demi-human ear/horn/tail catalog deepen (wings/scales: [`DEF-018`](../backlog/deferred/DEF-018-demi-wings-scales.md)) — pack 07 [CX-7](07-character-creator-complete.md#cx-7--demi-human-catalog-complete); ticket [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md); CC-6 owns ears+horns+tails (incl. lizard) optional minimum; demi-human race may enable the Features tab early
 
 ### Dependencies
 
@@ -347,7 +347,7 @@ Body category exposes **height**, **weight**, a **muscle ↔ fat** bar, and a fi
 - First-class height and weight sliders — **weight = frame mass**, not fatness ([`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md))
 - Muscle ↔ fat as one bar (**composition** + jiggle driver only)
 - **Skin color** swatches (≥6) applied live to body/head materials
-- Proportion regions for the slice: at least head, torso, arms, legs (deepen later — Deferred: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md))
+- Proportion regions for the slice: at least head, torso, arms, legs (destination regions: pack 07 [CX-3](07-character-creator-complete.md#cx-3--body-regions-code-vein-class); ticket [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md))
 - Live preview via **hybrid morphs** locked in the appearance contract: **bone scales** for height/weight/proportions; **blend shapes** for muscle↔fat surface (and face in CC-5)
 - Capsule / collision scale hooks from body (same applier path gameplay will use; full move kit is pack 04)
 - Character-in-progress uses **schema v1** body fields (incl. `skin_color`)
@@ -479,8 +479,8 @@ Face category offers an anime **starter kit**: **named** face morphs (contract l
 
 ### Out of scope
 
-- Closed “final” catalog / makeup farms — Deferred: [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
-- Extra scar/marking variants beyond the thin starter — same ticket
+- Closed “final” catalog / makeup farms — pack 07 [CX-4](07-character-creator-complete.md#cx-4--face-morph-complete) / [CX-5](07-character-creator-complete.md#cx-5--hair-eyes-makeup); ticket [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md)
+- Extra scar/marking variants beyond the thin starter — pack 07 [CX-6](07-character-creator-complete.md#cx-6--skin-materials-and-decal-compositor)
 
 ### Dependencies
 
@@ -543,7 +543,7 @@ Vertical-slice minimum: **7 named morphs wired**, **≥3 hair**, **≥3 eyes**, 
 
 ### Out of scope
 
-- Wings, full-body scales, or other kits beyond ears/horns/tails — Deferred: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md)
+- Wings, full-body scales, or other kits beyond ears/horns/tails — pack 07 deepen is [CX-7](07-character-creator-complete.md#cx-7--demi-human-catalog-complete); wings/scales remain [`DEF-018`](../backlog/deferred/DEF-018-demi-wings-scales.md). Slice-volume deepen: [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md)
 - Gameplay bonuses tied to features
 - Gating behind story flags
 - A separate “dragon” race row (demi-human + parts is enough)
@@ -601,7 +601,7 @@ Player picks a **starting outfit** (clothes / appearance). It is stored as **out
 
 ### Out of scope
 
-- Full transmog wardrobe endgame — Deferred: [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md)
+- Full transmog wardrobe endgame — pack 07 [CX-8](07-character-creator-complete.md#cx-8--outfit-fit-occlusion-wardrobe); ticket [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md)
 - Cape cloth physics final (may stub; gear epic owns cape slot physics) — Deferred: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md)
 - Accessories as combat gear (necklace/rings/earrings are loadout later — optional cosmetic-only dupes only if they stay outfit-scoped and documented)
 
@@ -771,7 +771,7 @@ This pack is **Playable** (vertical slice) when:
 9. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 10. Millbrook name-only create is not the intended New path.
 
-**Deepen still inside this pack (track as deferred tickets, rope into CC follow-ups):** [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md), [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) (more hair/eyes/scars/makeup — **not** the thin scar/marking starter), [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md); jiggle polish stays under CC-4.
+**Deepen is pack 07, not more CC-ids.** Destination work: [`07-character-creator-complete.md`](07-character-creator-complete.md). Promoted tickets: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md) → CX-3, [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) → CX-4/CX-5, [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) → CX-7, [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md) → CX-8, [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md) → CX-9. Jiggle polish stays under CC-4. Extreme anim retarget stays [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md).
 
 **Not required for this pack:** real Sanctum content (pack 03), parkour (pack 04), portal worlds, combat gear, companion creator.
 
@@ -782,7 +782,7 @@ This pack is **Playable** (vertical slice) when:
 - **One-shot against** [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md). Do not re-litigate blendshape-vs-bones: hybrid is locked. Do not invent a parallel character JSON.
 - **Appearance authority:** any character generated for worlds/NPCs/companions must use creator catalog ids. Expose apply-record-to-preview for Summer/debug. Do not ship one-off NPC meshes.
 - **Summer is the scene and art cockpit for this pack.** Build the atelier and preview hierarchy with Summer mutations; generate concepts/meshes with Summer; prove the flow with Summer play + `summer_get_diagnostics`. Cursor owns GDScript and tests.
-- Prefer a data-driven morph/part catalog early so CC-5/CC-6/CC-7 deepen without rewrite.
+- Prefer a data-driven morph/part catalog so pack 07 can deepen without a second appearance JSON. Slice may keep `appearance_catalog.gd` lists; destination is `content/catalog/appearance/`.
 - Keep character schema versioned; Living Town `user://living_town_v1.json` is not the destination character save.
 - Do not collapse outfit into armor slots. Do not add Summer SDK to runtime.
 - When pack 03 starts, replace the hub stub only — keep the character record and creator scene.

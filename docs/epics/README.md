@@ -17,16 +17,17 @@ Status: **Planned** → **In progress** → **Playable** → **Done**. Detail do
 | # | Epic pack | Feature-list | Detail | Status |
 | --- | --- | --- | --- | --- |
 | 1 | **Opening screen** (boot → title) | §1 | [`01-opening-screen.md`](01-opening-screen.md) | Playable |
-| 2 | **Character creation** (vertical slice) | §2 | [`02-character-creation.md`](02-character-creation.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | In progress |
+| 2 | **Character creation** (vertical slice) | §2 Now | [`02-character-creation.md`](02-character-creation.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | Playable |
 | 3 | Empty **Sanctum** + portal | §3 | *TBD* | — |
 | 4 | Light parkour (climb + wall run) | MV.* | *TBD* | — |
 | 5 | Portal modes + one world round-trip | §4–5 thin | *TBD* | — |
 
-Later packs (after first playable). Do not skip the hub for a compiler demo. Pack 06 is **infra**: ship the island before prompted worlds consume it; do not jump packs 01–05 to build it.
+Later packs (after first playable). Do not skip the hub for a compiler demo. Pack 06 is **infra**: ship the island before prompted worlds consume it; do not jump packs 01–05 to build it. Pack 07 (creator complete) may run **in parallel** with 03–05 once pack 02 is Playable — it is not a reason to skip the Sanctum.
 
 | # | Epic pack | Feature-list | Detail | Status |
 | --- | --- | --- | --- | --- |
 | 6 | **Agent runtime** (Statemachine + Orchestrator) | Agent runtime (infra); dependency for §4.4 / §8.2 | [`06-agent-runtime.md`](06-agent-runtime.md) + [`../14-AGENT-RUNTIME.md`](../14-AGENT-RUNTIME.md) | Planned |
+| 7 | **Character creator complete** (Code Vein destination) | §2 Later 2.20–2.32 | [`07-character-creator-complete.md`](07-character-creator-complete.md) + [`../13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) | Planned |
 | — | Combat / Fable XP | §6 | *TBD* | — |
 | — | Companions + Sanctum cozy sim | §7 | *TBD* | — |
 | — | Worlds / compiler depth + content catalog | §8 | *TBD* | — |
