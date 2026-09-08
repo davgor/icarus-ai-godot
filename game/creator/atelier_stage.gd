@@ -148,8 +148,15 @@ func cycle_lighting() -> String:
 	return lighting_preset
 
 
-func set_jiggle_from_muscle_fat(_amount: float) -> void:
-	pass
+func set_jiggle_from_muscle_fat(amount: float) -> void:
+	var amplitude := clampf(amount, 0.0, 1.0)
+	set_meta("jiggle_amplitude", amplitude)
+
+
+func jiggle_amplitude() -> float:
+	if has_meta("jiggle_amplitude"):
+		return float(get_meta("jiggle_amplitude"))
+	return 0.5
 
 
 func _ensure_stage() -> void:

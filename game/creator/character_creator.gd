@@ -28,7 +28,7 @@ const HEADLINE := "Character Creation"
 const BODY_COPY := "Atelier creator — race, body, face, and outfit. Not the town. Confirm writes a character later."
 const CATEGORY_COPY := {
 	"race": "Race is a preset and a story tag. Pick a card to snap proportions; every morph stays overrideable.",
-	"body": "Male or Female underwear base, then height, weight, muscle ↔ fat, and skin. Sex does not lock cosmetics. Weight is frame mass, not fatness.",
+	"body": "Male or Female underwear base, then height, weight (frame mass), muscle ↔ fat, proportions, and skin. Weight is not fatness.",
 	"face": "Named face morphs, hair, eyes, scars, and markings land here.",
 	"features": "Optional ears, horns, and tails — including a lizard tail. Unlocked from the start.",
 	"outfit": "Starting clothes are cosmetics only. Loadout (weapons/armor) is not required here.",
@@ -57,6 +57,11 @@ var _race_grid: GridContainer
 var _sex_row: HBoxContainer
 var _sex_label: Label
 var _sex_buttons: Dictionary = {}
+var _body_sliders: Dictionary = {}
+var _skin_buttons: Dictionary = {}
+var _slider_col: VBoxContainer
+var _skin_label: Label
+var _skin_row: HBoxContainer
 var _panel_body: Label
 var _reset_all: Button
 var _reset_cat: Button
@@ -165,6 +170,8 @@ func select_race(race_id: String) -> void:
 	refresh_preview()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func selected_sex() -> String:
@@ -177,6 +184,8 @@ func select_sex(sex_id: String) -> void:
 	draft.body["sex"] = sex_id
 	refresh_preview()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func preview_kit_id() -> String:
@@ -186,8 +195,44 @@ func preview_kit_id() -> String:
 
 
 func override_body_field(key: String, value: float) -> void:
+	if key == "sex":
+		return
 	draft.body[key] = clampf(value, 0.0, 1.0)
 	refresh_preview()
+	_sync_body_sliders()
+
+
+func override_proportion(key: String, value: float) -> void:
+	if CharacterRecordScript.PROPORTION_IDS.find(key) < 0:
+		return
+	var props: Dictionary = draft.body.get("proportions", {})
+	props[key] = clampf(value, 0.0, 1.0)
+	draft.body["proportions"] = props
+	refresh_preview()
+	_sync_body_sliders()
+
+
+func select_skin(hex: String) -> void:
+	if CharacterRecordScript.SKIN_SWATCHES.find(hex) < 0:
+		return
+	draft.body["skin_color"] = hex
+	refresh_preview()
+	_sync_skin_buttons()
+
+
+func jiggle_amplitude() -> float:
+	if _atelier and _atelier.has_method("jiggle_amplitude"):
+		return float(_atelier.jiggle_amplitude())
+	return 0.5
+
+
+func preview_kit_scale() -> Vector3:
+	if _atelier == null:
+		return Vector3.ONE
+	var kit := _atelier.get_node_or_null("Preview/BodyKit") as Node3D
+	if kit:
+		return kit.scale
+	return Vector3.ONE
 
 
 func grab_default_focus() -> void:
@@ -249,12 +294,20 @@ func set_category(category: String) -> void:
 		_sex_row.visible = category == "body"
 	if _sex_label:
 		_sex_label.visible = category == "body"
+	if _slider_col:
+		_slider_col.visible = category == "body"
+	if _skin_row:
+		_skin_row.visible = category == "body"
+	if _skin_label:
+		_skin_label.visible = category == "body"
 	for id in _tab_buttons:
 		var button := _tab_buttons[id] as Button
 		button.button_pressed = id == category
 	_sync_action_labels()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func reset_all() -> void:
@@ -268,6 +321,8 @@ func reset_all() -> void:
 	refresh_preview()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func reset_category() -> void:
@@ -275,6 +330,8 @@ func reset_category() -> void:
 	refresh_preview()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func randomize_all() -> void:
@@ -284,6 +341,8 @@ func randomize_all() -> void:
 	refresh_preview()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func randomize_category() -> void:
@@ -291,6 +350,8 @@ func randomize_category() -> void:
 	refresh_preview()
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func refresh_preview() -> void:
@@ -304,6 +365,8 @@ func discard_draft() -> void:
 		_name_edit.text = ""
 	_sync_race_buttons()
 	_sync_sex_buttons()
+	_sync_body_sliders()
+	_sync_skin_buttons()
 
 
 func _sync_stage_active() -> void:
@@ -400,9 +463,9 @@ func _build_chrome() -> void:
 	panel.name = "CategoryPanel"
 	panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT)
 	panel.offset_left = -468
-	panel.offset_top = -268
+	panel.offset_top = -318
 	panel.offset_right = -20
-	panel.offset_bottom = 132
+	panel.offset_bottom = 188
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	var panel_style := StyleBoxFlat.new()
 	panel_style.bg_color = Color(0.03, 0.04, 0.08, 0.72)
@@ -481,6 +544,50 @@ func _build_chrome() -> void:
 		_sex_row.add_child(button)
 		_sex_buttons[sex_id] = button
 		_focusables.append(button)
+
+	_slider_col = VBoxContainer.new()
+	_slider_col.name = "BodySliders"
+	_slider_col.add_theme_constant_override("separation", 6)
+	panel_col.add_child(_slider_col)
+	_add_body_slider("height", "Height")
+	_add_body_slider("weight", "Weight (frame)")
+	_add_body_slider("muscle_fat", "Muscle ↔ Fat")
+	for region in CharacterRecordScript.PROPORTION_IDS:
+		_add_body_slider("prop_%s" % region, "%s" % region.capitalize())
+
+	_skin_label = Label.new()
+	_skin_label.name = "SkinLabel"
+	_skin_label.text = "Skin"
+	_skin_label.add_theme_font_size_override("font_size", 13)
+	_skin_label.add_theme_color_override("font_color", Color(0.72, 0.8, 0.9, 0.9))
+	panel_col.add_child(_skin_label)
+	_skin_row = HBoxContainer.new()
+	_skin_row.name = "SkinRow"
+	_skin_row.add_theme_constant_override("separation", 6)
+	panel_col.add_child(_skin_row)
+	var swatch_i := 0
+	for hex in CharacterRecordScript.SKIN_SWATCHES:
+		var swatch := Button.new()
+		swatch.name = "Skin%d" % swatch_i
+		swatch.focus_mode = Control.FOCUS_ALL
+		swatch.custom_minimum_size = Vector2(36, 36)
+		swatch.tooltip_text = hex
+		var swatch_style := StyleBoxFlat.new()
+		swatch_style.bg_color = Color(hex)
+		swatch_style.set_corner_radius_all(4)
+		swatch_style.set_border_width_all(2)
+		swatch_style.border_color = Color(0.85, 0.9, 1.0, 0.35)
+		swatch.add_theme_stylebox_override("normal", swatch_style)
+		var hover := swatch_style.duplicate() as StyleBoxFlat
+		hover.border_color = Color(0.95, 0.82, 0.42, 1.0)
+		swatch.add_theme_stylebox_override("hover", hover)
+		swatch.add_theme_stylebox_override("pressed", hover)
+		swatch.add_theme_stylebox_override("focus", hover)
+		swatch.pressed.connect(select_skin.bind(hex))
+		_skin_row.add_child(swatch)
+		_skin_buttons[hex] = swatch
+		_focusables.append(swatch)
+		swatch_i += 1
 
 	var light_row := HBoxContainer.new()
 	light_row.name = "Lighting"
@@ -664,6 +771,66 @@ func _sync_sex_buttons() -> void:
 	for id in _sex_buttons:
 		var button := _sex_buttons[id] as Button
 		button.button_pressed = id == current
+
+
+func _add_body_slider(key: String, label_text: String) -> void:
+	var row := HBoxContainer.new()
+	row.name = "%sRow" % key
+	row.add_theme_constant_override("separation", 8)
+	var label := Label.new()
+	label.text = label_text
+	label.custom_minimum_size = Vector2(118, 0)
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 13)
+	label.add_theme_color_override("font_color", Color(0.82, 0.88, 0.96, 0.95))
+	row.add_child(label)
+	var node_name := "MuscleFatSlider" if key == "muscle_fat" else "%sSlider" % key.trim_prefix("prop_").capitalize()
+	var slider := HSlider.new()
+	slider.name = node_name
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.01
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size = Vector2(0, 22)
+	slider.focus_mode = Control.FOCUS_ALL
+	var thumb := _load_knockout_scaled(SLIDER_THUMB, 16, 16)
+	if thumb:
+		slider.add_theme_icon_override("grabber", thumb)
+		slider.add_theme_icon_override("grabber_highlight", thumb)
+	slider.value_changed.connect(func(value: float) -> void:
+		if key.begins_with("prop_"):
+			override_proportion(key.substr(5), value)
+		else:
+			override_body_field(key, value)
+	)
+	row.add_child(slider)
+	_slider_col.add_child(row)
+	_body_sliders[key] = slider
+	_focusables.append(slider)
+
+
+func _sync_body_sliders() -> void:
+	for key in _body_sliders:
+		var slider := _body_sliders[key] as HSlider
+		if slider == null:
+			continue
+		var value := 0.5
+		if key.begins_with("prop_"):
+			var props: Dictionary = draft.body.get("proportions", {})
+			value = float(props.get(key.substr(5), 0.5))
+		else:
+			value = float(draft.body.get(key, 0.5))
+		slider.set_value_no_signal(value)
+
+
+func _sync_skin_buttons() -> void:
+	var current := str(draft.body.get("skin_color", ""))
+	for hex in _skin_buttons:
+		var button := _skin_buttons[hex] as Button
+		var box := button.get_theme_stylebox("normal") as StyleBoxFlat
+		if box:
+			box.border_color = Color(0.95, 0.82, 0.42, 1.0) if hex == current else Color(0.85, 0.9, 1.0, 0.35)
 
 
 func _on_stage_gui_input(event: InputEvent) -> void:

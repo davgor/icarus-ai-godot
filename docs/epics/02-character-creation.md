@@ -386,12 +386,14 @@ Most “art” here is the live mesh responding to morphs — prefer improving t
 
 ### Acceptance
 
-- [ ] Height, weight, muscle↔fat, skin (≥6 swatches), and ≥4 proportion regions work
-- [ ] Weight thickens frame; muscle↔fat changes composition/jiggle path — not confused in UI copy
-- [ ] Preview updates without restarting the scene
-- [ ] Values serialize on the in-progress character (`skin_color` present)
-- [ ] Summer diagnostics clean after slider smoke
-- [ ] `TEST_RESULT: PASS`
+- [x] Height, weight, muscle↔fat, skin (≥6 swatches), and ≥4 proportion regions work
+- [x] Weight thickens frame; muscle↔fat changes composition/jiggle path — not confused in UI copy
+- [x] Preview updates without restarting the scene
+- [x] Values serialize on the in-progress character (`skin_color` present)
+- [x] Summer diagnostics clean after slider smoke
+- [x] `TEST_RESULT: PASS`
+
+**Deferred review:** Open tickets checked. None roped in — proportion deepen stays [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md); extreme anim retarget stays [`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md). Weight is not wired into jiggle.
 
 ---
 

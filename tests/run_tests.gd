@@ -40,6 +40,7 @@ func _run_suite() -> int:
 	failed += _ok("creator_reset_randomize", _test_creator_reset_randomize())
 	failed += _ok("creator_race_select", _test_creator_race_select())
 	failed += _ok("creator_sex_select", _test_creator_sex_select())
+	failed += _ok("creator_body_core", _test_creator_body_core())
 	failed += _ok("character_record_schema_v1", _test_character_record_schema_v1())
 	failed += _ok("debug_skip_not_a_title_button", _test_debug_skip_not_a_title_button())
 	failed += _ok("quit_path_callable", _test_quit_path_callable())
@@ -532,6 +533,97 @@ func _test_creator_sex_select() -> bool:
 	creator.select_sex("male")
 	if str(creator.preview_kit_id()) != "male":
 		push_error("Preview kit should swap back to male")
+		flow.hide_flow()
+		return false
+	flow.hide_flow()
+	return true
+
+
+func _test_creator_body_core() -> bool:
+	var flow := _flow()
+	if flow == null:
+		return false
+	flow.show_creator()
+	var creator := flow.get_node_or_null("CreatorScreen")
+	if creator == null or not creator.has_method("override_body_field"):
+		push_error("Creator body overrides missing")
+		flow.hide_flow()
+		return false
+	flow.creator_set_category("body")
+	if creator.find_child("HeightSlider", true, false) == null:
+		push_error("Height slider missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("WeightSlider", true, false) == null:
+		push_error("Weight slider missing")
+		flow.hide_flow()
+		return false
+	if creator.find_child("MuscleFatSlider", true, false) == null:
+		push_error("Muscle ↔ fat slider missing")
+		flow.hide_flow()
+		return false
+	for region in ["Head", "Torso", "Arms", "Legs"]:
+		if creator.find_child("%sSlider" % region, true, false) == null:
+			push_error("%s proportion slider missing" % region)
+			flow.hide_flow()
+			return false
+	if creator.find_child("SkinRow", true, false) == null:
+		push_error("Skin swatch row missing")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("height", 0.0)
+	var short_scale: Vector3 = creator.preview_kit_scale()
+	creator.override_body_field("height", 1.0)
+	var tall_scale: Vector3 = creator.preview_kit_scale()
+	if is_equal_approx(short_scale.y, tall_scale.y):
+		push_error("Height extremes should change preview Y scale")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("weight", 0.0)
+	var light_scale: Vector3 = creator.preview_kit_scale()
+	creator.override_body_field("weight", 1.0)
+	var heavy_scale: Vector3 = creator.preview_kit_scale()
+	if is_equal_approx(light_scale.x, heavy_scale.x):
+		push_error("Weight extremes should thicken frame XZ")
+		flow.hide_flow()
+		return false
+	creator.override_body_field("muscle_fat", 0.0)
+	var muscle_jiggle: float = creator.jiggle_amplitude()
+	creator.override_body_field("muscle_fat", 1.0)
+	var fat_jiggle: float = creator.jiggle_amplitude()
+	if fat_jiggle <= muscle_jiggle:
+		push_error("Fat end should raise jiggle amplitude vs muscle end")
+		flow.hide_flow()
+		return false
+	var jiggle_before: float = creator.jiggle_amplitude()
+	creator.override_body_field("weight", 0.05)
+	if not is_equal_approx(creator.jiggle_amplitude(), jiggle_before):
+		push_error("Weight must not change jiggle metric")
+		flow.hide_flow()
+		return false
+	var RecordScript := load("res://game/character/character_record.gd")
+	for hex in RecordScript.SKIN_SWATCHES:
+		creator.select_skin(hex)
+		if str(creator.draft.body.get("skin_color", "")) != hex:
+			push_error("Skin swatch %s did not serialize" % hex)
+			flow.hide_flow()
+			return false
+	creator.override_proportion("head", 0.2)
+	creator.override_proportion("torso", 0.8)
+	creator.override_proportion("arms", 0.1)
+	creator.override_proportion("legs", 0.9)
+	var props: Dictionary = creator.draft.body.get("proportions", {})
+	if (
+		not is_equal_approx(float(props.get("head", -1.0)), 0.2)
+		or not is_equal_approx(float(props.get("torso", -1.0)), 0.8)
+		or not is_equal_approx(float(props.get("arms", -1.0)), 0.1)
+		or not is_equal_approx(float(props.get("legs", -1.0)), 0.9)
+	):
+		push_error("Proportion regions did not serialize")
+		flow.hide_flow()
+		return false
+	if not str(creator.draft.body.get("skin_color", "")).begins_with("#"):
+		push_error("skin_color missing on in-progress character")
 		flow.hide_flow()
 		return false
 	flow.hide_flow()
