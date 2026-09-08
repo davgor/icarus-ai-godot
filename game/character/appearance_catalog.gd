@@ -9,6 +9,8 @@ const MARKING_IDS: PackedStringArray = ["marking_rune"]
 const EAR_IDS: PackedStringArray = ["ears_starter"]
 const HORN_IDS: PackedStringArray = ["horns_starter"]
 const TAIL_IDS: PackedStringArray = ["tails_starter", "tails_lizard"]
+## Wardrobe ids for the outfit engine (pack 08). Creator Confirm uses OUTFIT_NONE only.
+const OUTFIT_NONE := "none"
 const OUTFIT_IDS: PackedStringArray = ["outfit_starter_01", "outfit_starter_02", "outfit_starter_03"]
 
 const HAIR_COLORS: PackedStringArray = ["#2a1a12", "#4a2a18", "#8a5a2a", "#c8b8a0", "#1a1a22", "#5a1a22"]
@@ -83,3 +85,9 @@ static func legal_or_default(part_id: String, allowed: PackedStringArray, fallba
 	if allowed.find(part_id) >= 0:
 		return part_id
 	return fallback
+
+
+static func is_legal_outfit_id(outfit_id: String) -> bool:
+	if outfit_id == OUTFIT_NONE:
+		return true
+	return OUTFIT_IDS.find(outfit_id) >= 0

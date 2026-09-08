@@ -43,7 +43,7 @@ func _run_suite() -> int:
 	failed += _ok("creator_body_core", _test_creator_body_core())
 	failed += _ok("creator_face_kit", _test_creator_face_kit())
 	failed += _ok("creator_demi_features", _test_creator_demi_features())
-	failed += _ok("creator_outfit_cosmetics", _test_creator_outfit_cosmetics())
+	failed += _ok("creator_no_outfit_category", _test_creator_no_outfit_category())
 	failed += _ok("creator_jiggle_motion", _test_creator_jiggle_motion())
 	failed += _ok("creator_confirm_hub", await _test_creator_confirm_hub())
 	failed += _ok("creator_pad_path", _test_creator_pad_path())
@@ -315,7 +315,7 @@ func _test_creator_atelier_shell() -> bool:
 	await process_frame
 	var creator := flow.get_node_or_null("CreatorScreen")
 	var ids: PackedStringArray = flow.creator_category_ids()
-	var expected := PackedStringArray(["race", "body", "face", "features", "outfit"])
+	var expected := PackedStringArray(["race", "body", "face", "features"])
 	var ok: bool = (
 		ids == expected
 		and str(flow.creator_current_category()) == "race"
@@ -390,7 +390,7 @@ func _test_creator_reset_randomize() -> bool:
 	var ok: bool = (
 		str(reset["race"]) == kept_race
 		and is_equal_approx(float(reset["body"]["height"]), expected_height)
-		and str(reset["outfit"]["id"]) == "outfit_starter_01"
+		and str(reset["outfit"]["id"]) == "none"
 		and (reset as Dictionary).has("loadout")
 		and randomized != reset
 	)
@@ -761,7 +761,7 @@ func _test_creator_demi_features() -> bool:
 	return true
 
 
-func _test_creator_outfit_cosmetics() -> bool:
+func _test_creator_no_outfit_category() -> bool:
 	var flow := _flow()
 	if flow == null:
 		return false
@@ -770,31 +770,34 @@ func _test_creator_outfit_cosmetics() -> bool:
 	if creator == null:
 		flow.hide_flow()
 		return false
-	flow.creator_set_category("outfit")
-	if (
-		creator.find_child("OutfitStarter01", true, false) == null
-		or creator.find_child("OutfitStarter02", true, false) == null
-		or creator.find_child("OutfitStarter03", true, false) == null
-	):
-		push_error("Need at least three starting outfits")
+	var ids: PackedStringArray = flow.creator_category_ids()
+	if ids.has("outfit"):
+		push_error("Creator must not expose Outfit category")
 		flow.hide_flow()
 		return false
-	creator.select_outfit("outfit_starter_03")
-	if str(creator.draft.outfit.get("id", "")) != "outfit_starter_03":
-		push_error("Outfit id did not change")
+	if creator.find_child("OutfitBox", true, false) != null:
+		push_error("Outfit panel should be removed from the atelier")
+		flow.hide_flow()
+		return false
+	if creator.find_child("OutfitTab", true, false) != null:
+		push_error("Outfit tab should be removed from the atelier")
+		flow.hide_flow()
+		return false
+	if str(creator.draft.outfit.get("id", "")) != "none":
+		push_error("Creator draft should default to outfit none")
 		flow.hide_flow()
 		return false
 	var loadout: Dictionary = creator.draft.loadout
 	if loadout.get("hands", {}).get("main", "x") != null:
-		push_error("Outfit must not fill weapon loadout")
+		push_error("Creator must not fill weapon loadout")
 		flow.hide_flow()
 		return false
 	if not (loadout.get("armor", {}) as Dictionary).is_empty():
-		push_error("Outfit must not fill armor loadout")
+		push_error("Creator must not fill armor loadout")
 		flow.hide_flow()
 		return false
-	if str(creator.preview_part_id("Outfit")) != "outfit_starter_03":
-		push_error("Outfit preview should follow cosmetics pick")
+	if str(creator.preview_part_id("Outfit")) != "":
+		push_error("Underwear-only preview should not attach an Outfit mesh")
 		flow.hide_flow()
 		return false
 	flow.hide_flow()
@@ -879,7 +882,6 @@ func _test_creator_confirm_hub() -> bool:
 	if creator.get("_name_edit"):
 		creator._name_edit.text = "Nyx"
 	creator.override_body_field("height", 1.0)
-	creator.select_outfit("outfit_starter_02")
 	if not flow.confirm_creator():
 		push_error("Named confirm should write the character")
 		scene.queue_free()
@@ -894,8 +896,8 @@ func _test_creator_confirm_hub() -> bool:
 		push_error("Confirm should write schema v1")
 		scene.queue_free()
 		return false
-	if str(record.outfit.get("id", "")) != "outfit_starter_02":
-		push_error("Saved outfit missing")
+	if str(record.outfit.get("id", "")) != "none":
+		push_error("Confirm should leave outfit as none until the outfit engine")
 		scene.queue_free()
 		return false
 	if record.loadout.get("hands", {}).get("main", "x") != null:

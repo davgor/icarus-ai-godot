@@ -165,8 +165,9 @@ Pack 02 is a playable **slice**. The destination creator ([`epics/07-character-c
 | Makeup | Eyeshadow, liner, lipstick, blush — all optional, all unlocked |
 | Marks | Scars, markings, tattoos as placeable stamps on body regions (pad-coarse, not a photo editor) |
 | Features | Volume ears / horns / tails (incl. several lizard/dragon options); still optional |
-| Outfit | Wardrobe that **fits** the body and hides the underwear where clothes cover; tintable; never loadout |
 | Studio | Face/body framing, a few poses, compare, undo, optional draft save |
+
+**Clothes are not in the creator.** Confirm leaves the character on the **underwear base** (`outfit.id = "none"`). Dress-up is a separate **outfit engine** ([`epics/08-outfit-engine.md`](epics/08-outfit-engine.md)): wardrobe, fit, occlusion, tintable looks — still never loadout.
 
 Save data stays **semantic** (what the player chose). The engine maps that onto bones, blendshapes, sockets, and materials. Do not ask the player to edit bone names.
 
@@ -222,7 +223,8 @@ Anime style. Combinations should include:
 - **scars** and **markings** (thin starter in the creator slice; destination tattoos/decals)
 - **makeup** (destination; unlocked)
 - demi-human **ears**, **horns**, and **tails** (including lizard tails; optional; see above)
-- clothing / starting outfit as cosmetics distinct from later combat **loadout** (see Gear and appearance)
+
+**Clothing / outfit** is cosmetics distinct from combat **loadout**, but it is **not** part of character creation — see Gear and appearance and [`epics/08-outfit-engine.md`](epics/08-outfit-engine.md). Fresh characters wear the underwear base until the outfit engine dresses them.
 
 ---
 
@@ -553,7 +555,7 @@ Two layers. Do not collapse them.
 | Layer | What it does |
 | --- | --- |
 | **Loadout** | Gameplay. Hands, armor, accessories. Stats, defense, weapon XP paths. |
-| **Outfit** | Looks. Full cosmetic control for the player **and** every companion. Does not change playstyle. |
+| **Outfit** | Looks. Full cosmetic control for the player **and** every companion via the **outfit engine** ([`epics/08-outfit-engine.md`](epics/08-outfit-engine.md)). Does not change playstyle. Not edited in the character creator. |
 
 **Armor is not character appearance.** Plate can live under a dress. A healer can look like a street kid. Dressing someone must not rewrite their affinities, weapon paths, or AI role.
 

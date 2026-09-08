@@ -12,18 +12,18 @@
 
 Pack 02 is the **vertical slice** (New → customize → confirm → spawn). This pack is the **Code Vein-class destination**: a real assembly pipeline, a data catalog, and the morph/part depth the slice deferred into footnotes.
 
-Suggested ship order: **CX-1 → CX-2 → CX-3 / CX-4 (parallel after maps) → CX-5 / CX-6 / CX-7 (parallel) → CX-8 → CX-9 → CX-10**.  
-CX-10 performance hooks may land with CX-1 (hot vs cold) and finish after catalogs exist.
+Suggested ship order: **CX-1 → CX-2 → CX-3 / CX-4 (parallel after maps) → CX-5 / CX-6 / CX-7 (parallel) → CX-9 → CX-10**.  
+CX-10 performance hooks may land with CX-1 (hot vs cold) and finish after catalogs exist. **Outfit work is pack 08**, not CX-8.
 
 **Do not skip the empty Sanctum to only polish creator.** This pack may run **in parallel** with packs 03–05 after pack 02 is Playable. Do not invent a second appearance JSON or a C# engine. Do not treat an outside customization spec as the contract — translate it through [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) [Outside engine drafts](../13-CHARACTER-APPEARANCE.md#outside-engine-drafts).
 
-Roped-in deepen tickets (were “grow the catalog later”): [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md) → CX-3, [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) → CX-4 / CX-5, [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) → CX-7, [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md) → CX-8, [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md) → CX-9.
+Roped-in deepen tickets: [`DEF-014`](../backlog/deferred/DEF-014-body-proportion-deepen.md) → CX-3, [`DEF-011`](../backlog/deferred/DEF-011-face-catalog-deepen.md) → CX-4 / CX-5, [`DEF-012`](../backlog/deferred/DEF-012-demi-feature-catalog-deepen.md) → CX-7, [`DEF-007`](../backlog/deferred/DEF-007-creator-draft-save.md) → CX-9. Outfit wardrobe [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md) → [`08-outfit-engine.md`](08-outfit-engine.md). Creator-no-outfit: [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md).
 
 ---
 
 ## Shared locks (all CX epics)
 
-- Pack 02 locks still hold: unlocked cosmetics, race = preset + tag, outfit ≠ loadout, Male / Female kits, demi optional, pad-first, Full/Dawn/Dusk, Reset/Randomize, appearance authority, no Summer SDK in shipped code.
+- Pack 02 locks still hold: unlocked cosmetics, race = preset + tag, outfit ≠ loadout, Male / Female kits, demi optional, pad-first, Full/Dawn/Dusk, Reset/Randomize, appearance authority, no Summer SDK in shipped code. **Creator has no Outfit category** (`outfit.id` stays `none` until pack 08).
 - **Semantic save.** `CharacterRecord` stores player-facing ids and 0–1 sliders. Bone names, blendshape names, and texture slots live in catalog **apply maps**.
 - **One applier.** `AppearanceApplier.apply(record, root)` remains the only apply entry for preview, player, companion, and NPC. Stages are internals, not a second API for UI.
 - **Hot vs cold.** Slider drag must not load meshes or recreate render targets. Part swaps are cold. See the contract.
@@ -451,61 +451,22 @@ Ears, horns, and tails are a **kit** (including several lizard/dragon options). 
 
 ---
 
-## CX-8 — Outfit fit, occlusion, wardrobe
+## CX-8 — Outfit (moved to pack 08)
 
 ### Outcome
 
-Starting clothes **fit the morphs**, hide the underwear where they should, and come in a wardrobe worth sitting in the atelier. Outfit is still **not** loadout. Colors tint the look.
-
-**Ropes in:** [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md).
+**Moved.** Outfit fit, occlusion, wardrobe, and dress-up UI live in [`08-outfit-engine.md`](08-outfit-engine.md), not the character creator. Tickets: [`DEF-021`](../backlog/deferred/DEF-021-creator-no-outfit.md), [`DEF-013`](../backlog/deferred/DEF-013-outfit-wardrobe-deepen.md). Assembler **stages** for slots/occlusion may still land in CX-1 so pack 08 can apply clothes; do not re-add an Outfit tab to the atelier.
 
 ### Maps to
 
 | ID | Feature |
 | --- | --- |
-| 2.11 | Starting cosmetics (destination) |
-| 2.29 | Outfit occlusion + pieces |
-| 5.5 | Outfit layer (creator-side foundation; full transmog in gear/hub packs) |
-
-### In scope
-
-- ≥8 whole looks **or** equivalent piece combos (top / bottom / shoes / extra)
-- Occlusion rules: closed coat hides torso (and specified submeshes)
-- Outfit colors primary/secondary/accent
-- Fit: outfit skinned to the same skeleton; best-effort at proportion extremes (document failures)
-- Confirm still leaves loadout empty
-- Underwear base never shows through an occluding garment in the default poses
-
-### Out of scope
-
-- Endgame transmog / Sanctum wardrobe UI (later hub/gear pack — not a DEF if that pack is named later; until it exists, extra wardrobe volume still grows **here**)
-- Cape cloth physics final — Deferred: [`DEF-010`](../backlog/deferred/DEF-010-cape-cloth-physics.md)
-- Armor as appearance
-
-### Dependencies
-
-- CX-1 occlusion schema; CX-2 outfit.pieces/colors; CC-7 starters; CX-3 morphs for fit
-
-### Work
-
-- Outfit panel: looks + optional piece override + color row
-- Tests: outfit change does not fill `loadout`; occlusion hides named submeshes; illegal piece id rejected
-- **Summer:** dress both sexes; extremes of waist/hips; diagnostics
-
-### Asset generation
-
-| Asset | Dest | Generate when | Prompt intent (after lock prefix) |
-| --- | --- | --- | --- |
-| Outfit concepts | `game/art/characters/outfit_{id}.png` | Start of CX-8 | Full-body costume; material breakup; **no** weapons as identity; same framing across the set |
-| Outfit meshes | `game/art/characters/outfit_*.glb` | After `Read` | Skinned; PBR cloth; occlusion metadata in catalog JSON |
+| *(moved)* | Former 2.29 → pack 08 / feature-list 5.5 |
 
 ### Acceptance
 
-- [ ] Wardrobe minimum met; occlusion works on at least one closed garment
-- [ ] Colors apply; loadout stays empty
-- [ ] Both sex kits wear the same outfit ids
-- [ ] Summer dress-up smoke + diagnostics clean
-- [ ] `TEST_RESULT: PASS`
+- [x] Documented move to pack 08
+- [x] Creator category rail excludes Outfit
 
 ---
 
@@ -529,7 +490,7 @@ The creator is a **studio**: framing, poses, compare, a short undo stack, and an
 
 ### In scope
 
-- Category rail: Race, Body, Face, Hair, Makeup, Marks, Features, Outfit
+- Category rail: Race, Body, Face, Hair, Makeup, Marks, Features (**no Outfit** — pack 08)
 - Cameras: full / bust / face; pad cycle
 - Pose list: idle, turntable, ≥3 face expressions (preview-only)
 - Compare: snapshot vs live (hold or toggle)
@@ -545,7 +506,7 @@ The creator is a **studio**: framing, poses, compare, a short undo stack, and an
 
 ### Dependencies
 
-- Categories from CX-3–CX-8; pack 02 shell and CC-9 pad scheme
+- Categories from CX-3–CX-7; pack 02 shell and CC-9 pad scheme (Outfit is pack 08)
 
 ### Work
 
@@ -632,15 +593,15 @@ This pack is **Playable** (creator complete) when:
 
 1. Assembler stages + approved appearance catalog are the only apply path (CX-1).
 2. Confirm writes schema v2; v1 migrates (CX-2).
-3. Destination morphs, makeup, decals, demi kit, and outfit occlusion meet the [minimums](../13-CHARACTER-APPEARANCE.md#destination-catalog-minimums-pack-07-dod).
+3. Destination morphs, makeup, decals, and demi kit meet the [minimums](../13-CHARACTER-APPEARANCE.md#destination-catalog-minimums-pack-07-dod) (outfit minimums are pack 08).
 4. Studio UX (framing, pose, compare, undo, draft) works on pad (CX-9).
-5. Generators can only sample creator-legal v2 records (CX-10).
-6. Outfit ≠ loadout still tested.
+5. Generators can only sample creator-legal v2 records (CX-10); `outfit.id` may be `none`.
+6. Outfit ≠ loadout still tested (`none` vs empty loadout; pack 08 writes real outfits).
 7. Art under `game/art/characters/` and `game/art/ui/`; defs under `content/catalog/appearance/` with human approval.
 8. `.\scripts\test.ps1` prints `TEST_RESULT: PASS`.
 9. Implementation followed [`13-CHARACTER-APPEARANCE.md`](../13-CHARACTER-APPEARANCE.md) destination engine (not an outside C# DTO).
 
-**Not required for this pack:** Sanctum content (pack 03), parkour retarget ([`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md)), combat gear, wings/scales ([`DEF-018`](../backlog/deferred/DEF-018-demi-wings-scales.md)), companion roster UI.
+**Not required for this pack:** Sanctum content (pack 03), parkour retarget ([`DEF-009`](../backlog/deferred/DEF-009-extreme-morph-anim-retarget.md)), combat gear, wings/scales ([`DEF-018`](../backlog/deferred/DEF-018-demi-wings-scales.md)), companion roster UI, **outfit wardrobe** ([`08-outfit-engine.md`](08-outfit-engine.md)).
 
 ---
 

@@ -1,23 +1,21 @@
-# DEF-013 — Starting outfit wardrobe / transmog deepen
+# DEF-013 — Outfit wardrobe / transmog deepen
 
-**Status:** Roped in
-**Source:** [CC-7 — Starting outfit cosmetics](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics)
-**Deferred from:** Pack 02 / CC-7 — Out of scope (full transmog endgame)
-**Suggested rope-in:** Pack 07 CX-8
-**Roped into:** [`epics/07-character-creator-complete.md`](../../epics/07-character-creator-complete.md) — [CX-8](../../epics/07-character-creator-complete.md#cx-8--outfit-fit-occlusion-wardrobe)
+**Status:** Open  
+**Source:** [CC-7](../../epics/02-character-creation.md#cc-7--starting-outfit-cosmetics-deferred) (was creator wardrobe; now outfit engine)  
+**Deferred from:** Pack 02 / former CX-8 — full cosmetic wardrobe with fit and occlusion  
+**Suggested rope-in:** [`epics/08-outfit-engine.md`](../../epics/08-outfit-engine.md) — OE-3  
+**Was roped into:** Pack 07 CX-8 — **moved** to pack 08 (creator no longer owns outfits)
 
 ## Want
 
-Broader unlocked cosmetic wardrobe beyond the starter set, with **fit** to body morphs and **occlusion** so clothes hide the underwear base. Outfit remains distinct from loadout.
-
-Sanctum endgame dress-up UI may still grow later in the companions/hub pack; creator wardrobe volume and occlusion belong here.
+Unlocked cosmetic wardrobe with **fit** to body morphs and **occlusion** so clothes hide the underwear base. Outfit remains distinct from loadout. Lives in the **outfit engine**, not the character atelier.
 
 ## Not this ticket
 
-Combat gear slots. Cape physics final ([DEF-010](DEF-010-cape-cloth-physics.md)).
+Combat gear slots. Cape physics final ([DEF-010](DEF-010-cape-cloth-physics.md)). Creator identity morphs (packs 02 / 07).
 
 ## Done when
 
-- [ ] Wardrobe grown past CC-7 slice minimum
+- [ ] Wardrobe past a thin first outfit-engine ship
 - [ ] Outfit≠loadout invariant still tested
-- [ ] Pack 07 CX-8 acceptance met
+- [ ] Pack 08 OE-3 (or equivalent) acceptance met

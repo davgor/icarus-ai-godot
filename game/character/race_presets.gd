@@ -121,5 +121,3 @@ static func reset_category(record, category: String) -> void:
 			record.face["marking_id"] = null
 		"features":
 			record.features = (preset["features"] as Dictionary).duplicate(true)
-		"outfit":
-			record.outfit["id"] = "outfit_starter_01"
